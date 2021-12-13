@@ -1,6 +1,6 @@
 {
-  "name": "svemix-preprocess",
-  "version": "0.0.2",
+  "name": "@svemix/preprocess",
+  "version": "0.0.3",
   "description": "Svemix Preprocessor for Svelte",
   "repository": {
     "type": "git",
