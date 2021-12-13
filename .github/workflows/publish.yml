@@ -14,13 +14,11 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - name: Svemix Core    
         working-directory: packages/svemix
-        run: npm install
-        run: npm publish
+        run: npm install && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Svemix Preprocess    
         working-directory: packages/svemix-preprocess
-        run: npm install
-        run: npm publish
+        run: npm install && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
