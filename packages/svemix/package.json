@@ -1,6 +1,6 @@
 {
   "name": "@svemix/svemix",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A framework built on top of SvelteKit, it brings Server-Only Load functions and much more.",
   "repository": {
     "type": "git",
@@ -11,7 +11,7 @@
   "exports": {
     ".": "./src/index.js",
     "./package.json": "./package.json",
-    "./Form": "./src/Form.svelte"
+    "./Form.svelte": "./src/Form.svelte"
   },
   "type": "module",
   "scripts": {},
