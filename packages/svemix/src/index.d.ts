@@ -91,8 +91,6 @@ export interface ActionResult<
   status?: number;
 }
 
-export { default as Form } from "./Form.svelte"
-
 export declare function handleSession<
   SessionType = Record<string, any>,
   Locals = Record<string, any>
