@@ -1,0 +1,36 @@
+{
+  "name": "@svemix/svemix",
+  "version": "0.0.2",
+  "description": "A framework built on top of SvelteKit, it brings Server-Only Load functions and much more.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/svemix/svemix.git"
+  },
+  "main": "./src/index.js",
+  "module": "./src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./package.json": "./package.json",
+    "./Form": "./src/Form.svelte"
+  },
+  "type": "module",
+  "scripts": {},
+  "keywords": [
+    "SvelteKit",
+    "SvelteKit Session",
+    "getServerSideProps",
+    "SvelteKit SEO",
+    "Preprocessor",
+    "Remix",
+    "Server-Only Load Functions"
+  ],
+  "author": "pixelmund",
+  "license": "MIT",
+  "devDependencies": {
+    "@sveltejs/kit": "^1.0.0-next.201",
+    "svelte": "^3.44.2"
+  },
+  "dependencies": {
+    "svelte-kit-cookie-session": "^1.4.0"
+  }
+}

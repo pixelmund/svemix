@@ -1,0 +1,20 @@
+{
+  "name": "svemix",
+  "exports": {
+    "./package.json": "./package.json"
+  },
+  "type": "module",
+  "scripts": {},
+  "keywords": [
+    "SvelteKit",
+    "SvelteKit Session",
+    "getServerSideProps",
+    "SvelteKit SEO",
+    "Preprocessor",
+    "Remix",
+    "Server-Only Load Functions"
+  ],
+  "author": "pixelmund",
+  "license": "MIT",
+  "devDependencies": {}
+}

@@ -1,0 +1,6 @@
+node_modules
+/node_modules
+node_modules/
+/packages/svemix/node_modules
+/packages/svemix-preprocess/node_modules
+**node_modules
