@@ -15,7 +15,7 @@ export default function SSRTransformer(args) {
 
   return `
   <script context="module">
-   ${doc.scripts.dom?.content || ''}
+   ${doc.scripts.dom?.content || ""}
 
    ${tc(
      doc.functions.loader,
@@ -91,6 +91,19 @@ const ssrEndpointTemplate = ({ ssrContent, doc }) => {
       `as unknown as __Loader_Result`
     )}
 
+    if(loaded?.error || loaded?.redirect){
+      return {
+        headers: loaded?.headers || {},
+        body: {  
+          props: { _metadata: {} },  
+          error: loaded?.error,
+          status: loaded?.status,
+          redirect: loaded?.redirect,
+          maxage: loaded?.maxage    
+        }
+      }
+    }
+
     let _metadata = {};
 
     ${tc(
@@ -101,7 +114,7 @@ const ssrEndpointTemplate = ({ ssrContent, doc }) => {
     )}
 
     const loadedProps = loaded?.props || {};
-    const metaProps = { ${tc(doc.functions.metadata, ` _metadata `)} }
+    const metaProps = { _metadata }
 
     return {
       headers: loaded?.headers || {},
