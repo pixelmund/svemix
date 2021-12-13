@@ -4,7 +4,13 @@ export default async function RoutesPipe(args) {
 
   const ssrScript = doc.scripts.ssr;
 
-  let fileName = doc.filename.split("/");
+  let fileName = doc.filename;
+
+  if (fileName.includes("__layout.svelte")) {
+    fileName.replace("__layout.svelte", "$layout.svelte");
+  }
+
+  fileName = doc.filename.split("/");
   const extension = fileName.pop();
 
   const routesIndex = fileName.findIndex(
