@@ -13,8 +13,7 @@ export default function SvemixPreprocess(config) {
           content,
           scripts: { arr: [] },
           functions: { action: false, loader: false, metadata: false },
-          route: {
-          },
+          route: {},
         },
       });
     },
