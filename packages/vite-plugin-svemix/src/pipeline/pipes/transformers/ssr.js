@@ -75,6 +75,7 @@ const ssrEndpointTemplate = ({ ssrContent, doc }) => {
     headers?: Record<string, string | string[]>;
     data?: Record<any, any>;
     errors?: Record<string, string>;
+    formError?: string;
     redirect?: string;
     status?: number;
   }`

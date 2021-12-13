@@ -1,7 +1,7 @@
 {
-  "name": "svemix-preprocess",
-  "version": "0.1.0",
-  "description": "Svemix Preprocessor for Svelte",
+  "name": "vite-plugin-svemix",
+  "version": "0.1.1",
+  "description": "Svemix Vite Plugin built for SvelteKit",
   "repository": {
     "type": "git",
     "url": "https://github.com/svemix/svemix.git"
@@ -19,7 +19,7 @@
     "SvelteKit Session",
     "getServerSideProps",
     "SvelteKit SEO",
-    "Preprocessor",
+    "Vite Plugin",
     "Remix",
     "Server-Only Load Functions"
   ],

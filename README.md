@@ -1,13 +1,13 @@
 # Welcome to Svemix
 
-This "framework" is built on top of `@sveltejs/kit`, it aims to provide more `full-stack` features and reduce boilerplate / overhead.
+This "framework" is built on top of `@sveltejs/kit`, it aims to provide more `full-stack` features and reduce boilerplate / overhead, much of the apis are similar to `remix.run`.
 
 ## Features
 
 - [x] Server-Only Load Functions
 - [x] Remix-Like Loader Functions which run only on the Server (SvelteKit Equivalent to getServerSideProps).
 - [x] Easy Meta Tags / SEO Handling
-- [X] Session Management, refer to [https://github.com/pixelmund/svelte-kit-cookie-session](svelte-kit-cookie-session)
+- [x] Session Management, refer to [https://github.com/pixelmund/svelte-kit-cookie-session](svelte-kit-cookie-session)
 - [ ] Easy Form Handling (Partially available, with actions)
 
 [For an full but still early example please look into this repo](https://github.com/pixelmund/svemix-example).
@@ -16,22 +16,24 @@ This "framework" is built on top of `@sveltejs/kit`, it aims to provide more `fu
 
 ```sh
  npm install svemix
- npm install -D svemix-preprocess
+ npm install -D vite-plugin-svemix
 ```
 
 ```js
 /// svelte.config.js
 ...
-import svemix from 'svemix-preprocess';
+import svemix from 'vite-plugin-svemix';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: [
-		preprocess({
-			postcss: true
-		}),
-		svemix()
-	],
+	// ...
+	kit: {
+		// ...
+		vite: {
+			plugins: [svemix({})],
+			/// ...
+		}
+	}
 };
 
 export default config;
@@ -40,13 +42,14 @@ export default config;
 
 ### Under the hood
 
-The preprocessor currently works with your `routes` while svelte preprocesses, we're then generating an `src/routes/$__svemix__` folder which contains all the generated endpoints we find within your .svelte files. Every .svelte file that includes a `<script context="module" ssr>` will result in a corresponding endpoint generated and all the code executes only on the server. Take a look at the generated code, to get a feeling about whats happening. For each loader the preprocessor, defines the `load` function for you and is perfectly trimmed to work with the response. 
+The vite plugin currently looks for your .svelte files inside `routes`, we're then generating an `src/routes/$__svemix__` folder which contains all corresponding function for your `loader` and `action`. Every .svelte file that includes a `<script context="module" ssr>` will result in a corresponding generated endpoint and all the code executes only on the server. Take a look at the generated code, to get a feeling about whats happening. For each loader the plugin, defines the `load` function for you and is perfectly trimmed to work with the response. This is the true equivalent to `getServerSideProps` in `Next.JS`
 
 ### Examples
 
 Loader function, with dynamic meta tags
 
 `src/routes/users/[username].svelte`
+
 ```svelte
 
 <script context="module" lang="ts" ssr>

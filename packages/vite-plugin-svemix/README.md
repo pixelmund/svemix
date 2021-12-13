@@ -1,25 +1,27 @@
-# Svemix-Preprocessor
+# Vite Plugin Svemix
 
 ### Installation
 
 ```sh
  npm install svemix
- npm install -D svemix-preprocess
+ npm install -D vite-plugin-svemix
 ```
 
 ```js
 /// svelte.config.js
 ...
-import svemix from 'svemix-preprocess';
+import svemix from 'vite-plugin-svemix';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
-	preprocess: [
-		preprocess({
-			postcss: true
-		}),
-		svemix()
-	],
+	// ...
+	kit: {
+		// ...
+		vite: {
+			plugins: [svemix({})],
+			/// ...
+		}
+	}
 };
 
 export default config;
