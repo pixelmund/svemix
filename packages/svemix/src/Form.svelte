@@ -31,7 +31,7 @@
     let actionUrl = action.length > 0 ? action : window?.location.pathname;
 
     if (actionUrl.endsWith("/")) {
-      actionUrl = str.slice(0, -1);
+      actionUrl = actionUrl.slice(0, -1);
     }
 
     const magicUrl = `/$__svemix__` + actionUrl;
