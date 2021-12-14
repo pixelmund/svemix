@@ -7,10 +7,10 @@ export default async function RoutesPipe(args) {
   let fileName = doc.filename;
 
   if (fileName.includes("__layout.svelte")) {
-    fileName.replace("__layout.svelte", "$layout.svelte");
+    fileName = fileName.replace("__layout.svelte", "$__layout.svelte");
   }
 
-  fileName = doc.filename.split("/");
+  fileName = fileName.split("/");
   const extension = fileName.pop();
 
   const routesIndex = fileName.findIndex(

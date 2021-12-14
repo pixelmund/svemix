@@ -49,9 +49,9 @@ export default function SSRTransformer(args) {
         };
     }
    }
-   </script>
    `
    )}
+   </script>
   `;
 }
 
@@ -140,14 +140,39 @@ const ssrEndpointTemplate = ({ ssrContent, doc }) => {
       `as unknown as __Action_Result`
     )}
 
-    return {
-      headers: loaded?.headers || {},
-      body: {
-        formError: loaded?.formError,
-        data: loaded?.data,  
-        errors: loaded?.errors,
-        status: loaded?.status,
+    // This is a browser fetch
+    if(params.headers && params.headers?.accept === 'application/json'){
+      return {
+        headers: loaded?.headers || {},
+        body: {
+          redirect: loaded?.redirect,
+          formError: loaded?.formError,
+          data: loaded?.data,  
+          errors: loaded?.errors,
+          status: loaded?.status,
+        }
       }
+    } 
+
+    // This is the default form behaviour, navigate back to form submitter
+    if(!loaded?.redirect){
+      return {
+        headers: {
+          ...(loaded?.headers || {}),
+          'Location': params.headers?.referer
+        },
+        status: loaded?.status || 302,
+        body: {}
+      }
+    }
+
+    return {
+      headers: {
+        ...(loaded?.headers || {}),
+        'Location': loaded?.redirect,
+      },
+      status: loaded?.status || 302,
+      body: {}
     }
   }
   `

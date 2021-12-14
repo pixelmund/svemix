@@ -41,10 +41,10 @@ export default async function TransformerPipe(args) {
   if (!doc.scripts.instance?.content) {
     doc.content = `
      ${doc.content}
-     ${transformers.instance({ config, content: "", doc })}
+     ${transformers.instance({ config, doc })}
     `;
   }
-  
+
   return {
     config,
     doc,

@@ -87,6 +87,7 @@ export interface ActionResult<
   headers?: Record<string, string | string[]>;
   data?: Data;
   errors?: Err;
+  redirect?: string;
   formError?: string;
   status?: number;
 }

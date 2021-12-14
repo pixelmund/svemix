@@ -25,3 +25,10 @@ jobs:
         run: npm install && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Svemix Svelte    
+        working-directory: packages/svemix-svelte
+        run: npm install && npm run package
+        working-directory: packages/svemix-svelte/package
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
