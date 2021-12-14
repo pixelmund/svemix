@@ -2,7 +2,7 @@ import { tc, writeFile } from "../../utils.js";
 
 /** @type {import('./types').Transformer} */
 export default function SSRTransformer(args) {
-  let { doc } = args;
+  let { doc, config } = args;
 
   const ssrContent = ssrEndpointTemplate({
     ssrContent: doc.scripts.ssr.content,
@@ -21,7 +21,8 @@ export default function SSRTransformer(args) {
      doc.functions.loader,
      `
    export async function load({ fetch, page, session, stuff }) {
-    const queryString = page.query.toString();
+
+    const queryString = ${config.prerender ? `page.query.toString();` : `''`}´
 
     let routesName = \`${doc.route.name}\`;
 

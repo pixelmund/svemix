@@ -1,6 +1,6 @@
 import { mdsvex } from 'mdsvex';
 import mdsvexConfig from './mdsvex.config.js';
-import adapter from '@sveltejs/adapter-auto';
+import adapter from '@sveltejs/adapter-static';
 import preprocess from 'svelte-preprocess';
 import svemix from 'vite-plugin-svemix';
 
@@ -18,7 +18,7 @@ const config = {
 	],
 
 	kit: {
-		adapter: adapter(),
+		adapter: adapter({}),
 
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',

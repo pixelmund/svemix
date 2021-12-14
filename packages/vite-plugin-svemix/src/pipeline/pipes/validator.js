@@ -4,6 +4,7 @@ export default async function ValidatorPipe(args) {
 
   config = {
     ...config,
+    prerender: false,
     routes: "/routes"
   };
 
