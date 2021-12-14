@@ -22,7 +22,7 @@ export default function SSRTransformer(args) {
      `
    export async function load({ fetch, page, session, stuff }) {
 
-    const queryString = ${config.prerender ? `page.query.toString();` : `''`}´
+    const queryString = ${config.prerender ? `page.query.toString();` : `''`}
 
     let routesName = \`${doc.route.name}\`;
 
