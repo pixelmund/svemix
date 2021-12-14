@@ -8,9 +8,9 @@ This "framework" is built on top of `@sveltejs/kit`, it aims to provide more `fu
 - [x] Remix-Like Loader Functions which run only on the Server (SvelteKit Equivalent to getServerSideProps).
 - [x] Easy Meta Tags / SEO Handling
 - [x] Session Management, refer to [https://github.com/pixelmund/svelte-kit-cookie-session](svelte-kit-cookie-session)
-- [ ] Easy Form Handling (Partially available, with actions)
+- [x] Easy Form Handling (Works with Javascript disabled)
 
-[For an full but still early example please look into this repo](https://github.com/pixelmund/svemix-example).
+[For an full but still early example please look into this repo](https://github.com/svemix/svemix-example).
 
 ### Getting Started
 
@@ -55,7 +55,7 @@ Loader function, with dynamic meta tags
 <script context="module" lang="ts" ssr>
 	import db from '$lib/db';
 	import type { User } from '@prisma/client';
-	import type { Loader } from 'svemix';
+	import type { Loader } from 'svemix/server';
 	interface LoaderData {
 		user: Pick<User, 'id' | 'username' | 'email'>;
 	}
