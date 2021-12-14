@@ -28,7 +28,12 @@
       return;
     }
 
-    const actionUrl = action.length > 0 ? action : window?.location.pathname;
+    let actionUrl = action.length > 0 ? action : window?.location.pathname;
+
+    if (actionUrl.endsWith("/")) {
+      actionUrl = str.slice(0, -1);
+    }
+
     const magicUrl = `/$__svemix__` + actionUrl;
 
     formState.set({ loading: true, data: {}, errors: {}, formError: "" });
