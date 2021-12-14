@@ -16,5 +16,6 @@
   ],
   "author": "pixelmund",
   "license": "MIT",
-  "devDependencies": {}
+  "dependencies": {
+  }
 }
