@@ -1,6 +1,6 @@
 {
   "name": "svemix",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "A framework built on top of SvelteKit, it brings Server-Only Load functions and much more.",
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-svemix",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Svemix Vite Plugin built for SvelteKit",
   "repository": {
     "type": "git",
