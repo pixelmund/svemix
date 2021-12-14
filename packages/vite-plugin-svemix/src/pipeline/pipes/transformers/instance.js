@@ -130,7 +130,7 @@ export default function InstanceTransformer(args) {
 
   const instanceContent = `
     <script ${tc(doc.scripts.instance?.attrs?.lang === "ts", 'lang="ts"')}>
-        ${doc.scripts.instance.content || ""}
+        ${doc.scripts.instance?.content || ""}
         export let _metadata;
     </script>
     ${svelteHead(config.seoDefaults)}

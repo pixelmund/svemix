@@ -109,3 +109,4 @@ export declare function handleSession<
 >;
 
 export type { Session, SessionOptions } from "svelte-kit-cookie-session";
+
