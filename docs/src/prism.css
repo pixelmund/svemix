@@ -1,3 +1,5 @@
+/* purgecss start ignore */
+
 pre[class*="language-"],
 code[class*="language-"] {
 	color: #d4d4d4;
@@ -273,3 +275,5 @@ pre[class*="language-"] > code[class*="language-"] {
 	box-shadow: inset 5px 0 0 #f7d87c;
 	z-index: 0;
 }
+
+/* purgecss end ignore */

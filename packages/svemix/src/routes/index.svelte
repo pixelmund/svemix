@@ -1,10 +1,2 @@
-<script lang="ts" context="module" ssr>
-	import type { Loader } from '$lib/server';
-
-	export const loader: Loader = async function () {
-		return {
-			status: 301,
-			redirect: '/docs/getting-started/installation'
-		};
-	};
-</script>
+<h1>Welcome to SvelteKit</h1>
+<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>

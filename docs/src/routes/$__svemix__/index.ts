@@ -1,6 +1,6 @@
 
   
-	import type { Loader } from '$lib/server';
+	import type { Loader } from 'svemix/server';
 
 	export const loader: Loader = async function () {
 		return {

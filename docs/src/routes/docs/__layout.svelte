@@ -1,6 +1,5 @@
 <script>
-import { page } from "$app/stores";
-
+	import { page } from '$app/stores';
 
 	let sidebarOpen = false;
 
@@ -102,8 +101,10 @@ import { page } from "$app/stores";
 							{#each docs['getting-started'] as doc}
 								<li>
 									<a
-										class="block border-l pl-4 -ml-px {$page.path === doc.href ? 'text-sky-300' : 'text-gray-200'} border-current font-semibold"
-										href="{doc.href}">{doc.title}</a
+										class="block border-l pl-4 -ml-px {$page.path === doc.href
+											? 'text-sky-300'
+											: 'text-gray-200'} border-current font-semibold"
+										href={doc.href}>{doc.title}</a
 									>
 								</li>
 							{/each}
