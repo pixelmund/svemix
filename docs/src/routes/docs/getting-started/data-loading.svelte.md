@@ -1,5 +1,5 @@
 ---
-title: Loading data with svemix
+title: Loading data with SVEMIX
 ---
 
 <script>
@@ -17,12 +17,86 @@ title: Loading data with svemix
 One of the primary features of SVEMIX is simplifying interactions with the server to get data into your Svelte Routes/Components . When you follow these conventions, SVEMIX can automatically:
 
 - Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server. 
-- SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function for you.
+- SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint for you.
 - This enables us to import a database or any other stuff that should never reach the client directly inside you Svelte Routes.
 
-## Basics
+<br>
 
-Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return props, redirect or handle errors:
+<h2 id="basics">Basics</h2>
+
+<br>
+
+Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return props, redirect, handle errors, additional headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
+
+```svelte
+<script context="module" lang="ts" ssr>
+	import type { Action, Loader } from 'svemix/server';
+	import type { Post } from '@prisma/client';
+	import db from '$lib/db';
+
+	interface Props {
+		posts: Post[];
+	}
+	export const loader: Loader<Props, Locals> = async function ({}) {
+		const posts = await db.post.findMany({ take: 9, orderBy: { createdAt: 'desc' } });
+		return {
+			props: {
+				posts
+			}
+		};
+	};
+</script>
+<script lang="ts">
+	export let posts: Props['posts'] = [];
+</script>
+
+<div>
+ { JSON.stringify(posts) }
+</div>
+```
+
+<br>
+
+The loader only runs on the server. That means our hard-coded products array doesn't get included in the browser bundles and it's safe to use server-only for APIs and SDKs for things like database, payment processing, content management systems, etc.
+
+<br>
+
+<h2 id="input">Input</h2>
+
+<br>
+
+The loader receives the following input:
+
+```ts
+ interface SvemixLoaderInput<Locals = Record<string, any> {
+	method: string;
+	host: string;
+	path: string;
+	params: Record<string, string>;
+	query: URLSearchParams;
+	headers: Record<string, string>;
+	locals: Locals; // populated by hooks handle 
+ }
+```
+
+<br>
+
+<h2 id="output">Output</h2>
+
+<br>
+
+The loader can return the following output:
+
+```ts
+ interface SvemixLoaderOutput {
+	headers?: Record<string, string | string[]> // Additional Headers
+	status?: number;
+	redirect?: string;
+	error?: string | Error;
+	maxage?: number;
+	props?: Record<string, any>; // Props are getting passed to the component
+ }
+```
 
 
 <PostBottomNavigation

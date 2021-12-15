@@ -2,9 +2,6 @@
   "name": "svemix-repo",
   "type": "module",
   "scripts": {
-    "dev:docs": "pnpm run dev --filter svemix-docs",
-    "dev:core": "pnpm run dev --filter svemix",
-    "package": "pnpm run package --filter svemix"
   },
   "keywords": [
     "SvelteKit",
