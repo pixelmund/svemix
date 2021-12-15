@@ -3,7 +3,7 @@
 	export let next = { title: '', href: '' };
 </script>
 
-<div class="flex mt-12 items-center justify-between">
+<div class="flex my-12 items-center justify-between">
 	{#if previous && previous.href.length > 0}
 		<a class="!text-gray-200 text-xl font-semibold" href={previous.href} sveltekit:prefetch
 			>{previous.title}</a

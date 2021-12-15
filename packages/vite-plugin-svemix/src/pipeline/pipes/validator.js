@@ -17,6 +17,14 @@ export default async function ValidatorPipe(args) {
     };
   }
 
+  if (!doc.filename.endsWith('.svelte')) {
+    return {
+      config,
+      doc,
+      continue: false,
+    };
+  }
+
   return {
     config,
     doc,

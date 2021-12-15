@@ -1,6 +1,6 @@
 {
 	"name": "svemix",
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"scripts": {
 		"dev": "svelte-kit dev --port=3001",
 		"package": "svelte-kit package",

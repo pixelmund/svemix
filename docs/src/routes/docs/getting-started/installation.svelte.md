@@ -6,6 +6,11 @@ title: Getting started with Svemix
 	import PostBottomNavigation from "../../../components/PostBottomNavigation.svelte";
 </script>
 
+<svelte:head>
+	<title> Getting started - SVEMIX </title>
+	<meta name="description" content="Getting started with SVEMIX is easy">
+</svelte:head>
+
 <p class="mb-4 leading-6 font-semibold text-sky-300">Installation</p>
 
 # {title}
