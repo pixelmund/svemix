@@ -60,27 +60,8 @@ const ssrEndpointTemplate = ({ ssrContent, doc }) => {
   const usesTS = doc.scripts.ssr.attrs?.lang === "ts";
 
   let newSSRContent = `
+  import { getHandler, postHandler } from "svemix/server";
   ${ssrContent}
-  ${tc(
-    usesTS,
-    `type __Loader_Result = {
-    headers?: Record<string, string | string[]>;
-    props?: Record<any, any>;
-    error?: string | Error;
-    status?: number;
-    redirect?: string;
-    maxage?: string;
-  }
-
-  type __Action_Result = {
-    headers?: Record<string, string | string[]>;
-    data?: Record<any, any>;
-    errors?: Record<string, string>;
-    formError?: string;
-    redirect?: string;
-    status?: number;
-  }`
-  )}
 
   ${tc(
     doc.functions.loader,
