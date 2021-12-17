@@ -1,6 +1,3 @@
-export { handleSession, sessionMiddleware } from 'svelte-kit-cookie-session';
-export type { Session, SessionOptions } from 'svelte-kit-cookie-session';
-
 export { getHandler, postHandler } from "./endpoint.js";
 
 import type { Request } from '@sveltejs/kit';
