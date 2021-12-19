@@ -13,7 +13,7 @@
 	{#if _metadata?.canonical}
 		<link rel="canonical" href={_metadata?.canonical} />
 	{/if}
-	{#if _metadata?.keywords}
+	{#if _metadata?.keywords || _defaults?.keywords}
 		<meta name="keywords" content={_metadata?.keywords || _defaults?.keywords || ''} />
 	{/if}
 
