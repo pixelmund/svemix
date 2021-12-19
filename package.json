@@ -1,7 +1,13 @@
 {
   "name": "svemix-repo",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/svemix/svemix.git"
+  },
   "scripts": {
+    "test": "pnpm -r run test",
+    "run-publish": "pnpm -r run run-publish"
   },
   "keywords": [
     "SvelteKit",

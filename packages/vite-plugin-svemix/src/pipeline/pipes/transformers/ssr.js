@@ -43,7 +43,7 @@ export default function SSRTransformer(args) {
   `;
 }
 
-const ssrEndpointTemplate = ({ ssrContent, doc }) => {
+export const ssrEndpointTemplate = ({ ssrContent, doc }) => {
   let newSSRContent = `
   import { getHandler, postHandler } from "svemix/server";
 

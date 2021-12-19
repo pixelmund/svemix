@@ -50,7 +50,7 @@ export default async function ScriptsPipe(args) {
  * @param {string} content
  * @returns {Array<import('../types').PipeParsedScript>}
  */
-function getScripts(content) {
+export function getScripts(content) {
   const scripts = [];
 
   let match;

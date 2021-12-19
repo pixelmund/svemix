@@ -3,6 +3,9 @@ export default async function ValidatorPipe(args) {
   let { config, doc } = args;
 
   config = {
+    seoDefaults: {
+
+    },
     ...config,
     prerender: false,
     routes: "/routes"

@@ -17,7 +17,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  
       - name: Svemix Preprocess    
         working-directory: packages/vite-plugin-svemix
-        run: npm publish
+        run: npm install && npm run test && npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Svemix Package

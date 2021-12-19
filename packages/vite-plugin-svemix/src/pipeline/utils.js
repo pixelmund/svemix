@@ -19,6 +19,10 @@ async function isDirExisting(path) {
 
 export async function writeFile(filePath, data) {
   try {
+    if (process.env.NODE_ENV === "test") {
+      return;
+    }
+
     const dirname = path.dirname(filePath);
     const exist = await isDirExisting(dirname);
 

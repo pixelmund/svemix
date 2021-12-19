@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-svemix",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "Svemix Vite Plugin built for SvelteKit",
   "repository": {
     "type": "git",
@@ -13,7 +13,10 @@
     ".": "./src/index.js"
   },
   "type": "module",
-  "scripts": {},
+  "scripts": {
+    "test": "uvu tests",
+    "run-publish": "pnpm test && pnpm publish"
+  },
   "keywords": [
     "SvelteKit",
     "SvelteKit Session",
@@ -26,5 +29,6 @@
   "author": "pixelmund",
   "license": "MIT",
   "devDependencies": {
+    "uvu": "^0.5.2"
   }
 }
