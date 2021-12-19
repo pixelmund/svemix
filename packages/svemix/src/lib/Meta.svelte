@@ -8,7 +8,7 @@
 	<title>
 		{_metadata?.title || _defaults?.title || ''}
 	</title>
-	<meta name="description" content={_metadata?.title || _defaults?.title || ''} />
+	<meta name="description" content="{_metadata?.description || _defaults?.description || ''}" />
 
 	{#if _metadata?.canonical}
 		<link rel="canonical" href={_metadata?.canonical} />
