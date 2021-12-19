@@ -17,7 +17,7 @@ title: Getting started with Svemix
 
 <br>
 
-Welcome to the Svemix docs, the first thing you should so is installing svemix into an existing `@sveltejs/kit` app or create a new one by running `npm init svelte@next <dir>`.
+Welcome to the Svemix docs, the first thing you should do is installing svemix into an existing `@sveltejs/kit` app or create a new one by running `npm init svelte@next <dir>`.
 
 **Kit** set up? Fine now you can start installing svemix by running:
 

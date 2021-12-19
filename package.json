@@ -6,17 +6,19 @@
     "url": "https://github.com/svemix/svemix.git"
   },
   "scripts": {
-    "test": "pnpm -r run test",
-    "run-publish": "pnpm -r run run-publish"
+    "test": "pnpm -r run test"
   },
   "keywords": [
-    "SvelteKit",
-    "SvelteKit Session",
-    "getServerSideProps",
-    "SvelteKit SEO",
-    "Preprocessor",
-    "Remix",
-    "Server-Only Load Functions"
+   "svemix",
+   "svelte server-only scripts",
+   "sveltekit getServerSideProps",
+   "full-stack svelte",
+   "svelte seo",
+   "sveltekit seo",
+   "sveltekit session",
+   "svelte remix",
+   "svelte",
+   "forms"
   ],
   "author": "pixelmund",
   "license": "MIT",

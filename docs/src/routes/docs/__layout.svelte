@@ -12,6 +12,18 @@
 			{
 				title: 'Data Loading',
 				href: '/docs/getting-started/data-loading'
+			},
+			{
+				title: 'Data Writes',
+				href: '/docs/getting-started/data-writes'
+			},
+			{
+				title: 'Meta / SEO',
+				href: '/docs/getting-started/meta'
+			},
+			{
+				title: 'Sessions',
+				href: '/docs/getting-started/session'
 			}
 		]
 	};

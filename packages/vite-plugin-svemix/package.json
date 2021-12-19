@@ -1,7 +1,7 @@
 {
   "name": "vite-plugin-svemix",
-  "version": "0.3.2",
-  "description": "Svemix Vite Plugin built for SvelteKit",
+  "version": "0.3.3",
+  "description": "The Full-Stack addition to SvelteKit. Write your server code inside svelte files, handle sessions, forms and SEO easily.",
   "repository": {
     "type": "git",
     "url": "https://github.com/svemix/svemix.git"
@@ -14,17 +14,20 @@
   },
   "type": "module",
   "scripts": {
-    "test": "uvu tests",
-    "run-publish": "pnpm test && pnpm publish"
+    "test": "uvu tests"
   },
   "keywords": [
-    "SvelteKit",
-    "SvelteKit Session",
-    "getServerSideProps",
-    "SvelteKit SEO",
-    "Vite Plugin",
-    "Remix",
-    "Server-Only Load Functions"
+    "svemix",
+    "svelte server-only scripts",
+    "server only load",
+    "sveltekit getServerSideProps",
+    "full-stack svelte",
+    "svelte seo",
+    "sveltekit seo",
+    "sveltekit session",
+    "svelte remix",
+    "svelte",
+    "forms"
   ],
   "author": "pixelmund",
   "license": "MIT",

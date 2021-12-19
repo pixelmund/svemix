@@ -1,5 +1,5 @@
 ---
-title: Loading data with SVEMIX
+title: Loading data 
 ---
 
 <script>
@@ -14,9 +14,9 @@ title: Loading data with SVEMIX
 
 <br>
 
-One of the primary features of SVEMIX is simplifying interactions with the server to get data into your Svelte Routes/Components . When you follow these conventions, SVEMIX can automatically:
+One of the primary features of SVEMIX is simplifying interactions with the server to get data into your Svelte Routes/Components:
 
-- Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server. 
+- Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server, this is the equivalent to `getServerSideProps` in Next. 
 - SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint for you.
 - This enables us to import a database or any other stuff that should never reach the client directly inside you Svelte Routes.
 
@@ -100,6 +100,6 @@ The loader can return the following output:
 
 
 <PostBottomNavigation
-previous={{ title: '', href: '' }}
-next={{ title: '', href: ''  }}
+previous={{ title: 'Installation', href: '/docs/getting-started/installation' }}
+next={{ title: 'Data Writes', href: '/docs/getting-started/data-writes'  }}
 />
