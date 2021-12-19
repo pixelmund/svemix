@@ -7,3 +7,5 @@ export type SvemixConfig = {
     keywords?: string;
   };
 };
+
+export default function SvemixVitePlugin(config: SvemixConfig): any;

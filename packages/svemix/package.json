@@ -1,6 +1,6 @@
 {
 	"name": "svemix",
-	"version": "0.3.0",
+	"version": "0.3.1",
 	"scripts": {
 		"dev": "svelte-kit dev --port=3001",
 		"package": "svelte-kit package",
@@ -25,6 +25,5 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"svelte-kit-cookie-session": "^1.4.0"
 	}
 }

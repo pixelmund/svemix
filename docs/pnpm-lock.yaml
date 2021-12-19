@@ -13,14 +13,14 @@ specifiers:
   svelte: ^3.44.0
   svelte-check: ^2.2.6
   svelte-preprocess: ^4.9.8
-  svemix: next
+  svemix: ^0.3.0
   tailwindcss: ^3.0.0
   tslib: ^2.3.1
   typescript: ^4.4.3
-  vite-plugin-svemix: next
+  vite-plugin-svemix: ^0.3.0
 
 dependencies:
-  svemix: 0.3.0-next.1
+  svemix: 0.3.0
 
 devDependencies:
   '@sveltejs/adapter-vercel': 1.0.0-next.32
@@ -38,7 +38,7 @@ devDependencies:
   tailwindcss: 3.0.2_16a290f6d0e3717bf6d2667234aebd30
   tslib: 2.3.1
   typescript: 4.5.4
-  vite-plugin-svemix: 0.3.0-next.1
+  vite-plugin-svemix: 0.3.0
 
 packages:
 
@@ -1705,8 +1705,8 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /svemix/0.3.0-next.1:
-    resolution: {integrity: sha512-7t4IAvwEe4FSWLREe4LPxfvjD4mQdKtO04YTzzlYDeepPxiwYg/midqlH+n9FwSH5rUedyAMjuxyBqN7U4Wx9A==}
+  /svemix/0.3.0:
+    resolution: {integrity: sha512-EIQG2dBe2YSl8VRegVLplWUst3WVvO4YykoEB6B1LjP09VMEuFQQ7UaVPGRyBgq5mgOtCqhJKaEwC10ktHlrjA==}
     dependencies:
       svelte-kit-cookie-session: 1.4.0
     dev: false
@@ -1805,8 +1805,8 @@ packages:
       unist-util-stringify-position: 2.0.3
     dev: true
 
-  /vite-plugin-svemix/0.3.0-next.1:
-    resolution: {integrity: sha512-Wbru1p/gIcHi8OQV25Zdmq68JMmX/QPH5es1DGBmaQwO1taVe0K1DKkZa8CaSymxNCwM6XGBsYsEHfuTEoh4FQ==}
+  /vite-plugin-svemix/0.3.0:
+    resolution: {integrity: sha512-uL0gqYPH+vrRPVGgO/VdmLhclu60vM9UMTW9T8UbwzYZ4ucW14mqbyseAsDg62sCxg7PR/jH5FdfzH60vFyHEQ==}
     dev: true
 
   /vite/2.7.2:
