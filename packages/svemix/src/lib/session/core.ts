@@ -153,6 +153,8 @@ export default function CookieSession<SessionType = Record<string, any>>(
 
 						obj['set-cookie'] = makeCookie(newMaxAge);
 
+						sessionStatus.shouldSendToClient = true;
+
 						return true;
 					};
 
@@ -162,6 +164,7 @@ export default function CookieSession<SessionType = Record<string, any>>(
 						//@ts-ignore
 						sessionData = {};
 						obj['set-cookie'] = makeCookie(0, true);
+						sessionStatus.shouldSendToClient = true;
 						return true;
 					};
 

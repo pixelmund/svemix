@@ -15,148 +15,57 @@ export default function SSRTransformer(args) {
 
   return `
   <script context="module">
+   ${tc(doc.functions.loader, `import { loadHandler } from "svemix"`)}
+
    ${doc.scripts.dom?.content || ""}
 
    ${tc(
      doc.functions.loader,
      `
-   export async function load({ fetch, page, session, stuff }) {
+     export async function load(input) {
+      const { page } = input;
 
-    const queryString = ${config.prerender ? `page.query.toString();` : `''`}
+      const queryString = ${config.prerender ? `page.query.toString();` : `''`}
+  
+      let routesName = \`${doc.route.name}\`;
+  
+      if(queryString.length > 0){
+          routesName = routesName + '?' + queryString;
+      }
+  
+      const handleLoad = loadHandler({ routesName });
 
-    let routesName = \`${doc.route.name}\`;
-
-    if(queryString.length > 0){
-        routesName = routesName + '?' + queryString;
-    }
-
-    try {
-        const response = await fetch(routesName, {
-            credentials: 'include',
-            headers: { 'content-type': 'application/json' }
-        });
-
-        if(!response.ok){
-            throw new Error('An unknown error occured');
-        }
-
-        const loaded = await response.json();
-
-        return loaded;
-    } catch (err) {
-        return {
-            error: err,
-            status: 500
-        };
-    }
-   }
-   `
+      return handleLoad(input)
+     }
+     `
    )}
    </script>
   `;
 }
 
 const ssrEndpointTemplate = ({ ssrContent, doc }) => {
-  const usesTS = doc.scripts.ssr.attrs?.lang === "ts";
-
   let newSSRContent = `
   import { getHandler, postHandler } from "svemix/server";
+
   ${ssrContent}
 
   ${tc(
     doc.functions.loader,
     `
-  export const get = async function(params){
-    //@ts-ignore
-    const loaded = await loader(params) ${tc(
-      usesTS,
-      `as unknown as __Loader_Result`
-    )}
-
-    if(loaded?.error || loaded?.redirect){
-      return {
-        headers: loaded?.headers || {},
-        body: {  
-          props: { _metadata: {} },  
-          error: loaded?.error,
-          status: loaded?.status,
-          redirect: loaded?.redirect,
-          maxage: loaded?.maxage    
-        }
-      }
-    }
-
-    let _metadata = {};
-
-    ${tc(
-      doc.functions.metadata,
-      `
-    _metadata = await metadata(loaded?.props ${tc(usesTS, `as unknown as any`)})
-   `
-    )}
-
-    const loadedProps = loaded?.props || {};
-    const metaProps = { _metadata }
-
-    return {
-      headers: loaded?.headers || {},
-      body: {  
-        props: {...loadedProps, ...metaProps},  
-        error: loaded?.error,
-        status: loaded?.status,
-        redirect: loaded?.redirect,
-        maxage: loaded?.maxage    
-      }
-    }
-  }
+  export const get = getHandler({
+    hasMeta: ${doc.functions.metadata},
+    loader: loader,
+    metadata: ${doc.functions.metadata ? "metadata" : "() => ({})"}
+  });
   `
   )}
 
   ${tc(
     doc.functions.action,
     `
-  export const post = async function(params){
-    //@ts-ignore
-    const loaded = await action(params) ${tc(
-      usesTS,
-      `as unknown as __Action_Result`
-    )}
-
-    // This is a browser fetch
-    if(params.headers && params.headers?.accept === 'application/json'){
-      return {
-        headers: loaded?.headers || {},
-        body: {
-          redirect: loaded?.redirect,
-          formError: loaded?.formError,
-          data: loaded?.data,  
-          errors: loaded?.errors,
-          status: loaded?.status,
-        }
-      }
-    } 
-
-    // This is the default form behaviour, navigate back to form submitter
-    if(!loaded?.redirect){
-      return {
-        headers: {
-          ...(loaded?.headers || {}),
-          'Location': params.headers?.referer
-        },
-        status: loaded?.status || 302,
-        body: {}
-      }
-    }
-
-    return {
-      headers: {
-        ...(loaded?.headers || {}),
-        'Location': loaded?.redirect,
-      },
-      status: loaded?.status || 302,
-      body: {}
-    }
-  }
+  export const post = postHandler({
+    action: action,
+  });  
   `
   )}
 `;

@@ -13,7 +13,7 @@ specifiers:
   svelte2tsx: ^0.4.11
   tslib: ^2.3.1
   typescript: ^4.4.3
-  vite-plugin-svemix: ^0.2.3
+  vite-plugin-svemix: ^0.2.4
 
 dependencies:
   svelte-kit-cookie-session: 1.4.0
@@ -30,7 +30,7 @@ devDependencies:
   svelte2tsx: 0.4.11_svelte@3.44.3+typescript@4.5.4
   tslib: 2.3.1
   typescript: 4.5.4
-  vite-plugin-svemix: 0.2.3
+  vite-plugin-svemix: 0.2.4
 
 packages:
 
@@ -905,8 +905,8 @@ packages:
     hasBin: true
     dev: true
 
-  /vite-plugin-svemix/0.2.3:
-    resolution: {integrity: sha512-v+qKiqw8mM3V+TPFLTHNWSGQxt2v9/4zxatS3GafBxVIk2eMynZD7XqbxO7cTyqu9SnOGMkdp+RSTlwCcZyfqA==}
+  /vite-plugin-svemix/0.2.4:
+    resolution: {integrity: sha512-8KYNOqRi6/BWwpiFoC1GDSOQWZB148JH9Dtrwj/bYNlOUKbSOaFC+dplXi05ZghurDuJ3tJW0PGSfa80vju6fA==}
     dev: true
 
   /vite/2.7.3:

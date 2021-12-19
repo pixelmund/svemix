@@ -1,8 +1,6 @@
 lockfileVersion: 5.3
 
 specifiers:
-  '@sveltejs/adapter-auto': next
-  '@sveltejs/adapter-static': ^1.0.0-next.22
   '@sveltejs/adapter-vercel': ^1.0.0-next.32
   '@sveltejs/kit': next
   autoprefixer: ^10.3.7
@@ -15,15 +13,16 @@ specifiers:
   svelte: ^3.44.0
   svelte-check: ^2.2.6
   svelte-preprocess: ^4.9.8
-  svemix: ^0.2.3
+  svemix: next
   tailwindcss: ^3.0.0
   tslib: ^2.3.1
   typescript: ^4.4.3
-  vite-plugin-svemix: ^0.2.3
+  vite-plugin-svemix: next
+
+dependencies:
+  svemix: 0.3.0-next.1
 
 devDependencies:
-  '@sveltejs/adapter-auto': 1.0.0-next.4
-  '@sveltejs/adapter-static': 1.0.0-next.22
   '@sveltejs/adapter-vercel': 1.0.0-next.32
   '@sveltejs/kit': 1.0.0-next.202_svelte@3.44.3
   autoprefixer: 10.4.0_postcss@8.4.5
@@ -36,11 +35,10 @@ devDependencies:
   svelte: 3.44.3
   svelte-check: 2.2.10_780263383bd82c24c3a39ba88c8c2aa6
   svelte-preprocess: 4.10.0_2744a29ed8b290f6e2130b2432ae0c01
-  svemix: 0.2.3
   tailwindcss: 3.0.2_16a290f6d0e3717bf6d2667234aebd30
   tslib: 2.3.1
   typescript: 4.5.4
-  vite-plugin-svemix: 0.2.3
+  vite-plugin-svemix: 0.3.0-next.1
 
 packages:
 
@@ -63,10 +61,6 @@ packages:
       '@babel/helper-validator-identifier': 7.15.7
       chalk: 2.4.2
       js-tokens: 4.0.0
-    dev: true
-
-  /@iarna/toml/2.2.5:
-    resolution: {integrity: sha512-trnsAYxU3xnS1gPHPyU961coFyLkh4gAD/0zQ5mymY4yOZ+CYvsPqUbOFSw0aDM4y0tV7tiFxL/1XfXPNC6IPg==}
     dev: true
 
   /@nodelib/fs.scandir/2.1.5:
@@ -96,31 +90,6 @@ packages:
     dependencies:
       estree-walker: 2.0.2
       picomatch: 2.3.0
-    dev: true
-
-  /@sveltejs/adapter-auto/1.0.0-next.4:
-    resolution: {integrity: sha512-kfygrjF2uIgVVDsySl7I9oWSekU6adJCr/3qzLQDLM4FJ98FWmfhj4OOWsmF9X4JRPSm97t3RPugYsN3NLwKMQ==}
-    dependencies:
-      '@sveltejs/adapter-cloudflare': 1.0.0-next.3
-      '@sveltejs/adapter-netlify': 1.0.0-next.36
-      '@sveltejs/adapter-vercel': 1.0.0-next.32
-    dev: true
-
-  /@sveltejs/adapter-cloudflare/1.0.0-next.3:
-    resolution: {integrity: sha512-LauvvkBFCE8myGMLWOncv97/xU8JJn9OMl1miy8f/q8qs0CrduvR1sv2uCM9AylqT/FNPy3mony5wpe3w1v7sg==}
-    dependencies:
-      esbuild: 0.13.15
-    dev: true
-
-  /@sveltejs/adapter-netlify/1.0.0-next.36:
-    resolution: {integrity: sha512-LdrIXCTBnIubtt/lthcnyt5VljuHpZlVzUqpWXk9Eu6bpNKblqQLMHkTBQfIbPfanmNSDZXJQVsdcFLqF2/+Cw==}
-    dependencies:
-      '@iarna/toml': 2.2.5
-      esbuild: 0.13.15
-    dev: true
-
-  /@sveltejs/adapter-static/1.0.0-next.22:
-    resolution: {integrity: sha512-Dc1V9Z72dA7caVwNxxzl9Jhcq4uN9N1udA2GKNTLMu3aWX3Cq+v6C2CddY9Aazr+F9h6J0vi9AienuH+ySRXzQ==}
     dev: true
 
   /@sveltejs/adapter-vercel/1.0.0-next.32:
@@ -1676,7 +1645,7 @@ packages:
 
   /svelte-kit-cookie-session/1.4.0:
     resolution: {integrity: sha512-SDVf9QZY8lxxJr3Ih+qoVIq0oam73wSjf1z96b7ddIgq/nNpYeVLnNrgWgAtZHuQGPLDBgi5hI4W/yYTBOoQ2Q==}
-    dev: true
+    dev: false
 
   /svelte-preprocess/4.10.0_2744a29ed8b290f6e2130b2432ae0c01:
     resolution: {integrity: sha512-uZgGyC4SwkFoby2ceiMgGYs4qHYGz2fT06cAsHO8FHdDbvj1dKQyQ/fD9OB0KLymVv0fmzuJo/On7Kv7AeVhWA==}
@@ -1736,11 +1705,11 @@ packages:
     engines: {node: '>= 8'}
     dev: true
 
-  /svemix/0.2.3:
-    resolution: {integrity: sha512-LnpBpTWKZe6hrmoPngLSHMNatgrLj+fk3/7mtCzbZQ9avVk/tYUfnoCBEdOkfhdxsfzRnEdfcvxT9fKKAudtsA==}
+  /svemix/0.3.0-next.1:
+    resolution: {integrity: sha512-7t4IAvwEe4FSWLREe4LPxfvjD4mQdKtO04YTzzlYDeepPxiwYg/midqlH+n9FwSH5rUedyAMjuxyBqN7U4Wx9A==}
     dependencies:
       svelte-kit-cookie-session: 1.4.0
-    dev: true
+    dev: false
 
   /svgo/2.8.0:
     resolution: {integrity: sha512-+N/Q9kV1+F+UeWYoSiULYo4xYSDQlTgb+ayMobAXPwMnLvop7oxKMo9OzIrX5x3eS4L4f2UHhc9axXwY8DpChg==}
@@ -1836,8 +1805,8 @@ packages:
       unist-util-stringify-position: 2.0.3
     dev: true
 
-  /vite-plugin-svemix/0.2.3:
-    resolution: {integrity: sha512-v+qKiqw8mM3V+TPFLTHNWSGQxt2v9/4zxatS3GafBxVIk2eMynZD7XqbxO7cTyqu9SnOGMkdp+RSTlwCcZyfqA==}
+  /vite-plugin-svemix/0.3.0-next.1:
+    resolution: {integrity: sha512-Wbru1p/gIcHi8OQV25Zdmq68JMmX/QPH5es1DGBmaQwO1taVe0K1DKkZa8CaSymxNCwM6XGBsYsEHfuTEoh4FQ==}
     dev: true
 
   /vite/2.7.2:

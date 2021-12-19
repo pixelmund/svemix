@@ -1,116 +1,110 @@
-import type { EndpointOutput } from '@sveltejs/kit/types/endpoint';
+import type { RequestHandler } from '@sveltejs/kit/types/endpoint';
 import type { ServerRequest } from '@sveltejs/kit/types/hooks';
-
-type Loader_Result = {
-	headers?: Record<string, string | string[]>;
-	props?: Record<any, any>;
-	error?: string | Error;
-	status?: number;
-	redirect?: string;
-	maxage?: string;
-};
-
-type Action_Result = {
-	headers?: Record<string, string | string[]>;
-	data?: Record<any, any>;
-	errors?: Record<string, string>;
-	formError?: string;
-	redirect?: string;
-	status?: number;
-};
+import type { ActionResult, LoaderResult, MetaFunction } from '.';
 
 interface SvemixPostHandlerParams {
-	action: (request: ServerRequest) => Promise<Action_Result> | Action_Result;
-	request: ServerRequest<any, any>;
+	action: (request: ServerRequest) => Promise<ActionResult> | ActionResult;
 }
 
 interface SvemixGetHandlerParams {
-	loader: (request: ServerRequest) => Promise<Loader_Result> | Loader_Result;
-	request: ServerRequest<any, any>;
+	loader: (request: ServerRequest) => Promise<LoaderResult> | LoaderResult;
 	hasMeta: boolean;
-	metadata: any;
+	metadata: MetaFunction<any>;
 }
 
-export async function getHandler({
-	loader,
-	request,
+export function getHandler({
 	hasMeta,
+	loader,
 	metadata
-}: SvemixGetHandlerParams): Promise<EndpointOutput<any>> {
-	const loaded = await loader(request);
+}: SvemixGetHandlerParams): RequestHandler<any, any, any> {
+	return async (request) => {
+		const loaded = await loader(request);
 
-	if (loaded?.error || loaded?.redirect) {
+		if (loaded?.error || loaded?.redirect) {
+			return {
+				headers: loaded?.headers || {},
+				body: {
+					props: { _metadata: {} },
+					error: loaded?.error,
+					status: loaded?.status,
+					redirect: loaded?.redirect,
+					maxage: loaded?.maxage
+				}
+			};
+		}
+
+		let _metadata = {};
+
+		if (hasMeta) {
+			_metadata = await metadata(loaded?.props);
+		}
+
+		const loadedProps = loaded?.props || {};
+		const metaProps = { _metadata };
+
 		return {
 			headers: loaded?.headers || {},
 			body: {
-				props: { _metadata: {} },
+				props: { ...loadedProps, ...metaProps },
 				error: loaded?.error,
 				status: loaded?.status,
 				redirect: loaded?.redirect,
 				maxage: loaded?.maxage
 			}
 		};
-	}
-
-	let _metadata = {};
-
-	if (hasMeta) {
-		_metadata = await metadata(loaded?.props);
-	}
-
-	const loadedProps = loaded?.props || {};
-	const metaProps = { _metadata };
-
-	return {
-		headers: loaded?.headers || {},
-		body: {
-			props: { ...loadedProps, ...metaProps },
-			error: loaded?.error,
-			status: loaded?.status,
-			redirect: loaded?.redirect,
-			maxage: loaded?.maxage
-		}
 	};
 }
 
-export async function postHandler({
-	action,
-	request
-}: SvemixPostHandlerParams): Promise<EndpointOutput<any>> {
-	const loaded = await action(request);
+export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any, any, any> {
+	return async (request) => {
+		const actionResult = await action(request);
 
-	// This is a browser fetch
-	if (request.headers && request.headers?.accept === 'application/json') {
-		return {
-			headers: loaded?.headers || {},
-			body: {
-				redirect: loaded?.redirect,
-				formError: loaded?.formError,
-				data: loaded?.data,
-				errors: loaded?.errors,
-				status: loaded?.status
+		// This is a browser fetch
+		if (request.headers && request.headers?.accept === 'application/json') {
+			const hasSession = 'session' in request.locals;
+
+			let shouldSendSession = false;
+
+			if (hasSession) {
+				shouldSendSession = request.locals.session.shouldSendToClient;
 			}
-		};
-	}
 
-	// This is the default form behaviour, navigate back to form submitter
-	if (!loaded?.redirect) {
+			return {
+				headers: actionResult?.headers || {},
+				body: {
+					redirect: actionResult?.redirect,
+					formError: actionResult?.formError,
+					data: actionResult?.data,
+					errors: actionResult?.errors,
+					status: actionResult?.status,
+					// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,
+					session: {
+						status: shouldSendSession ? 'should-update' : 'no-changes',
+						data: shouldSendSession ? request.locals.session?.data : {}
+					}
+				}
+			};
+		}
+
+		// This is the default form behaviour, navigate back to form submitter
+		if (!actionResult?.redirect) {
+			return {
+				headers: {
+					...(actionResult?.headers || {}),
+					Location: request.headers?.referer
+				},
+				status: actionResult?.status || 302,
+				body: {}
+			};
+		}
+
 		return {
 			headers: {
-				...(loaded?.headers || {}),
-				Location: request.headers?.referer
+				...(actionResult?.headers || {}),
+				Location: actionResult?.redirect
 			},
-			status: loaded?.status || 302,
+			status: actionResult?.status || 302,
 			body: {}
 		};
-	}
-
-	return {
-		headers: {
-			...(loaded?.headers || {}),
-			Location: loaded?.redirect
-		},
-		status: loaded?.status || 302,
-		body: {}
 	};
 }

@@ -18,8 +18,8 @@
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { page } from '$app/stores';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { page, session } from '$app/stores';
 	import { goto } from '$app/navigation';
 
 	const dispatchEvent = createEventDispatcher();
@@ -44,6 +44,8 @@
 
 		magicUrl = `/$__svemix__` + actionUrl;
 	}
+
+	$: __session = $session;
 
 	function getFormData() {
 		const formData = new FormData(thisForm);
@@ -105,6 +107,11 @@
 		}
 
 		const json = await response.json();
+
+		// Update the client session with the current data, but only if it was changed.
+		if (json?.session?.status === 'should-update') {
+			session.set(json.session?.data);
+		}
 
 		formState.update((state) => ({
 			...state,
