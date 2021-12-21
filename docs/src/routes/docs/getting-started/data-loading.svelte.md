@@ -18,7 +18,7 @@ One of the primary features of SVEMIX is simplifying interactions with the serve
 
 - Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server, this is the equivalent to `getServerSideProps` in Next. 
 - SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint for you.
-- This enables us to import a database or any other stuff that should never reach the client directly inside you Svelte Routes.
+- This enables us to import a database or any other stuff that should never reach the client directly inside your Svelte Routes.
 
 <br>
 
