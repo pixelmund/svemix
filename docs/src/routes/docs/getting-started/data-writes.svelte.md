@@ -96,7 +96,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 The action receives the following input:
 
 ```ts
- interface SvemixActionInput<Locals = Record<string, any> {
+ interface SvemixActionInput<Locals = Record<string, any>> {
 	method: string;
 	host: string;
 	path: string;
