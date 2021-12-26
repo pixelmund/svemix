@@ -17,8 +17,8 @@ title: Loading data
 One of the primary features of SVEMIX is simplifying interactions with the server to get data into your Svelte Routes/Components:
 
 - Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server, this is the equivalent to `getServerSideProps` in Next. 
-- SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint for you.
-- This enables us to import a database or any other stuff that should never reach the client directly inside you Svelte Routes.
+- SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint under routes/$\_\_svemix\_\_ for you.
+- This enables us to import a database or any other stuff that should never reach the client directly inside your Svelte Routes.
 
 <br>
 
@@ -68,7 +68,7 @@ The loader only runs on the server. That means our hard-coded products array doe
 The loader receives the following input:
 
 ```ts
- interface SvemixLoaderInput<Locals = Record<string, any> {
+ interface SvemixLoaderInput {
 	method: string;
 	host: string;
 	path: string;
