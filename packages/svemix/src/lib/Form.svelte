@@ -116,6 +116,7 @@
 		formState.update((state) => ({
 			...state,
 			loading: false,
+			formError: json?.formError,
 			errors: json?.errors || {},
 			redirect: json?.redirect || '',
 			data: json?.data || {}
