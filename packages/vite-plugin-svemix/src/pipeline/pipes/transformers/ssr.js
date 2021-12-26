@@ -25,7 +25,7 @@ export default function SSRTransformer(args) {
      export async function load(input) {
       const { page } = input;
 
-      const queryString = page.query.toString();
+      const queryString = input.page.query.toString();
   
       let routesName = \`${doc.route.name}\`;
   

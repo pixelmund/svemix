@@ -131,7 +131,7 @@ test("Replaces all server-side code and writes a loader with corresponding load 
   export async function load(input) {
      const { page } = input;
 
-     const queryString = ''
+     const queryString = input.page.query.toString();
  
      let routesName = \`/$__svemix__\`;
  
@@ -203,7 +203,7 @@ test("Can have normal and server module scripts", async () => {
   export async function load(input) {
      const { page } = input;
 
-     const queryString = ''
+     const queryString = input.page.query.toString();
  
      let routesName = \`/$__svemix__\`;
  
