@@ -118,7 +118,8 @@
 										class="block border-l pl-4 -ml-px {$page.path === doc.href
 											? 'text-sky-300'
 											: 'text-gray-200'} border-current font-semibold"
-										href={doc.href}>{doc.title}</a
+										href={doc.href}
+										on:click={() => (sidebarOpen = false)}>{doc.title}</a
 									>
 								</li>
 							{/each}
