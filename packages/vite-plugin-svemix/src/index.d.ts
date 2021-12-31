@@ -1,10 +1,10 @@
 export type SvemixConfig = {
   prerenderAll?: boolean;
-  seoDefaults?: {
+  seo?: {
     title?: string;
     description?: string;
     keywords?: string;
   };
 };
 
-export default function SvemixVitePlugin(config: SvemixConfig): any;
+export default function SvemixVitePlugin(): any;

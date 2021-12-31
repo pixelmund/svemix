@@ -1,11 +1,17 @@
+import load_config from "./load_config.js";
 import Pipeline from "./pipeline/index.js";
 
-/** @param {import('./').SvemixConfig} config */
-export default function SvemixVitePlugin(config) {
+export default function SvemixVitePlugin() {
+  let config = null;
+
   return {
     name: "vite-plugin-svemix",
     enforce: "pre",
     async transform(src, id) {
+      if (!config) {
+        config = await load_config();
+      }
+
       const result = await Pipeline({
         config,
         doc: {

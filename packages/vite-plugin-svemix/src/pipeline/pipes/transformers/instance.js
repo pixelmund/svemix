@@ -1,7 +1,7 @@
 import { tc } from "../../utils.js";
 
 /**
- * @param {import('../../../').SvemixConfig['seoDefaults']} defaults
+ * @param {import('../../../').SvemixConfig['seo']} defaults
  * @returns {string}
  */
 const SvemixMeta = (defaults) => `
@@ -31,7 +31,7 @@ export default function InstanceTransformer(args) {
         ${doc.scripts.instance?.content || ""}
         export let _metadata = {};
     </script>
-    ${SvemixMeta(config.seoDefaults)}
+    ${SvemixMeta(config.seo)}
   `;
 
   return instanceContent;

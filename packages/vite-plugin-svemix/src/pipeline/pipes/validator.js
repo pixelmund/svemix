@@ -2,15 +2,6 @@
 export default async function ValidatorPipe(args) {
   let { config, doc } = args;
 
-  config = {
-    seoDefaults: {
-
-    },
-    prerenderAll: false,
-    ...config,
-    routes: "/routes"
-  };
-
   if(config.prerenderAll){
     doc.prerender = 'all';
   }

@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-svemix",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "The Full-Stack addition to SvelteKit. Write your server code inside svelte files, handle sessions, forms and SEO easily.",
   "repository": {
     "type": "git",
