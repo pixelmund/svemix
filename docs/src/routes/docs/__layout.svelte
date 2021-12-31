@@ -115,7 +115,7 @@
 							{#each docs['getting-started'] as doc}
 								<li>
 									<a
-										class="block border-l pl-4 -ml-px {$page.path === doc.href
+										class="block border-l pl-4 -ml-px {$page.url.pathname === doc.href
 											? 'text-sky-300'
 											: 'text-gray-200'} border-current font-semibold"
 										href={doc.href}

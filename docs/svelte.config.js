@@ -18,12 +18,15 @@ const config = {
 	],
 
 	kit: {
-		adapter: adapter({ }),
-
+		adapter: adapter({}),
+		prerender: {
+			crawl: true,
+			enabled: true,
+		},
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
 		vite: {
-			plugins: [svemix({})]
+			plugins: [svemix({ prerenderAll: true })]
 		}
 	}
 };

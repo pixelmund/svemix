@@ -2,6 +2,9 @@
 title: Writing data
 ---
 
+<script context="module">
+	export const prerender = true;
+</script>
 <script>
 	import PostBottomNavigation from "../../../components/PostBottomNavigation.svelte";
 </script>
