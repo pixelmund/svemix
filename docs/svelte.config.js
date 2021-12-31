@@ -19,11 +19,14 @@ const config = {
 
 	kit: {
 		adapter: adapter({ }),
-
+		prerender: {
+			enabled: true,
+			entries: ['*']
+		},
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
 		vite: {
-			plugins: [svemix({})]
+			plugins: [svemix({ prerenderAll: true })]
 		}
 	}
 };
