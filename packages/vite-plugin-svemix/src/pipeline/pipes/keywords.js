@@ -22,6 +22,13 @@ export default async function KeywordsPipe(args) {
 
   doc.functions = keywords;
 
+  // TODO: this is probably a bit to hacky...
+  if (doc.scripts.ssr.content.includes("prerender = true")) {
+    doc.prerender = true;
+  } else if (doc.scripts.ssr.content.includes("prerender = false")) {
+    doc.prerender = false;
+  }
+
   if (Object.values(doc.functions).every((value) => value === false)) {
     return {
       config,

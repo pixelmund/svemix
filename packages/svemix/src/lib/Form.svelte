@@ -18,7 +18,7 @@
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { page, session } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -35,8 +35,8 @@
 	let magicUrl = '';
 	let thisForm: HTMLFormElement;
 
-	$: if ($page && $page.path) {
-		let actionUrl = action.length > 0 ? action : $page.path;
+	$: if ($page && $page.url.pathname) {
+		let actionUrl = action.length > 0 ? action : $page.url.pathname;
 
 		if (actionUrl.endsWith('/')) {
 			actionUrl = actionUrl.slice(0, -1);

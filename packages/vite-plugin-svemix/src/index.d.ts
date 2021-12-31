@@ -1,6 +1,5 @@
 export type SvemixConfig = {
-  routes?: string;
-  prerender?: boolean;
+  prerenderAll?: boolean;
   seoDefaults?: {
     title?: string;
     description?: string;
