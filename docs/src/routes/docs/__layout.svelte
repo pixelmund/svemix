@@ -24,6 +24,10 @@
 			{
 				title: 'Sessions',
 				href: '/docs/getting-started/session'
+			},
+			{
+				title: 'Configuration',
+				href: '/docs/getting-started/configuration'
 			}
 		]
 	};

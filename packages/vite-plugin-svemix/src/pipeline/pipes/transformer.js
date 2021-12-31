@@ -37,7 +37,7 @@ export default async function TransformerPipe(args) {
 
   doc.content = content;
 
-  // If we have to instance, create one
+  // If we have no instance, create one
   if (!doc.scripts.instance?.content) {
     doc.content = `
      ${doc.content}

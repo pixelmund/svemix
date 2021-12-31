@@ -17,7 +17,7 @@ export default function SSRTransformer(args) {
 
   return `
   <script context="module">
-   ${tc(doc.functions.loader, `import { loadHandler } from "svemix"`)}
+   ${tc(doc.functions.loader || doc.functions.metadata, `import { loadHandler } from "svemix"`)}
 
    ${tc(prerenderEnabled, `export const prerender = true;`)}
    ${tc(!prerenderEnabled, `export const prerender = false;`)}
@@ -25,7 +25,7 @@ export default function SSRTransformer(args) {
    ${doc.scripts.dom?.content || ""}
 
    ${tc(
-     doc.functions.loader,
+     doc.functions.loader || doc.functions.metadata,
      `
      export async function load(input) {
       const { params } = input;
@@ -57,11 +57,11 @@ export const ssrEndpointTemplate = ({ ssrContent, doc }) => {
   ${ssrContent}
 
   ${tc(
-    doc.functions.loader,
+    doc.functions.loader || doc.functions.metadata,
     `
   export const get = getHandler({
     hasMeta: ${doc.functions.metadata},
-    loader: loader,
+    loader: ${doc.functions.loader ? 'loader' : '() => ({})'},
     metadata: ${doc.functions.metadata ? "metadata" : "() => ({})"}
   });
   `

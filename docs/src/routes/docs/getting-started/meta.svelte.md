@@ -74,26 +74,20 @@ Each `.svelte` file inside your `routes` folder can export a `metadata` function
 
 <h2 id="configuration">Configuration</h2>
 
-You can specify your default meta/seo config inside `svelte.config.js`
+You can specify your default meta/seo config inside `svemix.config.js`
 
 ```js
+// svemix.config.js
+
 import svemix from 'vite-plugin-svemix';
 
-/** @type {import('@sveltejs/kit').Config} */
+/** @type {import('vite-plugin-svemix').SvemixConfig} */
 const config = {
-	kit: {
-		vite: {
-			plugins: [
-				svemix({
-					seoDefaults: {
-						title: 'Default Title',
-						description: 'Default Description',
-						keywords: 'default,keywords,seo'
-					}
-				})
-			]
-		}
-	}
+  seo: {
+    title: "",
+    description: "",
+    keywords: "",
+  };
 };
 
 export default config;
