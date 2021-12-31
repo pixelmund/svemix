@@ -88,14 +88,7 @@ export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler
 
 		// This is the default form behaviour, navigate back to form submitter
 		if (!actionResult?.redirect) {
-			return {
-				headers: {
-					...(actionResult?.headers || {}),
-					Location: request.headers?.referer
-				},
-				status: actionResult?.status || 302,
-				body: {}
-			};
+			return jsDisabledFormRedirect(request, actionResult);
 		}
 
 		return {
@@ -106,5 +99,58 @@ export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler
 			status: actionResult?.status || 302,
 			body: {}
 		};
+	};
+}
+
+function jsDisabledFormRedirect(
+	request: ServerRequest<any, any>,
+	actionResult: ActionResult<any, any>
+) {
+	let location = request.headers?.referer;
+
+	const params = new URLSearchParams();
+
+	console.log(actionResult);
+	
+	if (actionResult?.errors) {
+		Object.keys(actionResult.errors).forEach((key) => {
+			const value = actionResult.errors[key];
+			if (value && value.length > 0) {
+				params.append(`errors[]`, `${key}::${value}`);
+			}
+		});
+	}
+
+	if (actionResult?.formError && actionResult.formError.length > 0) {
+		params.append(`formError`, actionResult.formError);
+	}
+
+	if (actionResult?.data) {
+		Object.keys(actionResult.data).forEach((key) => {
+			const value = actionResult.data[key];
+			if (value && value.length > 0) {
+				params.append(`data[]`, `${key}::${value}`);
+			}
+		});
+	}
+
+	if (location.includes('?')) {
+		const [referer] = location.split('?');
+		location = referer;
+	}
+
+	const searchParams = params.toString();
+
+	if (searchParams.length > 0) {
+		location += '?' + searchParams;
+	}
+
+	return {
+		headers: {
+			...(actionResult?.headers || {}),
+			Location: location
+		},
+		status: actionResult?.status || 302,
+		body: {}
 	};
 }
