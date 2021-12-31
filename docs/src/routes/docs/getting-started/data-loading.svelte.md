@@ -2,10 +2,12 @@
 title: Loading data 
 ---
 
+<script context="module">
+	export const prerender = true;
+</script>
 <script>
 	import PostBottomNavigation from "../../../components/PostBottomNavigation.svelte";
 </script>
-
 
 
 <p class="mb-4 leading-6 font-semibold text-sky-300">Data Loading</p>

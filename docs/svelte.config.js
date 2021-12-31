@@ -18,10 +18,10 @@ const config = {
 	],
 
 	kit: {
-		adapter: adapter({ }),
+		adapter: adapter({}),
 		prerender: {
+			crawl: true,
 			enabled: true,
-			entries: ['*']
 		},
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
