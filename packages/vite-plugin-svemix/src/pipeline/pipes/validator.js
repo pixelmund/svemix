@@ -6,10 +6,14 @@ export default async function ValidatorPipe(args) {
     seoDefaults: {
 
     },
+    prerenderAll: false,
     ...config,
-    prerender: false,
     routes: "/routes"
   };
+
+  if(config.prerenderAll){
+    doc.prerender = 'all';
+  }
 
   // Only check for files within routes
   if (!doc.filename || !doc.filename.includes(config.routes)) {

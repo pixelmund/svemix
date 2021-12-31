@@ -13,9 +13,14 @@ export default function SSRTransformer(args) {
     .then(() => {})
     .catch(console.log);
 
+  const prerenderEnabled = doc.prerender === "all" || doc.prerender === true;
+
   return `
   <script context="module">
    ${tc(doc.functions.loader, `import { loadHandler } from "svemix"`)}
+
+   ${tc(prerenderEnabled, `export const prerender = true;`)}
+   ${tc(!prerenderEnabled, `export const prerender = false;`)}
 
    ${doc.scripts.dom?.content || ""}
 
@@ -23,16 +28,18 @@ export default function SSRTransformer(args) {
      doc.functions.loader,
      `
      export async function load(input) {
-      const { page } = input;
+      const { params } = input;
 
-      const queryString = input.page.query.toString();
-  
+      ${tc(!prerenderEnabled, `const queryString = input.url?.search || '';`)}
+
       let routesName = \`${doc.route.name}\`;
   
-      if(queryString.length > 0){
+      ${tc(!prerenderEnabled, `
+        if(queryString.length > 0){
           routesName = routesName + '?' + queryString;
-      }
-  
+        }
+      `)}
+      
       const handleLoad = loadHandler({ routesName });
 
       return handleLoad(input)

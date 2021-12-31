@@ -5,7 +5,7 @@ interface SvemixLoadHandler {
 }
 
 export default function loadHandler({ routesName }: SvemixLoadHandler): Load {
-	return async ({ session, page, stuff, fetch }) => {
+	return async ({ session, url, stuff, fetch, params }) => {
 		// We have to do this because SvelteKit subscribes load to session changes if done so.
 		const _accessSession = session?.something;
 

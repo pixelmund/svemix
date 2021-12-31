@@ -6,6 +6,7 @@ export type PipeParsedScript = {
 export type PipeDocument = {
   filename: string;
   content: string;
+  prerender: 'all' | boolean;
   functions: {
     loader: boolean;
     metadata: boolean;

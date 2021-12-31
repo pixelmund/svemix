@@ -128,10 +128,12 @@ test("Replaces all server-side code and writes a loader with corresponding load 
   <script context="module">
   import { loadHandler } from "svemix"
 
-  export async function load(input) {
-     const { page } = input;
+  export const prerender = false;
 
-     const queryString = input.page.query.toString();
+  export async function load(input) {
+     const { params } = input;
+
+     const queryString = input.url?.search || '';
  
      let routesName = \`/$__svemix__\`;
  
@@ -198,12 +200,14 @@ test("Can have normal and server module scripts", async () => {
   <script context="module">
   import { loadHandler } from "svemix"
 
+  export const prerender = false;
+
   let client = true;
 
   export async function load(input) {
-     const { page } = input;
+     const { params } = input;
 
-     const queryString = input.page.query.toString();
+     const queryString = input.url?.search || '';
  
      let routesName = \`/$__svemix__\`;
  
@@ -288,6 +292,72 @@ test("Generates corresponding endpoint file for ssr modules", async () => {
     loader: loader,
     metadata: () => ({})
   });
+  `
+  );
+});
+
+test("Pre-rendering enabled ignores search query", async () => {
+  const MOCK_DOC = {
+    filename: path
+      .resolve("", "src", "routes", "index.svelte")
+      .replace(/\\/g, "/"),
+    content: `
+           <script context="module" lang="ts" ssr>
+              import database from "$lib/db";
+
+              export const prerender = true;
+
+              export const loader = () => {
+                  return {
+                      props: {
+                          name: 'Mike'
+                      }
+                  }
+              }
+           </script>
+          `,
+  };
+
+  const result = await Pipeline({
+    config: {},
+    doc: {
+      filename: MOCK_DOC.filename,
+      content: MOCK_DOC.content,
+      scripts: { arr: [] },
+      functions: { action: false, loader: false, metadata: false },
+      route: {},
+    },
+  });
+
+  // fs.writeFileSync(path.resolve(".", "mock.svelte"), result.code, "utf8");
+
+  assertStrings(
+    result.code,
+    `
+  <script context="module">
+  import { loadHandler } from "svemix"
+
+  export const prerender = true;
+
+  export async function load(input) {
+     const { params } = input;
+
+     let routesName = \`/$__svemix__\`;
+ 
+     const handleLoad = loadHandler({ routesName });
+
+     return handleLoad(input)
+   }
+    
+  </script>
+ 
+   <script >
+       import { Meta } from "svemix"; 
+       
+       export let _metadata = {};
+   </script>
+   
+   <Meta _defaults={{}} {_metadata} />
   `
   );
 });

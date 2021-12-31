@@ -39,7 +39,7 @@ export default async function RoutesPipe(args) {
     if (param && param.length > 0) {
       routesName = routesName.replace(
         param[0],
-        '${page.params["' + param[1] + '"]}'
+        '${params["' + param[1] + '"]}'
       );
     }
   });

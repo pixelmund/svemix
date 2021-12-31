@@ -12,6 +12,7 @@ export default function SvemixVitePlugin(config) {
           filename: id,
           content: src,
           scripts: { arr: [] },
+          prerender: false,
           functions: { action: false, loader: false, metadata: false },
           route: {},
         },
