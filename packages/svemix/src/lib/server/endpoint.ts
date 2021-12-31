@@ -110,8 +110,6 @@ function jsDisabledFormRedirect(
 
 	const params = new URLSearchParams();
 
-	console.log(actionResult);
-	
 	if (actionResult?.errors) {
 		Object.keys(actionResult.errors).forEach((key) => {
 			const value = actionResult.errors[key];
