@@ -1,12 +1,12 @@
 import { decrypt, encrypt } from './crypto.js';
 import { parse, serialize } from './cookie.js';
-import type { PublicSession, SessionOptions } from './types';
+import type { Session, SessionOptions } from './types';
 import { daysToMaxage, maxAgeToDateOfExpiry } from './utils.js';
 
 export default function CookieSession<SessionType = Record<string, any>>(
 	headers: Record<string, any>,
 	userOptions: SessionOptions
-): PublicSession<SessionType> {
+): Session<SessionType> {
 	if (userOptions.secret == null) {
 		throw new Error('Please provide at least one secret');
 	}

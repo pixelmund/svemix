@@ -28,7 +28,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 
 ```svelte
 <script context="module" lang="ts" ssr>
-	import type { Action } from 'svemix/server';
+	import type { Action } from 'svemix';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
@@ -100,14 +100,12 @@ The action receives the following input:
 
 ```ts
  interface SvemixActionInput<Locals = Record<string, any>> {
+    url: URL;
 	method: string;
-	host: string;
-	path: string;
 	params: Record<string, string>;
-	query: URLSearchParams;
 	headers: Record<string, string>;
-	locals: Locals; // populated by hooks handle
     body: ReadOnlyFormData;
+	locals: Locals; // populated by hooks handle
  }
 ```
 

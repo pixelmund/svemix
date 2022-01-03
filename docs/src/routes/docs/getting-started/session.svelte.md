@@ -132,7 +132,7 @@ The only way to set the session is setting the locals.session.data to an object
 
 <script context="module" lang="ts" ssr>
 	import { authenticateUser } from '$lib/auth';
-	import type { Action } from 'svemix/server';
+	import type { Action } from 'svemix';
 	import type { User } from '@prisma/client';
 
 	interface ActionData {
@@ -188,7 +188,7 @@ After initializing the session, your locals will be filled with a session JS Pro
 ```svelte
 <!--src/routes/auth/__layout.svelte-->
 <script context="module" lang="ts" ssr>
-	import type { Loader } from 'svemix/server';
+	import type { Loader } from 'svemix';
 
 	export const loader: Loader<any, Locals> = function ({ locals }) {
         // Redirect the user to an different page
@@ -215,7 +215,7 @@ After initializing the session, your locals will be filled with a session JS Pro
 ```svelte
 <!--src/routes/index.svelte-->
 <script context="module" lang="ts" ssr>
-	import type { Action } from 'svemix/server';
+	import type { Action } from 'svemix';
 
 	export const action: Action<any, any, Locals> = async function ({ locals, body }) {
 		const _action = body.get('_action');
@@ -245,5 +245,5 @@ After initializing the session, your locals will be filled with a session JS Pro
 
 <PostBottomNavigation
 previous={{ title: 'Meta / Seo', href: '/docs/getting-started/meta' }}
-next={{ title: '', href: ''  }}
+next={{ title: 'Configuration', href: '/docs/getting-started/configuration'  }}
 />

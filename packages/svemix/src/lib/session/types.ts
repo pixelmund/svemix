@@ -9,7 +9,7 @@ export interface SessionOptions {
 	cookie?: Omit<CookieSerializeOptions, 'expires' | 'maxAge' | 'encode'>;
 }
 
-export interface PublicSession<SessionType = Record<string, any>> {
+export interface Session<SessionType = Record<string, any>> {
 	shouldSendToClient?: boolean;
 	data: SessionType & {
 		expires?: Date;

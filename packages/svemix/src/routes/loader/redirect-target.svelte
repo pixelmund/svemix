@@ -1,0 +1,1 @@
+<h1>REDIRECT WORKED</h1>

@@ -32,7 +32,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 
 ```svelte
 <script context="module" lang="ts" ssr>
-	import type { Action, Loader } from 'svemix/server';
+	import type { Action, Loader } from 'svemix';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
@@ -71,11 +71,9 @@ The loader receives the following input:
 
 ```ts
  interface SvemixLoaderInput {
+	url: URL;
 	method: string;
-	host: string;
-	path: string;
 	params: Record<string, string>;
-	query: URLSearchParams;
 	headers: Record<string, string>;
 	locals: Locals; // populated by hooks handle 
  }

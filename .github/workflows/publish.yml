@@ -15,16 +15,11 @@ jobs:
           registry-url: "https://registry.npmjs.org"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  
-      - name: Svemix Preprocess    
-        working-directory: packages/vite-plugin-svemix
-        run: npm install && npm run test && npm publish
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Svemix Package
+      - name: Svemix Build
         working-directory: packages/svemix
-        run: npm install && npm run package
-      - name: Svemix Package Publish 
-        working-directory: packages/svemix/package
+        run: npm install && npm run build
+      - name: Svemix Publish 
+        working-directory: packages/svemix/build
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}    

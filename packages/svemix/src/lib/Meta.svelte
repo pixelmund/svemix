@@ -1,110 +1,108 @@
 <script lang="ts">
-	import type { MetaResult } from './server';
-	export let _metadata: MetaResult;
-	export let _defaults: MetaResult;
+	import type { MetaResult } from './meta';
+	export let _metadata: MetaResult = {};
+	export let _defaults: MetaResult = {};
+
+	$: metadata = {
+		..._defaults,
+		..._metadata
+	};
 </script>
 
 <svelte:head>
-	<title>
-		{_metadata?.title || _defaults?.title || ''}
-	</title>
-	<meta name="description" content="{_metadata?.description || _defaults?.description || ''}" />
-
-	{#if _metadata?.canonical}
-		<link rel="canonical" href={_metadata?.canonical} />
-	{/if}
-	{#if _metadata?.keywords || _defaults?.keywords}
-		<meta name="keywords" content={_metadata?.keywords || _defaults?.keywords || ''} />
-	{/if}
-
-	{#if _metadata?.openGraph}
-		{#if _metadata?.openGraph.title}
-			<meta property="og:title" content={_metadata?.openGraph.title} />
+	{#if metadata}
+		{#if metadata?.title}
+			<title>
+				{metadata.title}
+			</title>
 		{/if}
-
-		{#if _metadata?.openGraph.description}
-			<meta property="og:description" content={_metadata?.openGraph.description} />
+		{#if metadata?.description}
+			<meta name="description" content={metadata.description} />
 		{/if}
-
-		{#if _metadata?.openGraph.url || _metadata?.canonical}
-			<meta property="og:url" content={_metadata?.openGraph.url || _metadata?.canonical} />
+		{#if metadata?.canonical}
+			<link rel="canonical" href={metadata.canonical} />
 		{/if}
-
-		{#if _metadata?.openGraph.type}
-			<meta property="og:type" content={_metadata?.openGraph.type.toLowerCase()} />
+		{#if metadata?.keywords}
+			<meta name="keywords" content={metadata.keywords} />
 		{/if}
-
-		{#if _metadata?.openGraph.article}
-			{#if _metadata?.openGraph.article.publishedTime}
-				<meta
-					property="article:published_time"
-					content={_metadata?.openGraph.article.publishedTime}
-				/>
+		{#if metadata?.openGraph}
+			{#if metadata.openGraph?.title}
+				<meta property="og:title" content={metadata.openGraph.title} />
 			{/if}
-
-			{#if _metadata?.openGraph.article.modifiedTime}
-				<meta
-					property="article:modified_time"
-					content={_metadata?.openGraph.article.modifiedTime}
-				/>
+			{#if metadata.openGraph?.description}
+				<meta property="og:description" content={metadata.openGraph.description} />
 			{/if}
-
-			{#if _metadata?.openGraph.article.expirationTime}
-				<meta
-					property="article:expiration_time"
-					content={_metadata?.openGraph.article.expirationTime}
-				/>
+			{#if metadata.openGraph?.url || metadata.canonical}
+				<meta property="og:url" content={metadata.openGraph?.url || metadata?.canonical} />
 			{/if}
-
-			{#if _metadata?.openGraph.article.section}
-				<meta property="article:section" content={_metadata?.openGraph.article.section} />
+			{#if metadata.openGraph?.type}
+				<meta property="og:type" content={metadata.openGraph.type.toLowerCase()} />
 			{/if}
-
-			{#if _metadata?.openGraph.article.authors && _metadata?.openGraph.article.authors.length}
-				{#each _metadata?.openGraph.article.authors as author}
-					<meta property="article:author" content={author} />
+			{#if metadata.openGraph.article}
+				{#if metadata.openGraph.article?.publishedTime}
+					<meta
+						property="article:published_time"
+						content={metadata.openGraph.article.publishedTime}
+					/>
+				{/if}
+				{#if metadata.openGraph.article?.modifiedTime}
+					<meta
+						property="article:modified_time"
+						content={metadata.openGraph.article.modifiedTime}
+					/>
+				{/if}
+				{#if metadata.openGraph.article?.expirationTime}
+					<meta
+						property="article:expiration_time"
+						content={metadata.openGraph.article.expirationTime}
+					/>
+				{/if}
+				{#if metadata.openGraph.article?.section}
+					<meta property="article:section" content={metadata.openGraph.article.section} />
+				{/if}
+				{#if metadata.openGraph.article?.authors && metadata.openGraph.article.authors.length}
+					{#each metadata.openGraph.article.authors as author}
+						<meta property="article:author" content={author} />
+					{/each}
+				{/if}
+				{#if metadata.openGraph.article?.tags && metadata.openGraph.article.tags.length}
+					{#each metadata.openGraph.article.tags as tag}
+						<meta property="article:tag" content={tag} />
+					{/each}
+				{/if}
+			{/if}
+			{#if metadata.openGraph?.images && metadata.openGraph.images.length}
+				{#each metadata.openGraph.images as image}
+					<meta property="og:image" content={image.url} />
+					{#if image.alt}
+						<meta property="og:image:alt" content={image.alt} />
+					{/if}
+					{#if image.width}
+						<meta property="og:image:width" content={image.width.toString()} />
+					{/if}
+					{#if image.height}
+						<meta property="og:image:height" content={image.height.toString()} />
+					{/if}
 				{/each}
 			{/if}
-
-			{#if _metadata?.openGraph.article.tags && _metadata?.openGraph.article.tags.length}
-				{#each _metadata?.openGraph.article.tags as tag}
-					<meta property="article:tag" content={tag} />
-				{/each}
+		{/if}
+		{#if metadata?.twitter}
+			<meta name="twitter:card" content="summary_large_image" />
+			{#if metadata.twitter?.site}
+				<meta name="twitter:site" content={metadata.twitter.site} />
 			{/if}
-		{/if}
-
-		{#if _metadata?.openGraph.images && _metadata?.openGraph.images.length}
-			{#each _metadata?.openGraph.images as image}
-				<meta property="og:image" content={image.url} />
-				{#if image.alt}
-					<meta property="og:image:alt" content={image.alt} />
-				{/if}
-				{#if image.width}
-					<meta property="og:image:width" content={image.width.toString()} />
-				{/if}
-				{#if image.height}
-					<meta property="og:image:height" content={image.height.toString()} />
-				{/if}
-			{/each}
-		{/if}
-	{/if}
-
-	{#if _metadata?.twitter}
-		<meta name="twitter:card" content="summary_large_image" />
-		{#if _metadata.twitter.site}
-			<meta name="twitter:site" content={_metadata.twitter.site} />
-		{/if}
-		{#if _metadata.twitter.title}
-			<meta name="twitter:title" content={_metadata.twitter.title} />
-		{/if}
-		{#if _metadata.twitter.description}
-			<meta name="twitter:description" content={_metadata.twitter.description} />
-		{/if}
-		{#if _metadata.twitter.image}
-			<meta name="twitter:image" content={_metadata.twitter.image} />
-		{/if}
-		{#if _metadata.twitter.imageAlt}
-			<meta name="twitter:image:alt" content={_metadata.twitter.imageAlt} />
+			{#if metadata.twitter?.title}
+				<meta name="twitter:title" content={metadata.twitter.title} />
+			{/if}
+			{#if metadata.twitter?.description}
+				<meta name="twitter:description" content={metadata.twitter.description} />
+			{/if}
+			{#if metadata.twitter?.image}
+				<meta name="twitter:image" content={metadata.twitter.image} />
+			{/if}
+			{#if metadata.twitter?.imageAlt}
+				<meta name="twitter:image:alt" content={metadata.twitter.imageAlt} />
+			{/if}
 		{/if}
 	{/if}
 </svelte:head>

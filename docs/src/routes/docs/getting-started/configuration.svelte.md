@@ -15,9 +15,7 @@ title: Configuration
 
 <br>
 
-You can provide svemix a `svemix.config.js` file inside your project root. This config file should export default a svemix config object. The configuration will be used by vite-plugin-svelte for seo and other details.
-
-### Please note: the config is pretty much still todo, there are only a few seo defaults right now. We will also make the routes/output folder configurable in the future.
+You can provide svemix an object inside your `svelte.config.js` file, which will be used for seo defaults and other stuff in the future.
 
 <br>
 
@@ -26,17 +24,36 @@ You can provide svemix a `svemix.config.js` file inside your project root. This 
 <br>
 
 ```js
-// svemix.config.js
-import svemix from 'vite-plugin-svemix';
+// svelte.config.js
 
-/** @type {import('vite-plugin-svemix').SvemixConfig} */
+import svemix from 'svemix/plugin';
+
+/** @type {import('svemix').SvemixConfig} */
 const config = {
-  prerenderAll: false, // boolean
-  seo: {
-    title: "",
-    description: "",
-    keywords: "",
-  };
+	//...
+	svemix: {
+		seo: {
+			title: '',
+			description: '',
+			keywords: '',
+			openGraph: {
+				title: '',
+				description: '',
+				// etc.
+			},
+			twitter: {
+				site: '',
+				title: '',
+			}
+			// etc.
+		}
+	},
+	// ...
+	kit: {
+		vite: {
+			plugins: [svemix()]
+		}
+	}
 };
 
 export default config;

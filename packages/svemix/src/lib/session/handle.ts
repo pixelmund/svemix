@@ -1,13 +1,13 @@
 import CookieSession from "./core";
 import type { Handle } from "@sveltejs/kit";
-import type { PublicSession, SessionOptions } from "./types";
+import type { Session, SessionOptions } from "./types";
 
 export function handleSession<
   SessionType = Record<string, any>,
   Locals = Record<string, any>
 >(
   options: SessionOptions,
-  passedHandle: Handle<Locals & { session: PublicSession<SessionType> }> = async ({
+  passedHandle: Handle<Locals & { session: Session<SessionType> }> = async ({
     request,
     resolve,
   }) => resolve(request)
@@ -43,5 +43,5 @@ export function handleSession<
     }
 
     return response;
-  } as Handle<Locals & { session: PublicSession<SessionType> }>;
+  } as Handle<Locals & { session: Session<SessionType> }>;
 }

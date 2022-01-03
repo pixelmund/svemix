@@ -1,4 +1,4 @@
 export { default as cookieSession } from './core.js';
 export { handleSession } from './handle.js';
 
-export type { SessionOptions, PublicSession } from './types';
+export type { SessionOptions, Session } from './types';
