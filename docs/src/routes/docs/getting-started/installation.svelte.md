@@ -10,6 +10,7 @@ title: Getting started with Svemix
 </script>
 
 <svelte:head>
+
 <title> Getting started - SVEMIX </title>
 <meta name="description" content="Getting started with SVEMIX is easy">
 </svelte:head>
