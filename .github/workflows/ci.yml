@@ -8,7 +8,6 @@ on:
 env:
   CI: true
   TEST: true
-  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: "1"
 
 jobs:
   Lint:
@@ -33,7 +32,7 @@ jobs:
       fail-fast: false
       matrix:
         node-version: [14]
-        os: [ubuntu-latest, macOS-latest, windows-latest]
+        os: [ubuntu-latest]
         include:
           - node-version: 16
             os: ubuntu-latest
