@@ -39,7 +39,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npm ci && npx playwright install-deps
+        run: npm ci && npx playwright install 
 
       - name: Run tests
         run: npm run test
