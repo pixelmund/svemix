@@ -2,9 +2,9 @@ import { mdsvex } from 'mdsvex';
 import mdsvexConfig from './mdsvex.config.js';
 import adapter from '@sveltejs/adapter-vercel';
 import preprocess from 'svelte-preprocess';
-import svemix from 'vite-plugin-svemix';
+import svemix from 'svemix/plugin';
 
-/** @type {import('@sveltejs/kit').Config} */
+/** @type {import('svemix').SvemixConfig} */
 const config = {
 	extensions: ['.svelte', ...mdsvexConfig.extensions],
 
@@ -26,8 +26,11 @@ const config = {
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',
 		vite: {
-			plugins: [svemix({ prerenderAll: true })]
+			plugins: [svemix()]
 		}
+	},
+	svemix: {
+		prerenderAll: true
 	}
 };
 

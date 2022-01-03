@@ -1,5 +1,5 @@
 <script context="module" ssr lang="ts">
-	import type { MetaFunction } from 'svemix/server';
+	import type { MetaFunction } from 'svemix';
 	export const prerender = true;
 
 	export const loader = () => ({});
