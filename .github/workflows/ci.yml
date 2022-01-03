@@ -8,47 +8,38 @@ on:
 env:
   CI: true
   TEST: true
+  PLAYWRIGHT_BROWSERS_PATH: 0
 
 jobs:
   Lint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6.23.2
       - uses: actions/setup-node@v2
         with:
-          node-version: "14.x"
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm lint
-      - run: pnpm check
+          node-version: '14'
+      - run: npm install
+      - run: npm run lint
+      - run: npm run check
   Tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "14"
+          node-version: '14'
 
       - name: Cache node modules
         id: playwright-cache
         uses: actions/cache@v2
         with:
-          path: ~/.npm
+          path: node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: Playwright install
-        working-directory: packages/svemix
+      - name: Install dependencies
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install-deps
-
-      - name: Dependencies install
-        working-directory: packages/svemix
-        run: npm install
+        run: npm ci
 
       - name: Run tests
-        working-directory: packages/svemix
         run: npm run test

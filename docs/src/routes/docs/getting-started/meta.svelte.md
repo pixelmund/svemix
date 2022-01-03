@@ -91,12 +91,12 @@ const config = {
 			keywords: '',
 			openGraph: {
 				title: '',
-				description: '',
+				description: ''
 				// etc.
 			},
 			twitter: {
 				site: '',
-				title: '',
+				title: ''
 			}
 			// etc.
 		}

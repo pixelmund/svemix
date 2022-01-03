@@ -1,6 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit/types/endpoint';
 import type { ServerRequest } from '@sveltejs/kit/types/hooks';
-import type { ActionResult, LoaderResult, MetaFunction } from '.';
+import type { ActionResult, LoaderResult } from '.';
+import type { MetaFunction } from '../meta';
 interface SvemixPostHandlerParams {
 	action: (request: ServerRequest) => Promise<ActionResult> | ActionResult;
 }

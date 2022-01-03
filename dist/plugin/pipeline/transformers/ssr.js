@@ -1,6 +1,6 @@
 import { SVEMIX_DIR, tc, writeFile } from '../utils.js';
 const SSRTransformer = function (args) {
-	let { doc, config } = args;
+	let { doc } = args;
 	const ssrContent = ssrEndpointTemplate({
 		ssrContent: doc.scripts.ssr.content,
 		doc

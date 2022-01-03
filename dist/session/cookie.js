@@ -1,9 +1,4 @@
-/*!
- * cookie
- * Copyright(c) 2012-2014 Roman Shtylman
- * Copyright(c) 2015 Douglas Christopher Wilson
- * MIT Licensed
- */
+// @ts-nocheck
 /**
  * Module variables.
  * @private

@@ -2,7 +2,7 @@ name: NPM PUBLISH
 on:
   release:
     types: [created]
-  workflow_dispatch:  
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,15 +11,15 @@ jobs:
       # Setup .npmrc file to publish to npm
       - uses: actions/setup-node@v2
         with:
-          node-version: "16.x"
-          registry-url: "https://registry.npmjs.org"
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}  
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Svemix Build
         working-directory: packages/svemix
         run: npm install && npm run test
-      - name: Svemix Publish 
+      - name: Svemix Publish
         working-directory: packages/svemix/dist
         run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}    
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

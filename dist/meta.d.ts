@@ -35,4 +35,6 @@ export interface MetaResult {
 	openGraph?: OpenGraph;
 	twitter?: Twitter;
 }
-export declare type MetaFunction<Props extends Record<any, any>> = (props: Props) => MetaResult;
+export declare type MetaFunction<Props extends Record<any, any>> = (
+	props: Props
+) => MetaResult | Promise<MetaResult>;
