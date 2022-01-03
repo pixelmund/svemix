@@ -55,10 +55,13 @@ jobs:
         uses: actions/cache@main
         with:
           path: ${{ steps.paths.outputs.browser_cache_path }}
-          key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+          key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}    
       - run: pnpm install --frozen-lockfile
         env:
           PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: ${{ steps.browser_cache.outputs.cache-hit == 'true' }}
+      - name: Install Playwright
+        if: ${{ steps.browser_cache.outputs.cache-hit == 'false' }}
+        run: pnpx playwright install --with-deps chromium
       - run: pnpm build --filter ./packages
       - run: pnpm test
 
