@@ -35,7 +35,6 @@ jobs:
       - name: Cache node modules
         id: playwright-cache
         uses: actions/cache@v2
-        working-directory: packages/svemix
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
