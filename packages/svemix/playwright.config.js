@@ -8,7 +8,7 @@ export const config = {
 		port: 3001,
 		timeout: 10000
 	},
-	workers: 5,
+	workers: 6,
 	projects: [
 		{
 			name: `dev+js`,

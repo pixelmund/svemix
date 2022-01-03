@@ -1,7 +1,7 @@
 import preprocess from 'svelte-preprocess';
-import svemix from './build/plugin/index.js';
+// import svemix from './dist/plugin/index.js';
 
-/** @type {import('./build').SvemixConfig} */
+/** @type {import('./dist').SvemixConfig} */
 const config = {
 	preprocess: [preprocess()],
 	svemix: {
@@ -16,7 +16,7 @@ const config = {
 	},
 	kit: {
 		package: {
-			dir: 'build',
+			dir: 'dist',
 			exports: (filepath) => {
 				const splitted_path = filepath.split('/');
 				if (filepath.endsWith('.d.ts')) return false;
@@ -27,7 +27,7 @@ const config = {
 		},
 		target: '#svelte',
 		vite: {
-			plugins: [svemix()]
+			// plugins: [svemix()]
 		}
 	}
 };

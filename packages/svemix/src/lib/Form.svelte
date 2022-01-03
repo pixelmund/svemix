@@ -1,9 +1,6 @@
-<script lang="ts">
+<script context="module" lang="ts">
 	import { writable } from 'svelte/store';
 	import type { Writable } from 'svelte/store';
-	import { createEventDispatcher } from 'svelte';
-	import { page, session } from '$app/stores';
-	import { goto } from '$app/navigation';
 
 	const formState: Writable<{
 		loading: boolean;
@@ -18,6 +15,12 @@
 		redirect: '',
 		formError: ''
 	});
+</script>
+
+<script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+	import { page, session } from '$app/stores';
+	import { goto } from '$app/navigation';
 
 	const dispatchEvent = createEventDispatcher();
 

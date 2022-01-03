@@ -4,12 +4,8 @@
   
 	import type { Action } from '$lib';
 
-	export const action: Action = async ({ body }) => {
+	export const action: Action<any, Locals> = async ({ body, locals }) => {
 		const _action = body.get('_action');
-
-		console.log(_action);
-
-		const wait = (timeout: number) => new Promise((res) => setTimeout(res, timeout));
 
 		switch (_action) {
 			case '1':
@@ -20,15 +16,37 @@
 				};
 			case '2':
 				const val2 = body.get('val');
-				await wait(3000);
 
 				return {
 					data: {
-						val2
+						val: val2
+					},
+					errors: {
+						val: 'ERROR'
 					}
 				};
+			case '3':
+				const name = body.get('name');
+				const year_of_birth = body.get('year_of_birth');
+
+				return {
+					data: {
+						name,
+						year_of_birth
+					}
+				};
+			case '4':
+				await new Promise((resolve) => setTimeout(resolve, 2500));
+
+				return {};
+
+			case '5':
+				locals.session.data = { isLoggedIn: true };
+
+				return {};
+
 			default:
-				break;
+				return {};
 		}
 	};
 

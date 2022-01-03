@@ -19,7 +19,7 @@ jobs:
         working-directory: packages/svemix
         run: npm install && npm run build
       - name: Svemix Publish 
-        working-directory: packages/svemix/build
+        working-directory: packages/svemix/dist
         run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}    
