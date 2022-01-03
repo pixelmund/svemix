@@ -1,7 +1,7 @@
 /** @type {import('@playwright/test').PlaywrightTestConfig} */
 
 export const config = {
-    testDir: 'tests',
+	testDir: 'tests',
 	timeout: 15000, // needs to be high because the AMP validator takes a stupid about of time to initialise
 	webServer: {
 		command: 'npm run dev',
@@ -22,7 +22,7 @@ export const config = {
 				javaScriptEnabled: false
 			}
 		}
-	],
+	]
 	// use: {
 	// 	screenshot: 'only-on-failure'
 	// }

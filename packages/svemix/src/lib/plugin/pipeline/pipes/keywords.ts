@@ -1,48 +1,48 @@
-import type { Pipe } from "../types";
+import type { Pipe } from '../types';
 
-const KeywordsPipe : Pipe = async function (args) {
-  let { config, doc } = args;
+const KeywordsPipe: Pipe = async function (args) {
+	let { config, doc } = args;
 
-  const keywords = doc.functions;
+	const keywords = doc.functions;
 
-  const createKeywords = (keyword) => [
-    `export const ${keyword}`,
-    `export let ${keyword}`,
-    `export function ${keyword}`,
-    `export async function ${keyword}`,
-  ];
+	const createKeywords = (keyword) => [
+		`export const ${keyword}`,
+		`export let ${keyword}`,
+		`export function ${keyword}`,
+		`export async function ${keyword}`
+	];
 
-  Object.keys(keywords).forEach((keyword) => {
-    const keywordArr = createKeywords(keyword);
-    keywordArr.forEach((k) => {
-      if (doc.scripts.ssr.content.includes(k)) {
-        keywords[keyword] = true;
-      }
-    });
-  });
+	Object.keys(keywords).forEach((keyword) => {
+		const keywordArr = createKeywords(keyword);
+		keywordArr.forEach((k) => {
+			if (doc.scripts.ssr.content.includes(k)) {
+				keywords[keyword] = true;
+			}
+		});
+	});
 
-  doc.functions = keywords;
+	doc.functions = keywords;
 
-  // TODO: this is probably a bit to hacky...
-  if (doc.scripts.ssr.content.includes("prerender = true")) {
-    doc.prerender = true;
-  } else if (doc.scripts.ssr.content.includes("prerender = false")) {
-    doc.prerender = false;
-  }
+	// TODO: this is probably a bit to hacky...
+	if (doc.scripts.ssr.content.includes('prerender = true')) {
+		doc.prerender = true;
+	} else if (doc.scripts.ssr.content.includes('prerender = false')) {
+		doc.prerender = false;
+	}
 
-  if (Object.values(doc.functions).every((value) => value === false)) {
-    return {
-      config,
-      continue: false,
-      doc,
-    };
-  }
+	if (Object.values(doc.functions).every((value) => value === false)) {
+		return {
+			config,
+			continue: false,
+			doc
+		};
+	}
 
-  return {
-    config,
-    continue: true,
-    doc,
-  };
-}
+	return {
+		config,
+		continue: true,
+		doc
+	};
+};
 
 export default KeywordsPipe;

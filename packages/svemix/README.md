@@ -9,13 +9,10 @@ Loader functions and actions similar to remix, which also run only on the server
 
 This repository contains the Svemix source code. This repo and project is a work in progress, so we appreciate your patience.
 
-
 ## Documentation
 
 For documentation about Svemix (which is missing a lot of things), please visit [our website](https://svemix.com).
 
-
 ## Contributing
 
 If you're interested in contributing code and/or documentation, feel free to open an Pull Request. A Contributing Guide will follow in the Future.
-

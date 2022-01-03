@@ -1,9 +1,10 @@
-<script >export let _metadata = {};
-export let _defaults = {};
-$: metadata = {
-    ..._defaults,
-    ..._metadata
-};
+<script>
+	export let _metadata = {};
+	export let _defaults = {};
+	$: metadata = {
+		..._defaults,
+		..._metadata
+	};
 </script>
 
 <svelte:head>

@@ -19,8 +19,8 @@ export const del: RequestHandler<Locals, any, any> = ({ locals }) => {
 	return {
 		status: 200,
 		body: {
-            deleted: locals.session.shouldSendToClient,
-			session: Object.keys(locals.session.data).length > 0 ? locals.session.data : null,
+			deleted: locals.session.shouldSendToClient,
+			session: Object.keys(locals.session.data).length > 0 ? locals.session.data : null
 		}
 	};
 };

@@ -19,7 +19,7 @@ function stringify(obj_from_json: any) {
 	return `{${props}}`;
 }
 
-const InstanceTransformer : Transformer = function (args) {
+const InstanceTransformer: Transformer = function (args) {
 	let { doc, config } = args;
 
 	const instanceContent = `
@@ -32,6 +32,6 @@ const InstanceTransformer : Transformer = function (args) {
   `;
 
 	return instanceContent;
-}
+};
 
-export default InstanceTransformer
+export default InstanceTransformer;

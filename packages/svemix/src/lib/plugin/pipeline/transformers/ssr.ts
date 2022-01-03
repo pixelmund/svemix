@@ -15,10 +15,13 @@ const SSRTransformer: Transformer = function (args) {
 		.catch(console.log);
 
 	const prerenderEnabled = doc.prerender === 'all' || doc.prerender === true;
- 
+
 	return `
   <script context="module">
-   ${tc(doc.functions.loader || doc.functions.metadata, `import { loadHandler } from "${SVEMIX_DIR()}"`)}
+   ${tc(
+			doc.functions.loader || doc.functions.metadata,
+			`import { loadHandler } from "${SVEMIX_DIR()}"`
+		)}
 
    ${tc(prerenderEnabled, `export const prerender = true;`)}
    ${tc(!prerenderEnabled, `export const prerender = false;`)}

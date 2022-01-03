@@ -6,7 +6,7 @@ const access = util.promisify(fs.access);
 const mkdir = util.promisify(fs.mkdir);
 const writeToFile = util.promisify(fs.writeFile);
 
-export const SVEMIX_DIR = () => process.env.TEST == 'true' ? '$lib' : 'svemix';
+export const SVEMIX_DIR = () => (process.env.TEST == 'true' ? '$lib' : 'svemix');
 
 export const tc = (condition: boolean, str: string) => (condition ? str : '');
 

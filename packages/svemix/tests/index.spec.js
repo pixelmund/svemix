@@ -168,7 +168,7 @@ test.describe('Session', () => {
 
 		expect(afterExpires).toBeGreaterThanOrEqual(initialExpires - 2000);
 		expect(afterExpires).toBeLessThan(initialExpires + 2000);
-		
+
 		const oldMaxAge = initial_set_cookie.split(';')[1].trim().replace('Max-Age=', '');
 		const newMaxAge = after_set_cookie.split(';')[1].trim().replace('Max-Age=', '');
 

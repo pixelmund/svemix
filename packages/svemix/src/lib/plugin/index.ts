@@ -11,7 +11,6 @@ export default function SvemixVitePlugin(): Plugin {
 		name: 'vite-plugin-svemix',
 		enforce: 'pre',
 		async transform(src, id) {
-
 			if (!config) {
 				config = await load_config();
 			}
