@@ -43,7 +43,11 @@ jobs:
       - name: Playwright install
         working-directory: packages/svemix
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npx playwright install-deps && npm install
+        run: npx playwright install-deps
+
+      - name: Dependencies install
+        working-directory: packages/svemix
+        run: npm install
 
       - name: Run tests
         working-directory: packages/svemix
