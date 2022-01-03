@@ -1,11 +1,22 @@
 {
-  "name": "set-env-action",
-  "version": "1.0.0",
-  "description": "Action to set environment",
-  "main": "action/main.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/svemix/svemix.git"
-  },
-  "license": "MIT"
+	"name": "set-env-action",
+	"version": "1.0.0",
+	"description": "Action to set environment",
+	"main": "action/main.js",
+	"scripts": {
+		"build": "rollup -c"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/svemix/svemix.git"
+	},
+	"license": "MIT",
+	"devDependencies": {
+		"@actions/core": "^1.6.0",
+		"@rollup/plugin-node-resolve": "^13.1.2",
+		"@rollup/plugin-commonjs": "^21.0.1",
+		"rollup": "^2.62.0"
+	},
+	"dependencies": {
+	}
 }
