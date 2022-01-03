@@ -27,14 +27,15 @@ jobs:
       - run: pnpm check
   Tests:
     runs-on: ubuntu-latest
-    working-directory: packages/svemix
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
           node-version: '14'
       - name: Install operating system dependencies
+        working-directory: packages/svemix
         run: npx playwright install-deps && npm install
       - name: Run your tests
+        working-directory: packages/svemix
         run: npm run test
 
