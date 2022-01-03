@@ -21,7 +21,7 @@ const config = {
 		adapter: adapter({}),
 		prerender: {
 			crawl: true,
-			enabled: true,
+			enabled: true
 		},
 		// hydrate the <div id="svelte"> element in src/app.html
 		target: '#svelte',

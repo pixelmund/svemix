@@ -62,7 +62,7 @@ export const handle = handleSession<Locals['session'], Locals>(
 <br>
 <br>
 
-## Secret rotation is supported. 
+## Secret rotation is supported.
 
 <br>
 
@@ -114,8 +114,7 @@ Notes:
 
 <br>
 
-If you're updating or destroying the session inside one of your `actions`, the `Form` Component automatically updates the client store as well. This is really helpful because typically the session would only be set on a full page reload / server side rendering. 
-
+If you're updating or destroying the session inside one of your `actions`, the `Form` Component automatically updates the client store as well. This is really helpful because typically the session would only be set on a full page reload / server side rendering.
 
 <br><br>
 
@@ -129,10 +128,9 @@ The only way to set the session is setting the locals.session.data to an object
 
 ```svelte
 <!--src/routes/auth/login.svelte-->
-
 <script context="module" lang="ts" ssr>
 	import { authenticateUser } from '$lib/auth';
-	import type { Action } from 'svemix/server';
+	import type { Action } from 'svemix';
 	import type { User } from '@prisma/client';
 
 	interface ActionData {
@@ -161,7 +159,7 @@ The only way to set the session is setting the locals.session.data to an object
 
 			return {
 				status: 302,
-                redirect: '/'
+				redirect: '/'
 			};
 		} catch (error) {
 			return {
@@ -174,7 +172,6 @@ The only way to set the session is setting the locals.session.data to an object
 		}
 	};
 </script>
-
 ```
 
 <br><br>
@@ -188,12 +185,12 @@ After initializing the session, your locals will be filled with a session JS Pro
 ```svelte
 <!--src/routes/auth/__layout.svelte-->
 <script context="module" lang="ts" ssr>
-	import type { Loader } from 'svemix/server';
+	import type { Loader } from 'svemix';
 
 	export const loader: Loader<any, Locals> = function ({ locals }) {
-        // Redirect the user to an different page
-        // The loader runs everytime the session stores updates with one of your actions
-        // This results in no need to full page reloads.
+		// Redirect the user to an different page
+		// The loader runs everytime the session stores updates with one of your actions
+		// This results in no need to full page reloads.
 		if (locals.session.data?.isLoggedIn) {
 			return {
 				status: 302,
@@ -215,7 +212,7 @@ After initializing the session, your locals will be filled with a session JS Pro
 ```svelte
 <!--src/routes/index.svelte-->
 <script context="module" lang="ts" ssr>
-	import type { Action } from 'svemix/server';
+	import type { Action } from 'svemix';
 
 	export const action: Action<any, any, Locals> = async function ({ locals, body }) {
 		const _action = body.get('_action');
@@ -227,23 +224,23 @@ After initializing the session, your locals will be filled with a session JS Pro
 		return {};
 	};
 </script>
+
 <script lang="ts">
 	import { session } from '$app/stores';
 	import { Form } from 'svemix';
 </script>
+
 {#if $session.isLoggedIn}
-<Form>
-    <input type="hidden" name="_action" value="logout" />
-    <button type="submit">Logout</button>
-</Form>
+	<Form>
+		<input type="hidden" name="_action" value="logout" />
+		<button type="submit">Logout</button>
+	</Form>
 {:else}
-<a href="/auth/login">
-	Sign in
-</a>
+	<a href="/auth/login"> Sign in </a>
 {/if}
 ```
 
 <PostBottomNavigation
 previous={{ title: 'Meta / Seo', href: '/docs/getting-started/meta' }}
-next={{ title: '', href: ''  }}
+next={{ title: 'Configuration', href: '/docs/getting-started/configuration'  }}
 />

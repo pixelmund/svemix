@@ -1,5 +1,5 @@
 ---
-title: Loading data 
+title: Loading data
 ---
 
 <script context="module">
@@ -9,7 +9,6 @@ title: Loading data
 	import PostBottomNavigation from "../../../components/PostBottomNavigation.svelte";
 </script>
 
-
 <p class="mb-4 leading-6 font-semibold text-sky-300">Data Loading</p>
 
 # {title}
@@ -18,7 +17,7 @@ title: Loading data
 
 One of the primary features of SVEMIX is simplifying interactions with the server to get data into your Svelte Routes/Components:
 
-- Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server, this is the equivalent to `getServerSideProps` in Next. 
+- Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server, this is the equivalent to `getServerSideProps` in Next.
 - SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint under routes/$\_\_svemix\_\_ for you.
 - This enables us to import a database or any other stuff that should never reach the client directly inside your Svelte Routes.
 
@@ -32,7 +31,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 
 ```svelte
 <script context="module" lang="ts" ssr>
-	import type { Action, Loader } from 'svemix/server';
+	import type { Action, Loader } from 'svemix';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
@@ -48,12 +47,13 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 		};
 	};
 </script>
+
 <script lang="ts">
 	export let posts: Props['posts'] = [];
 </script>
 
 <div>
- { JSON.stringify(posts) }
+	{JSON.stringify(posts)}
 </div>
 ```
 
@@ -70,15 +70,13 @@ The loader only runs on the server. That means our hard-coded products array doe
 The loader receives the following input:
 
 ```ts
- interface SvemixLoaderInput {
+interface SvemixLoaderInput {
+	url: URL;
 	method: string;
-	host: string;
-	path: string;
 	params: Record<string, string>;
-	query: URLSearchParams;
 	headers: Record<string, string>;
-	locals: Locals; // populated by hooks handle 
- }
+	locals: Locals; // populated by hooks handle
+}
 ```
 
 <br>
@@ -90,16 +88,15 @@ The loader receives the following input:
 The loader can return the following output:
 
 ```ts
- interface SvemixLoaderOutput {
-	headers?: Record<string, string | string[]> // Additional Headers
+interface SvemixLoaderOutput {
+	headers?: Record<string, string | string[]>; // Additional Headers
 	status?: number;
 	redirect?: string;
 	error?: string | Error;
 	maxage?: number;
 	props?: Record<string, any>; // Props are getting passed to the component
- }
+}
 ```
-
 
 <PostBottomNavigation
 previous={{ title: 'Installation', href: '/docs/getting-started/installation' }}

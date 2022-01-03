@@ -28,7 +28,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 
 ```svelte
 <script context="module" lang="ts" ssr>
-	import type { Action } from 'svemix/server';
+	import type { Action } from 'svemix';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
@@ -37,54 +37,49 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 		content?: string;
 	}
 
-    interface ActionErrors {
-        title?: string;
-        content?: string;
-    }
+	interface ActionErrors {
+		title?: string;
+		content?: string;
+	}
 
 	export const action: Action<ActionData, ActionErrors, Locals> = async function ({ body }) {
-        const title = body.get('title');
+		const title = body.get('title');
 		const content = body.get('content');
 
-        if(!title || title.length === 0){
-            return {
-                data: {
-                    title,
-                    content
-                },
-                errors: {
-                    title: 'Title must be greater than 1'
-                }
-            }
-        }
+		if (!title || title.length === 0) {
+			return {
+				data: {
+					title,
+					content
+				},
+				errors: {
+					title: 'Title must be greater than 1'
+				}
+			};
+		}
 
-        const newPost = await db.post.create({ data: { title, content } });
+		const newPost = await db.post.create({ data: { title, content } });
 
 		return {
 			status: 302,
-            redirect: `/posts/${newPost.id}`
+			redirect: `/posts/${newPost.id}`
 		};
 	};
 </script>
 
 <script>
-    import { Form } from "svemix";
+	import { Form } from 'svemix';
 </script>
 
-<Form
-    let:data
-    let:errors
-    let:formError
-    let:loading
->
-    <input type="text" name="title" />
-    <textarea name="content"></textarea>
+<Form let:data let:errors let:formError let:loading>
+	<input type="text" name="title" />
+	<textarea name="content" />
 
-    {#if !loading}
-    <button type="submit">Create Post</button>
-    {:else}
-     Loading...
-    {/if}
+	{#if !loading}
+		<button type="submit">Create Post</button>
+	{:else}
+		Loading...
+	{/if}
 </Form>
 ```
 
@@ -99,16 +94,14 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 The action receives the following input:
 
 ```ts
- interface SvemixActionInput<Locals = Record<string, any>> {
+interface SvemixActionInput<Locals = Record<string, any>> {
+	url: URL;
 	method: string;
-	host: string;
-	path: string;
 	params: Record<string, string>;
-	query: URLSearchParams;
 	headers: Record<string, string>;
+	body: ReadOnlyFormData;
 	locals: Locals; // populated by hooks handle
-    body: ReadOnlyFormData;
- }
+}
 ```
 
 <br>
@@ -125,8 +118,8 @@ interface SvemixActionOutput {
 	status?: number;
 	redirect?: string;
 	errors?: Record<string, string>;
-    formError?: string;
-    data?: Record<string, any>;
+	formError?: string;
+	data?: Record<string, any>;
 }
 ```
 

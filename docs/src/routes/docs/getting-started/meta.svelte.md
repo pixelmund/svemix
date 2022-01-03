@@ -15,7 +15,7 @@ title: Handling meta data / SEO
 
 <br>
 
-SVEMIX includes some default meta data / SEO handling, the cool thing is. All you have to do is export an `metadata` function. This `metadata` function receives the returned props of the loader, which means you can dynamically apply titles, descriptions etc. from your loaded data. You can also specify default meta tags inside the vite plugin config.
+SVEMIX includes some default meta data / SEO handling, the cool thing is. All you have to do is export an `metadata` function. This `metadata` function receives the returned props of the loader, which means you can dynamically apply titles, descriptions etc. from your loaded data. You can also specify default meta tags via the svelte config.
 
 <br>
 
@@ -27,7 +27,7 @@ Each `.svelte` file inside your `routes` folder can export a `metadata` function
 
 ```svelte
 <script context="module" lang="ts" ssr>
-	import type { Loader, MetaFunction } from 'svemix/server';
+	import type { Loader, MetaFunction } from 'svemix';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
@@ -74,20 +74,39 @@ Each `.svelte` file inside your `routes` folder can export a `metadata` function
 
 <h2 id="configuration">Configuration</h2>
 
-You can specify your default meta/seo config inside `svemix.config.js`
+You can specify your default meta/seo config inside `svelte.config.js`
 
 ```js
-// svemix.config.js
+// svelte.config.js
 
-import svemix from 'vite-plugin-svemix';
+import svemix from 'svemix/plugin';
 
-/** @type {import('vite-plugin-svemix').SvemixConfig} */
+/** @type {import('svemix').SvemixConfig} */
 const config = {
-  seo: {
-    title: "",
-    description: "",
-    keywords: "",
-  };
+	//...
+	svemix: {
+		seo: {
+			title: '',
+			description: '',
+			keywords: '',
+			openGraph: {
+				title: '',
+				description: ''
+				// etc.
+			},
+			twitter: {
+				site: '',
+				title: ''
+			}
+			// etc.
+		}
+	},
+	// ...
+	kit: {
+		vite: {
+			plugins: [svemix()]
+		}
+	}
 };
 
 export default config;
