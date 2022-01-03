@@ -22,7 +22,6 @@ jobs:
           node-version: "14.x"
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build --filter ./packages
       - run: pnpm lint
       - run: pnpm check
   Tests:
@@ -31,11 +30,25 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: '14'
-      - name: Install operating system dependencies
+          node-version: "14"
+
+      - name: Cache node modules
+        id: playwright-cache
+        uses: actions/cache@v2
         working-directory: packages/svemix
-        run: npx playwright install-deps && npm install
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: npm ci
+        run: npm ci
+
+      - name: Playwright install
+        working-directory: packages/svemix
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install-deps
+
       - name: Run your tests
         working-directory: packages/svemix
         run: npm run test
-
