@@ -40,8 +40,6 @@ jobs:
       - name: Install dependencies
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: npm ci && npx playwright install-deps
-          env:
-            PLAYWRIGHT_BROWSERS_PATH: 0
 
       - name: Run tests
         run: npm run test
