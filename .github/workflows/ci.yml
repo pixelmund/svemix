@@ -26,7 +26,7 @@ jobs:
       - run: pnpm lint
       - run: pnpm check
   Tests:
-    jruns-on: ubuntu-latest
+    runs-on: ubuntu-latest
     working-directory: packages/svemix
     steps:
       - uses: actions/checkout@v2
