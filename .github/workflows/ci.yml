@@ -26,28 +26,14 @@ jobs:
       - run: pnpm lint
       - run: pnpm check
   Tests:
-    runs-on: ${{ matrix.os }}
-    timeout-minutes: 6
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [14]
-        os: [ubuntu-latest]
-        include:
-          - node-version: 16
-            os: ubuntu-latest
+    working-directory: packages/svemix
     steps:
-      - run: git config --global core.autocrlf false
       - uses: actions/checkout@v2
-      - uses: pnpm/action-setup@v2.0.1
-        with:
-          version: 6.23.2
       - uses: actions/setup-node@v2
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: pnpm   
-      - run: pnpm install --frozen-lockfile
-      - run: pnpx playwright install --with-deps
-      - run: pnpm build --filter ./packages
-      - run: pnpm test
+          node-version: '14'
+      - name: Install operating system dependencies
+        run: npx playwright install-deps && npm install
+      - name: Run your tests
+        run: npm test
 
