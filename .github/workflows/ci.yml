@@ -46,21 +46,9 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node-version }}
-          cache: pnpm
-      - name: Get paths for OS
-        uses: ./.github/actions/env
-        id: paths
-      - name: Cache browsers
-        id: browser_cache
-        uses: actions/cache@main
-        with:
-          path: ${{ steps.paths.outputs.browser_cache_path }}
-          key: chromium-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}    
+          cache: pnpm   
       - run: pnpm install --frozen-lockfile
-        env:
-          PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD: ${{ steps.browser_cache.outputs.cache-hit == 'true' }}
       - name: Install Playwright
-        if: ${{ steps.browser_cache.outputs.cache-hit == 'false' }}
         run: pnpx playwright install --with-deps chromium
       - run: pnpm build --filter ./packages
       - run: pnpm test
