@@ -49,7 +49,6 @@
 </script>
 
 <script>
-	import { session } from '$app/stores';
 	import { Form } from '$lib';
 </script>
 

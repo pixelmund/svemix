@@ -52,14 +52,14 @@ const SSRTransformer = function (args) {
 export default SSRTransformer;
 export const ssrEndpointTemplate = ({ ssrContent, doc }) => {
 	let newSSRContent = `
-  import { getHandler, postHandler } from "${SVEMIX_DIR()}/server";
+  import * as svemixHandlers from "${SVEMIX_DIR()}/server";
 
   ${ssrContent}
 
   ${tc(
 		doc.functions.loader || doc.functions.metadata,
 		`
-  export const get = getHandler({
+  export const get = svemixHandlers.getHandler({
     hasMeta: ${doc.functions.metadata},
     loader: ${doc.functions.loader ? 'loader' : '() => ({})'},
     metadata: ${doc.functions.metadata ? 'metadata' : '() => ({})'}
@@ -70,7 +70,7 @@ export const ssrEndpointTemplate = ({ ssrContent, doc }) => {
   ${tc(
 		doc.functions.action,
 		`
-  export const post = postHandler({
+  export const post = svemixHandlers.postHandler({
     action: action,
   });  
   `

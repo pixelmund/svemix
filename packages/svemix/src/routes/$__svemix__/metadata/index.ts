@@ -1,8 +1,8 @@
-import { getHandler, postHandler } from '$lib/server';
+import * as svemixHandlers from '$lib/server';
 
 export const metadata = () => ({ title: 'Custom Title' });
 
-export const get = getHandler({
+export const get = svemixHandlers.getHandler({
 	hasMeta: true,
 	loader: () => ({}),
 	metadata: metadata

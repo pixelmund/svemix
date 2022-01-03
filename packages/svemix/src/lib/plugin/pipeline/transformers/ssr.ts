@@ -3,7 +3,7 @@ import type { Transformer } from './types';
 import type { PipeDocument } from '../types';
 
 const SSRTransformer: Transformer = function (args) {
-	let { doc, config } = args;
+	let { doc } = args;
 
 	const ssrContent = ssrEndpointTemplate({
 		ssrContent: doc.scripts.ssr.content,
@@ -67,14 +67,14 @@ export const ssrEndpointTemplate = ({
 	doc: PipeDocument;
 }) => {
 	let newSSRContent = `
-  import { getHandler, postHandler } from "${SVEMIX_DIR()}/server";
+  import * as svemixHandlers from "${SVEMIX_DIR()}/server";
 
   ${ssrContent}
 
   ${tc(
 		doc.functions.loader || doc.functions.metadata,
 		`
-  export const get = getHandler({
+  export const get = svemixHandlers.getHandler({
     hasMeta: ${doc.functions.metadata},
     loader: ${doc.functions.loader ? 'loader' : '() => ({})'},
     metadata: ${doc.functions.metadata ? 'metadata' : '() => ({})'}
@@ -85,7 +85,7 @@ export const ssrEndpointTemplate = ({
   ${tc(
 		doc.functions.action,
 		`
-  export const post = postHandler({
+  export const post = svemixHandlers.postHandler({
     action: action,
   });  
   `

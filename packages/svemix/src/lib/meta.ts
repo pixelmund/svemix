@@ -40,4 +40,6 @@ export interface MetaResult {
 	twitter?: Twitter;
 }
 
-export type MetaFunction<Props extends Record<any, any>> = (props: Props) => MetaResult;
+export type MetaFunction<Props extends Record<any, any>> = (
+	props: Props
+) => MetaResult | Promise<MetaResult>;

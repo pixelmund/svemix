@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /*!
  * cookie
  * Copyright(c) 2012-2014 Roman Shtylman

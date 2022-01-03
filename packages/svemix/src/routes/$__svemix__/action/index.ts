@@ -1,4 +1,4 @@
-import { getHandler, postHandler } from '$lib/server';
+import * as svemixHandlers from '$lib/server';
 
 import type { Action } from '$lib';
 
@@ -48,6 +48,6 @@ export const action: Action<any, Locals> = async ({ body, locals }) => {
 	}
 };
 
-export const post = postHandler({
+export const post = svemixHandlers.postHandler({
 	action: action
 });

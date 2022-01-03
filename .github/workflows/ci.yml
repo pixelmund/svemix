@@ -49,7 +49,7 @@ jobs:
           cache: pnpm   
       - run: pnpm install --frozen-lockfile
       - name: Install Playwright
-        run: pnpx playwright install --with-deps chromium
+        run: pnpm playwright install --with-deps
       - run: pnpm build --filter ./packages
       - run: pnpm test
 

@@ -5,7 +5,7 @@ const KeywordsPipe: Pipe = async function (args) {
 
 	const keywords = doc.functions;
 
-	const createKeywords = (keyword) => [
+	const createKeywords = (keyword: string) => [
 		`export const ${keyword}`,
 		`export let ${keyword}`,
 		`export function ${keyword}`,

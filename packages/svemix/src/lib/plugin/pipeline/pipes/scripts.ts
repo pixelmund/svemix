@@ -47,19 +47,19 @@ export default ScriptsPipe;
 export function getScripts(content: string): PipeParsedScript[] {
 	const scripts = [];
 
-	let match;
+	let match: any;
 	while ((match = SCRIPTS_REGEX.exec(content))) {
 		const attrs = match[1]
 			.split(' ')
-			.map((str) => str.trim())
+			.map((str: string) => str.trim())
 			.filter(Boolean)
-			.map((str) => {
+			.map((str: string) => {
 				const [name, quoted_value] = str.split('=');
 				const value = quoted_value ? quoted_value.replace(/^['"]/, '').replace(/['"]$/, '') : true;
 
 				return { name, value };
 			})
-			.reduce((attrs, { name, value }) => {
+			.reduce((attrs: any, { name, value }) => {
 				attrs[name] = value;
 				return attrs;
 			}, {});

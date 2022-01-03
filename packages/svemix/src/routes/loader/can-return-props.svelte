@@ -2,10 +2,10 @@
 	export const loader = () => ({ props: { name: 'Svemix', age: 25, country: 'Github' } });
 </script>
 
-<script>
-	export let name;
-	export let age;
-	export let country;
+<script lang="ts">
+	export let name: string;
+	export let age: number;
+	export let country: string;
 </script>
 
 <h1>{name}</h1>

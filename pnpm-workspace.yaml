@@ -5,5 +5,3 @@ packages:
   - "!packages/**/dist"
     # exclude packages that are inside test/ directories
   - "!**/tests/**"
-
-  - '.github/actions/*'
