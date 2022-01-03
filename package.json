@@ -6,7 +6,10 @@
     "url": "https://github.com/svemix/svemix.git"
   },
   "scripts": {
-    "test": "pnpm -r run test"
+    "test": "pnpm -r run test",
+    "check": "pnpm -r check",
+		"lint": "pnpm -r lint",
+    "format": "pnpm -r format"
   },
   "keywords": [
    "svemix",

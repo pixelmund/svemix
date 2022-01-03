@@ -79,14 +79,3 @@
 	{/if}
 	<button type="submit" id="submit-4">Submit</button>
 </Form>
-<Form>
-	<input type="hidden" name="_action" value="5" />
-	<span id="loggedIn">
-		{#if $session?.isLoggedIn == true}
-			LOGGEDIN
-		{:else}
-			LOGGEDOUT
-		{/if}
-	</span>
-	<button type="submit" id="submit-5">Submit</button>
-</Form>

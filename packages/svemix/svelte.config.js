@@ -1,5 +1,5 @@
 import preprocess from 'svelte-preprocess';
-// import svemix from './dist/plugin/index.js';
+import svemix from './dist/plugin/index.js';
 
 /** @type {import('./dist').SvemixConfig} */
 const config = {
@@ -27,7 +27,7 @@ const config = {
 		},
 		target: '#svelte',
 		vite: {
-			// plugins: [svemix()]
+			plugins: [svemix()]
 		}
 	}
 };

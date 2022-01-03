@@ -1,0 +1,11 @@
+{
+  "name": "set-env-action",
+  "version": "1.0.0",
+  "description": "Action to set environment",
+  "main": "action/main.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/svemix/svemix.git"
+  },
+  "license": "MIT"
+}
