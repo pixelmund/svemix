@@ -40,8 +40,8 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
           restore-keys: ${{ runner.os }}-node-
 
-      - name: npm ci
-        run: npm ci
+      - name: Install deps
+        run: npm install
 
       - name: Playwright install
         working-directory: packages/svemix
