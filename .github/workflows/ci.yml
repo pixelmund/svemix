@@ -41,6 +41,7 @@ jobs:
           restore-keys: ${{ runner.os }}-node-
 
       - name: Install deps
+        working-directory: packages/svemix
         run: npm install
 
       - name: Playwright install
