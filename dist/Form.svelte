@@ -86,7 +86,7 @@
 			});
 			return;
 		}
-		formState.set({ loading: true, data: {}, errors: {}, formError: '', redirect: '' });
+		formState.set({ loading: true, data: formObject, errors: {}, formError: '', redirect: '' });
 		const response = await fetch(magicUrl, {
 			method,
 			credentials: 'include',
@@ -144,3 +144,10 @@
 		/>
 	</fieldset>
 </form>
+
+<style>
+	fieldset {
+		margin: 0;
+		padding: 0;
+	}
+</style>
