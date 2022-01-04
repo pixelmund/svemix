@@ -1,18 +1,9 @@
-<script context="module">
-	import { writable } from 'svelte/store';
-	const formState = writable({
-		loading: false,
-		data: {},
-		errors: {},
-		redirect: '',
-		formError: ''
-	});
-</script>
-
 <script>
 	import { createEventDispatcher, setContext } from 'svelte';
 	import { page, session } from '$app/stores';
 	import { goto } from '$app/navigation';
+	import { createForm, getFormData, parseQuery } from './utils/form_helper';
+	const formState = createForm();
 	const dispatchEvent = createEventDispatcher();
 	export let action = '';
 	export let method = 'POST';
@@ -30,64 +21,45 @@
 	$: if (typeof window === 'undefined' && $page.url.search.length > 0) {
 		pageQueryToFormState();
 	}
-	function parseAllQuery(input) {
-		return input.reduce((acc, cur) => {
-			const [key, value] = cur.split('::');
-			acc[key] = value;
-			return acc;
-		}, {});
-	}
 	function pageQueryToFormState() {
 		const errors = $page.url.searchParams.getAll('errors[]') ?? [];
 		const data = $page.url.searchParams.getAll('data[]') ?? [];
 		const formError = $page.url.searchParams.get('formError') ?? '';
 		formState.update((cur) => ({
 			...cur,
-			errors: parseAllQuery(errors),
-			data: parseAllQuery(data),
+			errors: parseQuery(errors),
+			data: parseQuery(data),
 			formError
 		}));
 	}
 	$: __session = $session;
-	function getFormData() {
-		const formData = new FormData(thisForm);
-		let output = {};
-		formData.forEach((value, key) => {
-			// Check if property already exist
-			if (Object.prototype.hasOwnProperty.call(output, key)) {
-				let current = output[key];
-				if (!Array.isArray(current)) {
-					// If it's not an array, convert it to an array.
-					current = output[key] = [current];
-				}
-				current.push(value); // Add the new value to the array.
-			} else {
-				output[key] = value;
-			}
-		});
-		return {
-			formData,
-			formObject: output
-		};
-	}
 	setContext('svemix-form', formState);
 	async function onSubmit() {
 		if (typeof window === 'undefined') {
 			return;
 		}
-		const { formData, formObject } = getFormData();
+		const { formData, formObject } = getFormData(thisForm);
 		const validated = validate(formObject);
 		if (Object.values(validated).some((value) => value.length > 0)) {
-			formState.set({
+			formState.update((state) => ({
+				id: state.id,
 				loading: false,
 				data: formObject,
 				errors: validated,
 				formError: '',
 				redirect: ''
-			});
+			}));
 			return;
 		}
-		formState.set({ loading: true, data: formObject, errors: {}, formError: '', redirect: '' });
+		formState.update((state) => ({
+			id: state.id,
+			loading: true,
+			data: formObject,
+			errors: {},
+			formError: '',
+			redirect: ''
+		}));
+		dispatchEvent('submitting', { ...$formState });
 		const response = await fetch(magicUrl, {
 			method,
 			credentials: 'include',
@@ -114,7 +86,7 @@
 			redirect: json?.redirect || '',
 			data: json?.data || {}
 		}));
-		dispatchEvent('submit', { ...$formState });
+		dispatchEvent('submitted', { ...$formState });
 		if (json?.redirect) {
 			goto(json?.redirect);
 			return;

@@ -1,13 +1,4 @@
 import { SvelteComponentTyped } from 'svelte';
-import type { Writable } from 'svelte/store';
-interface FormState {
-	loading: boolean;
-	data: any;
-	errors: Record<string, string>;
-	formError: string;
-	redirect: string;
-}
-export declare type FormContext = Writable<FormState>;
 declare const __propDef: {
 	props: {
 		[x: string]: any;
@@ -17,7 +8,8 @@ declare const __propDef: {
 		class?: string;
 	};
 	events: {
-		submit: CustomEvent<any>;
+		submitting: CustomEvent<any>;
+		submitted: CustomEvent<any>;
 	} & {
 		[evt: string]: CustomEvent<any>;
 	};
