@@ -1,4 +1,13 @@
 import { SvelteComponentTyped } from 'svelte';
+import type { Writable } from 'svelte/store';
+interface FormState {
+	loading: boolean;
+	data: any;
+	errors: Record<string, string>;
+	formError: string;
+	redirect: string;
+}
+export declare type FormContext = Writable<FormState>;
 declare const __propDef: {
 	props: {
 		[x: string]: any;

@@ -2,13 +2,17 @@
 	import { writable } from 'svelte/store';
 	import type { Writable } from 'svelte/store';
 
-	const formState: Writable<{
+	interface FormState {
 		loading: boolean;
 		data: any;
 		errors: Record<string, string>;
 		formError: string;
 		redirect: string;
-	}> = writable({
+	}
+
+	export type FormContext = Writable<FormState>;
+
+	const formState: Writable<FormState> = writable({
 		loading: false,
 		data: {},
 		errors: {},
@@ -18,7 +22,7 @@
 </script>
 
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, setContext } from 'svelte';
 	import { page, session } from '$app/stores';
 	import { goto } from '$app/navigation';
 
@@ -92,6 +96,8 @@
 			formObject: output
 		};
 	}
+
+	setContext('svemix-form', formState);
 
 	async function onSubmit() {
 		if (typeof window === 'undefined') {

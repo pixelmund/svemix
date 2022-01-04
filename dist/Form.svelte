@@ -10,7 +10,7 @@
 </script>
 
 <script>
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, setContext } from 'svelte';
 	import { page, session } from '$app/stores';
 	import { goto } from '$app/navigation';
 	const dispatchEvent = createEventDispatcher();
@@ -70,6 +70,7 @@
 			formObject: output
 		};
 	}
+	setContext('svemix-form', formState);
 	async function onSubmit() {
 		if (typeof window === 'undefined') {
 			return;
