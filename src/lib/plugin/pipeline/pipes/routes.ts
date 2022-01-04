@@ -11,7 +11,7 @@ const RoutesPipe: Pipe = async function (args) {
 		fileName = fileName.replace('__layout.svelte', '$__layout.svelte');
 	}
 	if (fileName.includes('__layout.reset.svelte')) {
-		fileName = fileName.replace('__layout.reset-svelte', '$__layout_reset.svelte');
+		fileName = fileName.replace('__layout.reset.svelte', '$__layout_reset.svelte');
 	}
 
 	fileName = fileName.split('/');
