@@ -27,7 +27,7 @@ One of the primary features of SVEMIX is simplifying interactions with the serve
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return props, redirect, handle errors, additional headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
+Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return props, redirect, handle errors, additional headers, status and it receives the [SvelteKit RequestEvent](https://kit.svelte.dev/docs#routing-endpoints):
 
 ```svelte
 <script context="module" lang="ts" ssr>
@@ -38,7 +38,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 	interface Props {
 		posts: Post[];
 	}
-	export const loader: Loader<Props, Locals> = async function ({}) {
+	export const loader: Loader<Props, Locals> = async function ({request, locals}) {
 		const posts = await db.post.findMany({ take: 9, orderBy: { createdAt: 'desc' } });
 		return {
 			props: {
@@ -71,10 +71,9 @@ The loader receives the following input:
 
 ```ts
 interface SvemixLoaderInput {
+	request: Request;
 	url: URL;
-	method: string;
 	params: Record<string, string>;
-	headers: Record<string, string>;
 	locals: Locals; // populated by hooks handle
 }
 ```

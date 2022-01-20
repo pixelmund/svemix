@@ -42,7 +42,9 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 		content?: string;
 	}
 
-	export const action: Action<ActionData, ActionErrors, Locals> = async function ({ body }) {
+	export const action: Action<ActionData, Locals> = async function ({ request }) {
+		const body = await request.formData() as ActionData;
+
 		const title = body.get('title');
 		const content = body.get('content');
 
@@ -95,11 +97,9 @@ The action receives the following input:
 
 ```ts
 interface SvemixActionInput<Locals = Record<string, any>> {
+	request: Request;
 	url: URL;
-	method: string;
 	params: Record<string, string>;
-	headers: Record<string, string>;
-	body: ReadOnlyFormData;
 	locals: Locals; // populated by hooks handle
 }
 ```

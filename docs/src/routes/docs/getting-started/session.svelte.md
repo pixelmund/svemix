@@ -49,10 +49,10 @@ export const handle = handleSession<Locals['session'], Locals>(
 	// This should come from an secret environment variable and never be exposed on github.
 	{ secret: process.env['COOKIE_SECRET'] },
 	// Optional own handle function can be passed here
-	function ({ request, resolve }) {
-		// request.locals is populated with the session `request.locals.session`
+	function ({ event, resolve }) {
+		// event.locals is populated with the session `event.locals.session`
 
-		const response = resolve(request);
+		const response = resolve(event);
 
 		return response;
 	}
