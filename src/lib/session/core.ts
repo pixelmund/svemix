@@ -4,7 +4,7 @@ import type { Session, SessionOptions } from './types';
 import { daysToMaxage, maxAgeToDateOfExpiry } from './utils.js';
 
 export default function CookieSession<SessionType = Record<string, any>>(
-	headers: Record<string, any>,
+	headers: Headers,
 	userOptions: SessionOptions
 ): Session<SessionType> {
 	if (userOptions.secret == null) {
@@ -29,7 +29,7 @@ export default function CookieSession<SessionType = Record<string, any>>(
 	let encoder = encrypt(core.secrets[0].secret);
 	let decoder = decrypt(core.secrets[0].secret);
 
-	const cookies = parse(headers.cookie || headers.Cookie || '', {});
+	const cookies = parse(headers.get('cookie') || '', {});
 
 	let sessionCookie: string = cookies[core.key] || '';
 	const sessionStatus = {

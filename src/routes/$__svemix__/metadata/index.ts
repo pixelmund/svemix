@@ -1,9 +1,16 @@
-import * as svemixHandlers from '$lib/server';
 
-export const metadata = () => ({ title: 'Custom Title' });
+  import * as svemixHandlers from "$lib/server";
 
-export const get = svemixHandlers.getHandler({
-	hasMeta: true,
-	loader: () => ({}),
-	metadata: metadata
-});
+  
+	export const metadata = () => ({ title: 'Custom Title' });
+
+
+  
+  export const get = svemixHandlers.getHandler({
+    hasMeta: true,
+    loader: () => ({}),
+    metadata: metadata
+  });
+  
+
+  

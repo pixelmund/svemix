@@ -1,5 +1,5 @@
 export default function loadHandler({ routesName }) {
-	return async ({ session, url, stuff, fetch, params }) => {
+	return async ({ session, fetch }) => {
 		// We have to do this because SvelteKit subscribes load to session changes if done so.
 		const _accessSession = session?.something;
 		try {

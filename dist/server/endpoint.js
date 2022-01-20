@@ -1,6 +1,6 @@
 export function getHandler({ hasMeta, loader, metadata }) {
-	return async (request) => {
-		const loaded = await loader(request);
+	return async (event) => {
+		const loaded = await loader(event);
 		if (loaded?.error || loaded?.redirect) {
 			return {
 				headers: loaded?.headers || {},
@@ -32,14 +32,14 @@ export function getHandler({ hasMeta, loader, metadata }) {
 	};
 }
 export function postHandler({ action }) {
-	return async (request) => {
-		const actionResult = await action(request);
+	return async (event) => {
+		const actionResult = await action(event);
 		// This is a browser fetch
-		if (request.headers && request.headers?.accept === 'application/json') {
-			const hasSession = 'session' in request.locals;
+		if (event.request.headers && event.request.headers.get('accept') === 'application/json') {
+			const hasSession = 'session' in event.locals;
 			let shouldSendSession = false;
 			if (hasSession) {
-				shouldSendSession = request.locals.session.shouldSendToClient;
+				shouldSendSession = event.locals.session.shouldSendToClient;
 			}
 			return {
 				headers: actionResult?.headers || {},
@@ -52,14 +52,14 @@ export function postHandler({ action }) {
 					// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,
 					session: {
 						status: shouldSendSession ? 'should-update' : 'no-changes',
-						data: shouldSendSession ? request.locals.session?.data : {}
+						data: shouldSendSession ? event.locals.session?.data : {}
 					}
 				}
 			};
 		}
 		// This is the default form behaviour, navigate back to form submitter
 		if (!actionResult?.redirect) {
-			return jsDisabledFormRedirect(request, actionResult);
+			return jsDisabledFormRedirect(event, actionResult);
 		}
 		return {
 			headers: {
@@ -71,8 +71,8 @@ export function postHandler({ action }) {
 		};
 	};
 }
-function jsDisabledFormRedirect(request, actionResult) {
-	let location = request.headers?.referer;
+function jsDisabledFormRedirect(event, actionResult) {
+	let location = event.request.headers.get('referer');
 	const params = new URLSearchParams();
 	if (actionResult?.errors) {
 		Object.keys(actionResult.errors).forEach((key) => {

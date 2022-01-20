@@ -1,25 +1,14 @@
 export { getHandler, postHandler } from './endpoint.js';
-import type { Request } from '@sveltejs/kit';
-interface ReadOnlyFormData<Data extends Record<string, any> = Record<string, any>> {
-	get(key: keyof Data): string;
-	getAll(key: keyof Data): string[];
-	has(key: string): boolean;
-	entries(): Generator<[string, string], void>;
-	keys(): Generator<string, void>;
-	values(): Generator<string, void>;
-	[Symbol.iterator](): Generator<[string, string], void>;
-}
+import type { RequestEvent } from '@sveltejs/kit';
 declare type MaybePromise<T> = T | Promise<T>;
 export declare type Loader<
 	Pr extends Record<any, any> = Record<any, any>,
 	Locals = Record<string, any>
-> = (request: Request<Locals, never>) => MaybePromise<LoaderResult<Pr>>;
+> = (request: RequestEvent<Locals>) => MaybePromise<LoaderResult<Pr>>;
 export declare type Action<
 	Data extends Record<string, any> = Record<string, any>,
 	Locals = Record<string, any>
-> = (
-	request: Request<Locals, ReadOnlyFormData>
-) => MaybePromise<ActionResult<Data, Record<keyof Data, string>>>;
+> = (request: RequestEvent<Locals>) => MaybePromise<ActionResult<Data, Record<keyof Data, string>>>;
 export interface LoaderResult<Pr extends Record<any, any> = Record<any, any>> {
 	headers?: Record<string, string | string[]>;
 	props?: Pr;

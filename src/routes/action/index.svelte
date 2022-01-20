@@ -1,7 +1,9 @@
 <script context="module" ssr lang="ts">
 	import type { Action } from '$lib';
 
-	export const action: Action<any, Locals> = async ({ body, locals }) => {
+	export const action: Action<any, Locals> = async ({ request, locals }) => {
+		const body = await request.formData();
+
 		const _action = body.get('_action');
 
 		switch (_action) {

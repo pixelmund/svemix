@@ -1,53 +1,62 @@
-import * as svemixHandlers from '$lib/server';
 
-import type { Action } from '$lib';
+  import * as svemixHandlers from "$lib/server";
 
-export const action: Action<any, Locals> = async ({ body, locals }) => {
-	const _action = body.get('_action');
+  
+	import type { Action } from '$lib';
 
-	switch (_action) {
-		case '1':
-			const val = body.get('val');
-			return {
-				status: 302,
-				redirect: '/action/success?val=' + val
-			};
-		case '2':
-			const val2 = body.get('val');
+	export const action: Action<any, Locals> = async ({ request, locals }) => {
+		const body = await request.formData();
 
-			return {
-				data: {
-					val: val2
-				},
-				errors: {
-					val: 'ERROR'
-				}
-			};
-		case '3':
-			const name = body.get('name');
-			const year_of_birth = body.get('year_of_birth');
+		const _action = body.get('_action');
 
-			return {
-				data: {
-					name,
-					year_of_birth
-				}
-			};
-		case '4':
-			await new Promise((resolve) => setTimeout(resolve, 2500));
+		switch (_action) {
+			case '1':
+				const val = body.get('val');
+				return {
+					status: 302,
+					redirect: '/action/success?val=' + val
+				};
+			case '2':
+				const val2 = body.get('val');
 
-			return {};
+				return {
+					data: {
+						val: val2
+					},
+					errors: {
+						val: 'ERROR'
+					}
+				};
+			case '3':
+				const name = body.get('name');
+				const year_of_birth = body.get('year_of_birth');
 
-		case '5':
-			locals.session.data = { isLoggedIn: true };
+				return {
+					data: {
+						name,
+						year_of_birth
+					}
+				};
+			case '4':
+				await new Promise((resolve) => setTimeout(resolve, 2500));
 
-			return {};
+				return {};
 
-		default:
-			return {};
-	}
-};
+			case '5':
+				locals.session.data = { isLoggedIn: true };
 
-export const post = svemixHandlers.postHandler({
-	action: action
-});
+				return {};
+
+			default:
+				return {};
+		}
+	};
+
+
+  
+
+  
+  export const post = svemixHandlers.postHandler({
+    action: action,
+  });  
+  

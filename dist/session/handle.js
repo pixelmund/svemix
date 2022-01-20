@@ -1,25 +1,18 @@
 import CookieSession from './core';
 export function handleSession(
 	options,
-	passedHandle = async ({ request, resolve }) => resolve(request)
+	passedHandle = async ({ event, resolve }) => resolve(event)
 ) {
-	return async function handle({ request, resolve }) {
+	return async function handle({ event, resolve }) {
 		// We type it as any here to avoid typescript complaining about set-cookie;
-		const session = CookieSession(request.headers, options);
-		request.locals.session = session;
-		const response = await passedHandle({ request, resolve });
+		const session = CookieSession(event.request.headers, options);
+		event.locals.session = session;
+		const response = await passedHandle({ event, resolve });
 		if (!session['set-cookie'] || !response?.headers) {
 			return response;
 		}
-		if (response.headers['set-cookie']) {
-			if (typeof response.headers['set-cookie'] === 'string') {
-				response.headers['set-cookie'] = [response.headers['set-cookie'], session['set-cookie']];
-			} else if (Array.isArray(response.headers['set-cookie'])) {
-				response.headers['set-cookie'] = [...response.headers['set-cookie'], session['set-cookie']];
-			}
-		} else {
-			response.headers['set-cookie'] = [session['set-cookie']];
-		}
+		const sessionCookie = session['set-cookie'];
+		response.headers.append('set-cookie', sessionCookie);
 		return response;
 	};
 }

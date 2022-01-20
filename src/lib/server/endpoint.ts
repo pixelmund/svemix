@@ -1,14 +1,13 @@
 import type { RequestHandler } from '@sveltejs/kit/types/endpoint';
-import type { ServerRequest } from '@sveltejs/kit/types/hooks';
+import type { RequestEvent } from '@sveltejs/kit/types/hooks';
 import type { ActionResult, LoaderResult } from '.';
 import type { MetaFunction } from '../meta';
 
 interface SvemixPostHandlerParams {
-	action: (request: ServerRequest) => Promise<ActionResult> | ActionResult;
+	action: (event: RequestEvent) => Promise<ActionResult> | ActionResult;
 }
-
 interface SvemixGetHandlerParams {
-	loader: (request: ServerRequest) => Promise<LoaderResult> | LoaderResult;
+	loader: (event: RequestEvent) => Promise<LoaderResult> | LoaderResult;
 	hasMeta: boolean;
 	metadata: MetaFunction<any>;
 }
@@ -17,9 +16,9 @@ export function getHandler({
 	hasMeta,
 	loader,
 	metadata
-}: SvemixGetHandlerParams): RequestHandler<any, any, any> {
-	return async (request) => {
-		const loaded = await loader(request);
+}: SvemixGetHandlerParams): RequestHandler<any, any> {
+	return async (event) => {
+		const loaded = await loader(event);
 
 		if (loaded?.error || loaded?.redirect) {
 			return {
@@ -56,18 +55,18 @@ export function getHandler({
 	};
 }
 
-export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any, any, any> {
-	return async (request) => {
-		const actionResult = await action(request);
+export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any, any> {
+	return async (event) => {
+		const actionResult = await action(event);
 
 		// This is a browser fetch
-		if (request.headers && request.headers?.accept === 'application/json') {
-			const hasSession = 'session' in request.locals;
+		if (event.request.headers && event.request.headers.get('accept') === 'application/json') {
+			const hasSession = 'session' in event.locals;
 
 			let shouldSendSession = false;
 
 			if (hasSession) {
-				shouldSendSession = request.locals.session.shouldSendToClient;
+				shouldSendSession = event.locals.session.shouldSendToClient;
 			}
 
 			return {
@@ -81,7 +80,7 @@ export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler
 					// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,
 					session: {
 						status: shouldSendSession ? 'should-update' : 'no-changes',
-						data: shouldSendSession ? request.locals.session?.data : {}
+						data: shouldSendSession ? event.locals.session?.data : {}
 					}
 				}
 			};
@@ -89,7 +88,7 @@ export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler
 
 		// This is the default form behaviour, navigate back to form submitter
 		if (!actionResult?.redirect) {
-			return jsDisabledFormRedirect(request, actionResult);
+			return jsDisabledFormRedirect(event, actionResult);
 		}
 
 		return {
@@ -103,11 +102,8 @@ export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler
 	};
 }
 
-function jsDisabledFormRedirect(
-	request: ServerRequest<any, any>,
-	actionResult: ActionResult<any, any>
-) {
-	let location = request.headers?.referer;
+function jsDisabledFormRedirect(event: RequestEvent<any>, actionResult: ActionResult<any, any>) {
+	let location = event.request.headers.get('referer');
 
 	const params = new URLSearchParams();
 

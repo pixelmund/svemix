@@ -4,4 +4,4 @@ export declare function handleSession<
 	Locals extends {
 		session: Session;
 	}
->(options: SessionOptions, passedHandle?: Handle<Locals>): Handle<Locals, unknown>;
+>(options: SessionOptions, passedHandle?: Handle<Locals>): Handle<Locals>;

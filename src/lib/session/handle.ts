@@ -4,34 +4,21 @@ import type { Session, SessionOptions } from './types';
 
 export function handleSession<Locals extends { session: Session }>(
 	options: SessionOptions,
-	passedHandle: Handle<Locals> = async ({ request, resolve }) => resolve(request)
+	passedHandle: Handle<Locals> = async ({ event, resolve }) => resolve(event)
 ) {
-	return async function handle({ request, resolve }) {
+	return async function handle({ event, resolve }) {
 		// We type it as any here to avoid typescript complaining about set-cookie;
-		const session: any = CookieSession(request.headers, options);
-		request.locals.session = session;
+		const session: any = CookieSession(event.request.headers, options);
+		event.locals.session = session;
 
-		const response = await passedHandle({ request, resolve });
+		const response = await passedHandle({ event, resolve });
 
 		if (!session['set-cookie'] || !response?.headers) {
 			return response;
 		}
 
-		if (response.headers['set-cookie']) {
-			if (typeof response.headers['set-cookie'] === 'string') {
-				(response.headers['set-cookie'] as any) = [
-					response.headers['set-cookie'],
-					session['set-cookie']
-				];
-			} else if (Array.isArray(response.headers['set-cookie'])) {
-				(response.headers['set-cookie'] as any) = [
-					...response.headers['set-cookie'],
-					session['set-cookie']
-				];
-			}
-		} else {
-			(response.headers['set-cookie'] as any) = [session['set-cookie']];
-		}
+		const sessionCookie = session['set-cookie'];
+		response.headers.append('set-cookie', sessionCookie);
 
 		return response;
 	} as Handle<Locals>;

@@ -21,7 +21,7 @@ export default function CookieSession(headers, userOptions) {
 	};
 	let encoder = encrypt(core.secrets[0].secret);
 	let decoder = decrypt(core.secrets[0].secret);
-	const cookies = parse(headers.cookie || headers.Cookie || '', {});
+	const cookies = parse(headers.get('cookie') || '', {});
 	let sessionCookie = cookies[core.key] || '';
 	const sessionStatus = {
 		invalidDate: false,

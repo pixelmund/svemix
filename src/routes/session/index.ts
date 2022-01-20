@@ -13,7 +13,7 @@ export const get: RequestHandler = ({ locals }) => {
 	};
 };
 
-export const del: RequestHandler<Locals, any, any> = ({ locals }) => {
+export const del: RequestHandler = ({ locals }) => {
 	locals.session.destroy();
 
 	return {
