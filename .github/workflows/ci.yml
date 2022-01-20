@@ -11,7 +11,7 @@ env:
   PLAYWRIGHT_BROWSERS_PATH: 0
 
 jobs:
-  Lint:
+  Check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,7 +19,6 @@ jobs:
         with:
           node-version: '14'
       - run: npm install
-      - run: npm run lint
       - run: npm run check
   Tests:
     runs-on: ubuntu-latest
