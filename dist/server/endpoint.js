@@ -1,8 +1,10 @@
 export function getHandler({ hasMeta, loader, metadata }) {
+	// @ts-ignore Why???
 	return async (event) => {
 		const loaded = await loader(event);
 		if (loaded?.error || loaded?.redirect) {
 			return {
+				status: 200,
 				headers: loaded?.headers || {},
 				body: {
 					props: { _metadata: {} },
@@ -20,6 +22,7 @@ export function getHandler({ hasMeta, loader, metadata }) {
 		const loadedProps = loaded?.props || {};
 		const metaProps = { _metadata };
 		return {
+			status: 200,
 			headers: loaded?.headers || {},
 			body: {
 				props: { ...loadedProps, ...metaProps },

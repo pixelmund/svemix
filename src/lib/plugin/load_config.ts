@@ -14,11 +14,13 @@ interface Svemix_Config_Object {
 }
 
 export interface InternalConfig extends Svemix_Config_Object {
+	trailingSlash: boolean;
 	routes: string;
 }
 
 export const defaultConfig: InternalConfig = {
-	routes: '/routes',
+	trailingSlash: false,
+	routes: 'src/routes',
 	prerenderAll: false,
 	seo: {}
 };
@@ -31,7 +33,7 @@ export default async function load_config({ cwd = process.cwd() } = {}) {
 
 	if (config_file) {
 		const loaded_config = await import(url.pathToFileURL(config_file).href);
-		const svelte_config = loaded_config?.default;
+		const svelte_config: SvemixConfig = loaded_config?.default;
 
 		if (typeof svelte_config !== 'object') {
 			config = defaultConfig;
@@ -40,6 +42,11 @@ export default async function load_config({ cwd = process.cwd() } = {}) {
 
 		config = {
 			...defaultConfig,
+			trailingSlash:
+				svelte_config?.kit?.trailingSlash === 'always' ? true : defaultConfig.trailingSlash,
+			routes: svelte_config?.kit?.files?.routes
+				? svelte_config?.kit?.files?.routes
+				: defaultConfig.routes,
 			...svelte_config.svemix
 		};
 	} else {

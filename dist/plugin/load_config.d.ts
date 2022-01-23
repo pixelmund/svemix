@@ -8,6 +8,7 @@ interface Svemix_Config_Object {
 	seo?: Partial<MetaResult>;
 }
 export interface InternalConfig extends Svemix_Config_Object {
+	trailingSlash: boolean;
 	routes: string;
 }
 export declare const defaultConfig: InternalConfig;

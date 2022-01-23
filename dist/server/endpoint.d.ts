@@ -1,4 +1,4 @@
-import type { RequestHandler } from '@sveltejs/kit/types/endpoint';
+import type { RequestHandler } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit/types/hooks';
 import type { ActionResult, LoaderResult } from '.';
 import type { MetaFunction } from '../meta';
@@ -14,6 +14,6 @@ export declare function getHandler({
 	hasMeta,
 	loader,
 	metadata
-}: SvemixGetHandlerParams): RequestHandler<any, any>;
-export declare function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any, any>;
+}: SvemixGetHandlerParams): RequestHandler<any>;
+export declare function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any>;
 export {};
