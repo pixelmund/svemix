@@ -28,6 +28,10 @@
 			{
 				title: 'Configuration',
 				href: '/docs/getting-started/configuration'
+			},
+			{
+				title: 'Drawbacks',
+				href: '/docs/getting-started/drawbacks'
 			}
 		]
 	};

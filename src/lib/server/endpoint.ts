@@ -1,4 +1,4 @@
-import type { RequestHandler } from '@sveltejs/kit/types/endpoint';
+import type { RequestHandler } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit/types/hooks';
 import type { ActionResult, LoaderResult } from '.';
 import type { MetaFunction } from '../meta';
@@ -16,12 +16,14 @@ export function getHandler({
 	hasMeta,
 	loader,
 	metadata
-}: SvemixGetHandlerParams): RequestHandler<any, any> {
+}: SvemixGetHandlerParams): RequestHandler<any> {
+	// @ts-ignore Why???
 	return async (event) => {
 		const loaded = await loader(event);
 
 		if (loaded?.error || loaded?.redirect) {
 			return {
+				status: 200,
 				headers: loaded?.headers || {},
 				body: {
 					props: { _metadata: {} },
@@ -43,6 +45,7 @@ export function getHandler({
 		const metaProps = { _metadata };
 
 		return {
+			status: 200,
 			headers: loaded?.headers || {},
 			body: {
 				props: { ...loadedProps, ...metaProps },
@@ -55,7 +58,7 @@ export function getHandler({
 	};
 }
 
-export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any, any> {
+export function postHandler({ action }: SvemixPostHandlerParams): RequestHandler<any> {
 	return async (event) => {
 		const actionResult = await action(event);
 

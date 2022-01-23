@@ -1,16 +1,9 @@
+import * as svemixHandlers from '$lib/server';
 
-  import * as svemixHandlers from "$lib/server";
+export const loader = () => ({ status: 302, redirect: '/loader/redirect-target' });
 
-  
-	export const loader = () => ({ status: 302, redirect: '/loader/redirect-target' });
-
-
-  
-  export const get = svemixHandlers.getHandler({
-    hasMeta: false,
-    loader: loader,
-    metadata: () => ({})
-  });
-  
-
-  
+export const get = svemixHandlers.getHandler({
+	hasMeta: false,
+	loader: loader,
+	metadata: () => ({})
+});

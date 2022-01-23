@@ -43,7 +43,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 	}
 
 	export const action: Action<ActionData, Locals> = async function ({ request }) {
-		const body = await request.formData() as ActionData;
+		const body = (await request.formData()) as ActionData;
 
 		const title = body.get('title');
 		const content = body.get('content');

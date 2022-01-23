@@ -38,7 +38,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 	interface Props {
 		posts: Post[];
 	}
-	export const loader: Loader<Props, Locals> = async function ({request, locals}) {
+	export const loader: Loader<Props, Locals> = async function ({ request, locals }) {
 		const posts = await db.post.findMany({ take: 9, orderBy: { createdAt: 'desc' } });
 		return {
 			props: {

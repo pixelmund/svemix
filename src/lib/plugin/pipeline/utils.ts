@@ -19,6 +19,10 @@ async function isDirExisting(path: string) {
 	}
 }
 
+export function posixify(str: string) {
+	return str.replace(/\\/g, '/');
+}
+
 export async function writeFile(filePath: string, data: any) {
 	try {
 		if (process.env.NODE_ENV === 'test') {

@@ -61,5 +61,5 @@ export default config;
 
 <PostBottomNavigation
 previous={{ title: 'Sessions', href: '/docs/getting-started/session' }}
-next={{ title: '', href: '' }}
+next={{ title: 'Drawbacks', href: '/docs/getting-started/drawbacks' }}
 />

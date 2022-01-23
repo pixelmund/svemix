@@ -2,7 +2,8 @@ import path from 'path';
 import fs from 'fs';
 import url from 'url';
 export const defaultConfig = {
-	routes: '/routes',
+	trailingSlash: false,
+	routes: 'src/routes',
 	prerenderAll: false,
 	seo: {}
 };
@@ -19,6 +20,11 @@ export default async function load_config({ cwd = process.cwd() } = {}) {
 		}
 		config = {
 			...defaultConfig,
+			trailingSlash:
+				svelte_config?.kit?.trailingSlash === 'always' ? true : defaultConfig.trailingSlash,
+			routes: svelte_config?.kit?.files?.routes
+				? svelte_config?.kit?.files?.routes
+				: defaultConfig.routes,
 			...svelte_config.svemix
 		};
 	} else {

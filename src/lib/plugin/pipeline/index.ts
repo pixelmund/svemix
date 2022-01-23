@@ -9,7 +9,6 @@ const Pipeline: PipeLine = async function (pipelineArgs) {
 		const result = await pipe({ config, doc });
 		config = result.config;
 		doc = result.doc;
-
 		// We should stop the pipeline, because of a validation error or no need to continue
 		if (!result.continue) {
 			return {
