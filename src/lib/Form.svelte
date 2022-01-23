@@ -26,7 +26,7 @@
 			actionUrl = actionUrl.slice(0, -1);
 		}
 
-		magicUrl = `/$__svemix__` + actionUrl;
+		magicUrl = actionUrl;
 	}
 
 	$: if (typeof window === 'undefined' && $page.url.search.length > 0) {
@@ -151,5 +151,6 @@
 	fieldset {
 		margin: 0;
 		padding: 0;
+		border: 0;
 	}
 </style>

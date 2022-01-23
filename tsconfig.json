@@ -24,6 +24,7 @@
 		"checkJs": true,
 		"paths": {
 			"$lib": ["src/lib"],
+			"$svemix": [".svelte-kit/svemix"],
 			"$lib/*": ["src/lib/*"]
 		}
 	},

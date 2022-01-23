@@ -1,5 +1,6 @@
-export { getHandler, postHandler } from './endpoint.js';
+export { serverHandler, get_parts, get_pattern, get_params, decode_params } from './endpoint.js';
 import type { RequestEvent } from '@sveltejs/kit';
+export type { SvemixRoutes } from './endpoint';
 
 type MaybePromise<T> = T | Promise<T>;
 
@@ -10,7 +11,7 @@ export type Loader<Pr extends Record<any, any> = Record<any, any>, Locals = Reco
 export type Action<
 	Data extends Record<string, any> = Record<string, any>,
 	Locals = Record<string, any>
-> = (request: RequestEvent<Locals>) => MaybePromise<ActionResult<Data, Record<keyof Data, string>>>;
+> = (request: RequestEvent<Locals>) => MaybePromise<ActionResult<Data>>;
 
 export interface LoaderResult<Pr extends Record<any, any> = Record<any, any>> {
 	headers?: Record<string, string | string[]>;
@@ -22,12 +23,11 @@ export interface LoaderResult<Pr extends Record<any, any> = Record<any, any>> {
 }
 
 export interface ActionResult<
-	Data extends Record<any, any> = Record<any, any>,
-	Err extends Record<string, string> = Record<string, string>
+	Data extends Record<any, any> = Record<any, any>
 > {
 	headers?: Record<string, string | string[]>;
 	data?: Data;
-	errors?: Err;
+	errors?: Record<string, string>;
 	redirect?: string;
 	formError?: string;
 	status?: number;

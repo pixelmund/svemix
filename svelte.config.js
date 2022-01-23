@@ -1,5 +1,5 @@
 import preprocess from 'svelte-preprocess';
-import svemix from './dist/plugin/index.js';
+import svemix from './src/lib/plugin/index.js';
 
 /** @type {import('./dist').SvemixConfig} */
 const config = {
@@ -19,7 +19,7 @@ const config = {
 			dir: 'dist',
 			exports: (filepath) => {
 				const splitted_path = filepath.split('/');
-				if (filepath.endsWith('.d.ts')) return false;
+				if (filepath.endsWith('.d.ts')) return true;
 				if (splitted_path.length > 2) return false;
 				if (filepath.includes('index')) return true;
 				return false;
