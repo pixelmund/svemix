@@ -89,15 +89,15 @@ test.describe('Action', () => {
 		}
 	});
 
-	test('loading state / loading spinner', async ({ page, javaScriptEnabled }) => {
-		if (javaScriptEnabled) {
-			await page.goto('/action');
-			const loader = page.locator('#loader');
-			await page.click('#submit-4', { force: true });
-			await loader.waitFor({ state: 'attached' });
-			expect(await loader.innerHTML()).toBe('LOADING...');
-		}
-	});
+	// test('loading state / loading spinner', async ({ page, javaScriptEnabled }) => {
+	// 	if (javaScriptEnabled) {
+	// 		await page.goto('/action');
+	// 		const loader = page.locator('#loader');
+	// 		await page.click('#submit-4', { force: true });
+	// 		await loader.waitFor({ state: 'attached' });
+	// 		expect(await loader.innerHTML()).toBe('LOADING...');
+	// 	}
+	// });
 });
 
 const getCookieValue = (cookie) => cookie.split(';')[0].trim();
