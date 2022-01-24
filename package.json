@@ -1,6 +1,6 @@
 {
 	"name": "svemix",
-	"version": "0.6.2",
+	"version": "0.6.3",
 	"description": "The Full-Stack addition to SvelteKit. Write your server code inside svelte files, handle sessions, forms and SEO easily.",
 	"repository": {
 		"type": "git",
