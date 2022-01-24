@@ -22,9 +22,7 @@ export interface LoaderResult<Pr extends Record<any, any> = Record<any, any>> {
 	maxage?: string;
 }
 
-export interface ActionResult<
-	Data extends Record<any, any> = Record<any, any>
-> {
+export interface ActionResult<Data extends Record<any, any> = Record<any, any>> {
 	headers?: Record<string, string | string[]>;
 	data?: Data;
 	errors?: Record<string, string>;

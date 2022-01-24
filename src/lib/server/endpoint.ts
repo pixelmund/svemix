@@ -1,4 +1,4 @@
-import type { Handle } from '@sveltejs/kit';
+import type { Handle, GetSession } from '@sveltejs/kit';
 import type { RequestEvent } from '@sveltejs/kit/types/hooks';
 import type { Action, ActionResult, Loader, LoaderResult } from '.';
 import type { MetaFunction } from '../meta';
@@ -9,10 +9,15 @@ export interface SvemixHandler {
 	action?: Action;
 }
 
-export type SvemixRoutes = Array<{ pattern: RegExp; handler: SvemixHandler, params: any }>;
+export type SvemixRoutes = Array<{ pattern: RegExp; handler: SvemixHandler; params: any }>;
 
-export function serverHandler({ routes }: { routes: SvemixRoutes }): Handle {
-
+export function serverHandler({
+	routes,
+	getSession
+}: {
+	routes: SvemixRoutes;
+	getSession: GetSession;
+}): Handle {
 	return async ({ event, resolve }) => {
 		let _data = event.url.searchParams.get('_data');
 
@@ -24,9 +29,9 @@ export function serverHandler({ routes }: { routes: SvemixRoutes }): Handle {
 			_data = event.url.pathname;
 		}
 
-		let matchedRoute: { pattern: RegExp; handler: SvemixHandler, params: any };
+		let matchedRoute: { pattern: RegExp; handler: SvemixHandler; params: any };
 		let decoded = decodeURI(event.url.pathname);
-		let match : any;
+		let match: any;
 
 		for (const route of routes) {
 			const matches = route.pattern.exec(decoded);
@@ -39,7 +44,7 @@ export function serverHandler({ routes }: { routes: SvemixRoutes }): Handle {
 			return resolve(event);
 		}
 
-		const handler= matchedRoute.handler;
+		const handler = matchedRoute.handler;
 		event.params = matchedRoute.params ? decode_params(matchedRoute.params(match)) : {};
 
 		if (event.request.method === 'GET') {
@@ -94,10 +99,9 @@ export function serverHandler({ routes }: { routes: SvemixRoutes }): Handle {
 						data: actionResult?.data,
 						errors: actionResult?.errors,
 						status: actionResult?.status,
-						// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,
 						session: {
 							status: shouldSendSession ? 'should-update' : 'no-changes',
-							data: shouldSendSession ? event.locals.session?.data : {}
+							data: shouldSendSession ? await getSession(event) : {}
 						}
 					}),
 					{ status: 200, headers }
@@ -118,7 +122,7 @@ export function serverHandler({ routes }: { routes: SvemixRoutes }): Handle {
 	};
 }
 
-function jsDisabledFormRedirect(event: RequestEvent<any>, actionResult: ActionResult<any, any>) {
+function jsDisabledFormRedirect(event: RequestEvent<any>, actionResult: ActionResult<any>) {
 	let location = event.request.headers.get('referer');
 
 	const params = new URLSearchParams();

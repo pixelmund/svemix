@@ -1,7 +1,7 @@
 import { SVEMIX_DIR } from './constants.js';
 import load_config from './load_config.js';
 import Pipeline from './pipeline.js';
-import fs from "fs";
+import fs from 'fs';
 import path from 'path';
 
 import { TEMPLATE } from './_template/index.js';

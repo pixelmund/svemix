@@ -1,7 +1,7 @@
-import { SVEMIX_LIB_DIR } from "../utils.js";
+import { SVEMIX_LIB_DIR } from '../utils.js';
 
 export const TEMPLATE = () => `
-import { serverHandler, get_parts, get_pattern } from '${SVEMIX_LIB_DIR()}/server';
+import { serverHandler, get_parts, get_pattern, get_params } from '${SVEMIX_LIB_DIR()}/server';
 
 /**
  * @type {import('${SVEMIX_LIB_DIR()}/server').SvemixRoutes}
@@ -24,6 +24,9 @@ import { serverHandler, get_parts, get_pattern } from '${SVEMIX_LIB_DIR()}/serve
 	return { handler: value, pattern: get_pattern([parts], false), params: params && params[0].length > 0 ? get_params(params[0]) : undefined };
 });
 
-export const svemixHandler = () => serverHandler({ routes });
-
+/**
+ * 
+ * @param {{getSession?: import('@sveltejs/kit').GetSession}} params 
+ */
+export const svemixHandler = (params = { getSession: (event) => event.locals?.session?.data }) => serverHandler({ routes, getSession: params.getSession });
 `;

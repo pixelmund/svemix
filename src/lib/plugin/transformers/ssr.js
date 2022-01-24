@@ -35,18 +35,21 @@ const SSRTransformer = function (args) {
      export async function load(input) {
       const { params } = input;
 
-      ${tc(!prerenderEnabled, `const queryString = input.url?.search || '';`)}
+      ${tc(!prerenderEnabled, `const queryString = input.url?.search || '?';`)}
 
-      let routesName = input.url.pathname + '?_data=${encodeURIComponent(doc.route.data_name)}';
+      let routesName = input.url.pathname;
   
-      ${tc(
-				!prerenderEnabled,
-				`
-        if(queryString.length > 0){
-          routesName = routesName + '&' + queryString;
-        }
+      ${
+				!prerenderEnabled
+					? `
+      if(queryString.length > 0){
+        routesName = routesName + queryString + '&_data=${encodeURIComponent(doc.route.data_name)}';
+      }
       `
-			)}
+					: `
+      routesName = routesName + '?_data=${encodeURIComponent(doc.route.data_name)}'
+      `
+			}
 
       const handleLoad = loadHandler({ routesName });
 

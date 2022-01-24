@@ -12,8 +12,8 @@
 			data: {
 				name: 'Harry'
 			}
-		}
-	}
+		};
+	};
 </script>
 
 <script lang="ts">
@@ -26,7 +26,5 @@
 
 <Form>
 	<input type="text" name="name" />
-	<button type="submit">
-		Submit
-	</button>
+	<button type="submit"> Submit </button>
 </Form>

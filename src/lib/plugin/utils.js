@@ -60,4 +60,3 @@ export async function writeFile(filePath, data) {
 		throw new Error(err);
 	}
 }
-
