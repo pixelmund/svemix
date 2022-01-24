@@ -42,7 +42,7 @@ const SSRTransformer: Transformer = function (args) {
 				!prerenderEnabled,
 				`
         if(queryString.length > 0){
-          routesName = routesName + '?' + queryString;
+          routesName = routesName + queryString;
         }
       `
 			)}
