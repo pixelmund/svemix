@@ -1,18 +1,25 @@
-import * as svemixHandlers from 'svemix/server';
 
-import type { MetaFunction } from 'svemix';
-export const prerender = true;
+  import * as svemixHandlers from "svemix/server";
 
-export const loader = () => ({});
+  
+	import type { MetaFunction } from 'svemix';
+	export const prerender = true;
 
-export const metadata: MetaFunction<any> = () => ({
-	title: 'The Full-Stack addition to SvelteKit - SVEMIX',
-	description:
-		'The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily.'
-});
+	export const loader = () => ({});
 
-export const get = svemixHandlers.getHandler({
-	hasMeta: true,
-	loader: loader,
-	metadata: metadata
-});
+	export const metadata: MetaFunction<any> = () => ({
+		title: 'The Full-Stack addition to SvelteKit - SVEMIX',
+		description:
+			'The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily.'
+	});
+
+
+  
+  export const get = svemixHandlers.getHandler({
+    hasMeta: true,
+    loader: loader,
+    metadata: metadata
+  });
+  
+
+  
