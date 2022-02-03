@@ -7,7 +7,7 @@ const config = {
 	svemix: {
 		seo: {
 			title: 'Override me',
-			description: 'Default description',
+			description: 'Default description'
 		}
 	},
 	kit: {

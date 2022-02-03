@@ -47,7 +47,7 @@ export function get(loader: SvemixLoader): RequestHandler<any> {
 			status: loaded?.status,
 			headers: loaded?.headers || {},
 			body: {
-				loaderData: { ...loaderData },
+				data: { ...loaderData },
 				metadata: loaderMetadata
 			}
 		};

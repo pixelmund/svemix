@@ -3,5 +3,3 @@
 
 	export const loader: Loader = () => ({ metadata: { title: 'Custom Title' } });
 </script>
-
-

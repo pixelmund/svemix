@@ -1,4 +1,4 @@
-import { resolve } from "path";
+import { resolve } from 'path';
 
 export const SVEMIX_LIB_DIR = process.env.TEST == 'true' ? '$lib' : 'svemix';
 export const SVEMIX_GENERATED_DIR = resolve(process.cwd(), '.svelte-kit', 'svemix');

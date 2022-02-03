@@ -10,12 +10,12 @@
 	export let actionData: ActionData;
 	export let action: string = '';
 	export let method: string = 'POST';
-	
+
 	type ValidatorFunction = (data: Record<any, any>) => Record<string, string>;
 	export let validate: ValidatorFunction = (data) => ({});
 
 	$: formState = createForm(actionData);
-	
+
 	let className: string = '';
 
 	let magicUrl = '';

@@ -3,7 +3,7 @@
 	import { metaDefaults } from '$svemix';
 
 	export let _metadata: MetaData = {};
-	
+
 	let metadata: MetaData;
 	$: metadata = { ...metaDefaults, ..._metadata };
 </script>

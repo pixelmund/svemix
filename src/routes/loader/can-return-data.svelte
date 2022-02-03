@@ -13,9 +13,9 @@
 </script>
 
 <script lang="ts">
-	export let loaderData: LoaderData;
+	export let data: LoaderData;
 </script>
 
-<h1>{loaderData.name}</h1>
-<h2>{loaderData.age}</h2>
-<h3>{loaderData.country}</h3>
+<h1>{data.name}</h1>
+<h2>{data.age}</h2>
+<h3>{data.country}</h3>
