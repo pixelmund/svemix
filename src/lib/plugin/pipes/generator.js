@@ -1,6 +1,6 @@
 import prettier from 'prettier';
 import { SVEMIX_LIB_DIR } from '../constants.js';
-import { stringifyObject, writeFile } from '../utils.js';
+import { writeFile } from '../utils.js';
 
 /**
  * @type {import('./types').Pipe}

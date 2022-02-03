@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { MetaData } from '.';
+	// @ts-ignore
 	import { metaDefaults } from '$svemix';
 
 	export let _metadata: MetaData = {};
