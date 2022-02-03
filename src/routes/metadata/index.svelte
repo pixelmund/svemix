@@ -1,3 +1,7 @@
 <script context="module" ssr lang="ts">
-	export const metadata = () => ({ title: 'Custom Title' });
+	import type { Loader } from '$lib';
+
+	export const loader: Loader = () => ({ metadata: { title: 'Custom Title' } });
 </script>
+
+

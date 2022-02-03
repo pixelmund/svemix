@@ -2,8 +2,8 @@ import { expect } from '@playwright/test';
 import { test } from './utils.js';
 
 test.describe('Loader', () => {
-	test('can return props', async ({ page }) => {
-		await page.goto('/loader/can-return-props');
+	test('can return data', async ({ page }) => {
+		await page.goto('/loader/can-return-data');
 		expect(await page.innerHTML('h1')).toBe('Svemix');
 		expect(await page.innerHTML('h2')).toBe('25');
 		expect(await page.innerHTML('h3')).toBe('Github');
@@ -12,12 +12,6 @@ test.describe('Loader', () => {
 	test('can redirect', async ({ page }) => {
 		await page.goto('/loader/can-redirect');
 		expect(await page.innerHTML('h1')).toBe('REDIRECT WORKED');
-	});
-
-	test('can return an error', async ({ page }) => {
-		await page.goto('/loader/can-error');
-		expect(await page.innerHTML('h1')).toBe('500');
-		expect(await page.innerHTML('pre')).toBe('Test');
 	});
 });
 
@@ -29,11 +23,7 @@ test.describe('Metadata', () => {
 	test('respects defaults', async ({ page }) => {
 		await page.goto('/metadata');
 		const metaDescriptionValue = await page.$eval('meta[name="description"]', (el) => el.content);
-		const metaKeywordsValue = await page.$eval('meta[name="keywords"]', (el) => el.content);
-		const openGraphDefaultTitle = await page.$eval('meta[property="og:title"]', (el) => el.content);
 		expect(metaDescriptionValue).toBe('Default description');
-		expect(metaKeywordsValue).toBe('tests,stuff,cool,svemix');
-		expect(openGraphDefaultTitle).toBe('OpenGraph Title');
 	});
 	test('overrides defaults correctly', async ({ page }) => {
 		await page.goto('/metadata');
@@ -89,15 +79,16 @@ test.describe('Action', () => {
 		}
 	});
 
-	test('loading state / loading spinner', async ({ page, javaScriptEnabled }) => {
-		if (javaScriptEnabled) {
-			await page.goto('/action');
-			const loader = page.locator('#loader');
-			await page.click('#submit-4', { force: true });
-			await loader.waitFor({ state: 'attached' });
-			expect(await loader.innerHTML()).toBe('LOADING...');
-		}
-	});
+	// Flaky test, disabled for now
+	// test('loading state / loading spinner', async ({ page, javaScriptEnabled }) => {
+	// 	if (javaScriptEnabled) {
+	// 		await page.goto('/action');
+	// 		const loader = page.locator('#loader');
+	// 		await page.click('#submit-4', { force: true });
+	// 		await loader.waitFor({ state: 'attached' });
+	// 		expect(await loader.innerHTML()).toBe('LOADING...');
+	// 	}
+	// });
 });
 
 const getCookieValue = (cookie) => cookie.split(';')[0].trim();

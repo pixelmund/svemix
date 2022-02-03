@@ -2,58 +2,32 @@
 	import { createEventDispatcher, setContext } from 'svelte';
 	import { page, session } from '$app/stores';
 	import { goto } from '$app/navigation';
-	import { createForm, getFormData, parseQuery } from './utils/form_helper';
-
-	const formState = createForm();
+	import { createForm, getFormData } from './utils/form_helper';
+	import type { ActionData } from './server';
 
 	const dispatchEvent = createEventDispatcher();
 
+	export let actionData: ActionData;
 	export let action: string = '';
 	export let method: string = 'POST';
-
+	
 	type ValidatorFunction = (data: Record<any, any>) => Record<string, string>;
 	export let validate: ValidatorFunction = (data) => ({});
 
+	$: formState = createForm(actionData);
+	
 	let className: string = '';
 
 	let magicUrl = '';
 	let thisForm: HTMLFormElement;
 
-	$: if ($page && $page.url.pathname) {
-		let actionUrl = action.length > 0 ? action : $page.url.pathname;
-
-		if (actionUrl.endsWith('/')) {
-			actionUrl = actionUrl.slice(0, -1);
-		}
-
-		magicUrl = `/$__svemix__` + actionUrl;
-	}
-
-	$: if (typeof window === 'undefined' && $page.url.search.length > 0) {
-		pageQueryToFormState();
-	}
-
-	function pageQueryToFormState() {
-		const errors = $page.url.searchParams.getAll('errors[]') ?? [];
-		const data = $page.url.searchParams.getAll('data[]') ?? [];
-		const formError = $page.url.searchParams.get('formError') ?? '';
-		formState.update((cur) => ({
-			...cur,
-			errors: parseQuery(errors),
-			data: parseQuery(data),
-			formError
-		}));
-	}
-
+	$: magicUrl = action.length > 0 ? action : $page.url.pathname;
+	$: method = method !== 'POST' && method !== 'GET' ? 'POST' : method;
 	$: __session = $session;
 
 	setContext('svemix-form', formState);
 
 	async function onSubmit() {
-		if (typeof window === 'undefined') {
-			return;
-		}
-
 		const { formData, formObject } = getFormData(thisForm);
 
 		const validated = validate(formObject);
@@ -96,26 +70,29 @@
 			return;
 		}
 
-		const json = await response.json();
+		const data = await response.json();
+
+		const actionData = data.actionData;
+		const session = data.session;
 
 		// Update the client session with the current data, but only if it was changed.
-		if (json?.session?.status === 'should-update') {
-			session.set(json.session?.data);
+		if (session?.status === 'should-update') {
+			session.set(session?.data);
 		}
 
 		formState.update((state) => ({
 			...state,
 			loading: false,
-			formError: json?.formError,
-			errors: json?.errors || {},
-			redirect: json?.redirect || '',
-			data: json?.data || {}
+			formError: actionData?.formError,
+			errors: actionData?.errors || {},
+			redirect: actionData?.redirect || '',
+			data: actionData?.data || {}
 		}));
 
 		dispatchEvent('submitted', { ...$formState });
 
-		if (json?.redirect) {
-			goto(json?.redirect);
+		if (actionData?.redirect) {
+			goto(actionData?.redirect);
 			return;
 		}
 	}

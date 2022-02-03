@@ -1,5 +1,6 @@
 import { writable } from 'svelte/store';
 import type { Writable } from 'svelte/store';
+import type { ActionData } from '$lib';
 
 interface FormState {
 	id: number;
@@ -14,16 +15,16 @@ export type FormContext = Writable<FormState>;
 
 let formId: number = 1;
 
-export function createForm() {
+export function createForm(actionData: ActionData | undefined) {
 	const currentId = formId;
 
 	const formState = writable<FormState>({
 		id: currentId,
 		loading: false,
-		data: {},
-		errors: {},
-		redirect: '',
-		formError: ''
+		data: actionData?.data || {},
+		errors: actionData?.errors || {},
+		redirect: actionData?.redirect || '',
+		formError: actionData?.formError || ''
 	});
 
 	formId += 1;
@@ -51,12 +52,4 @@ export function getFormData(form: HTMLFormElement) {
 		formData,
 		formObject: output
 	};
-}
-
-export function parseQuery(input: string[]) {
-	return input.reduce((acc, cur) => {
-		const [key, value] = cur.split('::');
-		acc[key] = value;
-		return acc;
-	}, {});
 }

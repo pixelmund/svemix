@@ -1,7 +1,8 @@
 <script context="module" ssr lang="ts">
 	import type { Action } from '$lib';
+	import { redirect } from '$lib/server';
 
-	export const action: Action<any, Locals> = async ({ request, locals }) => {
+	export const action: Action<any> = async ({ request, locals }) => {
 		const body = await request.formData();
 
 		const _action = body.get('_action');
@@ -9,10 +10,7 @@
 		switch (_action) {
 			case '1':
 				const val = body.get('val');
-				return {
-					status: 302,
-					redirect: '/action/success?val=' + val
-				};
+				return redirect('/action/success?val=' + val, 302);
 			case '2':
 				const val2 = body.get('val');
 
@@ -50,16 +48,19 @@
 	};
 </script>
 
-<script>
+<script lang="ts">
 	import { Form } from '$lib';
+	import type { ActionData } from '$lib/server';
+
+	export let actionData: ActionData;
 </script>
 
-<Form>
+<Form {actionData}>
 	<input type="hidden" name="val" value="submitter-1" />
 	<input type="hidden" name="_action" value="1" />
 	<button type="submit" id="submit-1">Submit</button>
 </Form>
-<Form let:errors>
+<Form {actionData} let:errors>
 	<input type="hidden" name="val" value="submitter-2" />
 	{#if errors.val && errors.val.length > 0}
 		<p id="error-val-2">{errors.val}</p>
@@ -67,13 +68,13 @@
 	<input type="hidden" name="_action" value="2" />
 	<button type="submit" id="submit-2">Submit</button>
 </Form>
-<Form let:data>
+<Form {actionData} let:data>
 	<input type="text" id="input-name" name="name" value={data?.name || ''} />
 	<input type="text" id="input-birth" name="year_of_birth" value={data?.year_of_birth || ''} />
 	<input type="hidden" name="_action" value="3" />
 	<button type="submit" id="submit-3">Submit</button>
 </Form>
-<Form let:loading>
+<Form {actionData} let:loading>
 	<input type="hidden" name="_action" value="4" />
 	{#if loading}
 		<span id="loader">LOADING...</span>
