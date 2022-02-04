@@ -15,7 +15,8 @@ title: Handling meta data / SEO
 
 <br>
 
-SVEMIX includes some default meta data / SEO handling, the cool thing is. All you have to do is export an `metadata` function. This `metadata` function receives the returned props of the loader, which means you can dynamically apply titles, descriptions etc. from your loaded data. You can also specify default meta tags via the svelte config.
+SVEMIX includes some default meta data / SEO handling, the cool thing is. All you have to do is export return a `metadata` property inside your `loader`.
+You can also specify default meta tags via the svelte config.
 
 <br>
 
@@ -23,19 +24,19 @@ SVEMIX includes some default meta data / SEO handling, the cool thing is. All yo
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `metadata` function, this `metadata` can return an object with, title, description and so on.
+Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return an object with the `metadata` property
 
 ```svelte
 <script context="module" lang="ts" ssr>
-	import type { Loader, MetaFunction } from 'svemix';
+	import type { Loader } from 'svemix';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
-	interface Props {
+	interface LoaderData {
 		post: Post;
 	}
 
-	export const loader: Loader<Props, Locals> = async function ({ params }) {
+	export const loader: Loader<LoaderData> = async function ({ params }) {
 		try {
 			const post = await db.post.findUnique({
 				where: { slug: params.slug },
@@ -44,28 +45,25 @@ Each `.svelte` file inside your `routes` folder can export a `metadata` function
 
 			if (!post) {
 				return {
-					status: 404,
-					error: 'Post not found'
+					status: 404
 				};
 			}
 
 			return {
-				props: {
+				data: {
 					post
+				},
+				metadata: {
+					title: post.title,
+					description: post.content
 				}
 			};
 		} catch (error) {
 			return {
-				status: 500,
-				error
+				status: 500
 			};
 		}
 	};
-
-	export const metadata: MetaFunction<Props> = (props) => ({
-		title: props?.post.title,
-		description: props?.post?.content
-	});
 </script>
 ```
 
@@ -113,21 +111,8 @@ export default config;
 ```
 
 <br>
-<br>
 
-<h2 id="input">Input</h2>
-
-<br>
-
-#### The metadata function receives the props you returned within your loader
-
-<br>
-
-<h2 id="output">Output</h2>
-
-<br>
-
-The metadata can return the following output:
+Metadata can contain the following properties:
 
 ```ts
 export interface MetaResult {

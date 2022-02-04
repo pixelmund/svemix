@@ -27,6 +27,6 @@ export interface ActionData<
 	headers?: Record<string, string | string[]>;
 	values?: Data;
 	errors?: Err;
-	redirect?: string;
 	status?: number;
+	formError?: string;
 }

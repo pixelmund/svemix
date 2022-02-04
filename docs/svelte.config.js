@@ -23,15 +23,11 @@ const config = {
 			crawl: true,
 			enabled: true
 		},
-		// hydrate the <div id="svelte"> element in src/app.html
-		target: '#svelte',
 		vite: {
 			plugins: [svemix()]
 		}
 	},
-	svemix: {
-		prerenderAll: true
-	}
+	svemix: {}
 };
 
 export default config;

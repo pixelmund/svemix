@@ -1,13 +1,12 @@
 <script context="module" ssr lang="ts">
-	import type { MetaFunction } from 'svemix';
-	export const prerender = true;
+	import type { Loader } from 'svemix';
 
-	export const loader = () => ({});
-
-	export const metadata: MetaFunction<any> = () => ({
-		title: 'The Full-Stack addition to SvelteKit - SVEMIX',
-		description:
-			'The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily.'
+	export const loader: Loader = () => ({
+		metadata: {
+			title: 'The Full-Stack addition to SvelteKit - SVEMIX',
+			description:
+				'The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily.'
+		}
 	});
 </script>
 

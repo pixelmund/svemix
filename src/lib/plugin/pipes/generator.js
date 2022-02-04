@@ -18,7 +18,14 @@ const GeneratorPipe = async function (args) {
 			content: ssrScript.content,
 			functions: doc.functions
 		}),
-		{ semi: true, singleQuote: true, parser: 'babel-ts', trailingComma: 'none', printWidth: 100, useTabs: true }
+		{
+			semi: true,
+			singleQuote: true,
+			parser: 'babel-ts',
+			trailingComma: 'none',
+			printWidth: 100,
+			useTabs: true
+		}
 	);
 
 	await writeFile(fileToGenerate, endpointContent);

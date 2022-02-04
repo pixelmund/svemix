@@ -1,4 +1,4 @@
-import type { ActionData } from '$lib';
+import type { ActionData } from '../';
 
 export type ValidationErrors = Record<string, string | string[]>;
 

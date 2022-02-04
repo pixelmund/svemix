@@ -77,14 +77,18 @@ export function post(action: SvemixAction): RequestHandler<any> {
 			shouldSendSession = event.locals.session.shouldSendToClient;
 		}
 
+		const { values, errors, headers, status, formError, ...rest } = actionResult;
+
 		return {
 			status: 200,
 			headers: actionResult?.headers || {},
 			body: {
 				actionData: {
-					values: actionResult?.values,
-					errors: actionResult?.errors,
-					redirect: actionResult?.headers?.location,
+					...rest,
+					values,
+					errors,
+					formError,
+					redirect: headers?.location || headers?.Location,
 					// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,
 					session: {
 						status: shouldSendSession ? 'should-update' : 'no-changes',
