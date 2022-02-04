@@ -1,34 +1,32 @@
-export { getHandler, postHandler } from './endpoint.js';
+export { get, post, redirect } from './endpoint.js';
+import type { MetaData } from '$lib/index.js';
 import type { RequestEvent } from '@sveltejs/kit';
 
 type MaybePromise<T> = T | Promise<T>;
 
-export type Loader<Pr extends Record<any, any> = Record<any, any>, Locals = Record<string, any>> = (
-	request: RequestEvent<Locals>
+export type Loader<Pr extends Record<any, any> = Record<any, any>> = (
+	request: RequestEvent
 ) => MaybePromise<LoaderResult<Pr>>;
 
 export type Action<
 	Data extends Record<string, any> = Record<string, any>,
-	Locals = Record<string, any>
-> = (request: RequestEvent<Locals>) => MaybePromise<ActionResult<Data, Record<keyof Data, string>>>;
+	Err extends Record<string, string> = Record<string, string>
+> = (request: RequestEvent) => MaybePromise<ActionData<Data, Err>>;
 
-export interface LoaderResult<Pr extends Record<any, any> = Record<any, any>> {
+export interface LoaderResult<Data extends Record<any, any> = Record<any, any>> {
 	headers?: Record<string, string | string[]>;
-	props?: Pr;
-	error?: string | Error;
+	data?: Data;
+	metadata?: MetaData;
 	status?: number;
-	redirect?: string;
-	maxage?: string;
 }
 
-export interface ActionResult<
+export interface ActionData<
 	Data extends Record<any, any> = Record<any, any>,
 	Err extends Record<string, string> = Record<string, string>
 > {
 	headers?: Record<string, string | string[]>;
-	data?: Data;
+	values?: Data;
 	errors?: Err;
 	redirect?: string;
-	formError?: string;
 	status?: number;
 }
