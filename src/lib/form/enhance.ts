@@ -1,6 +1,8 @@
 import { invalidate } from '$app/navigation';
+import type { ActionData } from '$lib';
 import type {
-	EnhanceFormError,
+	EnhanceFormErrors,
+	EnhanceFormFormError,
 	EnhanceFormPending,
 	EnhanceFormResult,
 	EnhanceFormValidate
@@ -13,12 +15,14 @@ export function enhance(
 	{
 		validate,
 		pending,
-		error,
+		formError,
+		errors,
 		result
 	}: {
 		validate?: EnhanceFormValidate;
 		pending?: EnhanceFormPending;
-		error?: EnhanceFormError;
+		errors?: EnhanceFormErrors;
+		formError?: EnhanceFormFormError;
 		result?: EnhanceFormResult;
 	} = {}
 ): { destroy: () => void } {
@@ -52,24 +56,37 @@ export function enhance(
 			if (token !== current_token) return;
 
 			if (response.ok) {
+				const json = await response.json();
+				const actionData = json?.actionData as ActionData;
+
+				if (!actionData) {
+					throw new Error('Could not load action data');
+				}
+
+				if (
+					actionData.errors &&
+					Object.values(actionData.errors).some((err) => err.length > 0) &&
+					errors
+				) {
+					errors({ data, form, errors: actionData.errors });
+					return;
+				}
+
 				if (result) {
-					const json = await response.json();
-					result({ data, form, response: json?.actionData });
+					result({ data, form, response: actionData });
 				}
 
 				const url = new URL(form.action);
 				url.search = url.hash = '';
 				invalidate(url.href);
-			} else if (error) {
-				error({ data, form, error: null, response });
+			} else if (formError) {
+				formError({ data, form, error: new Error(await response.text()), response });
 			} else {
-				const errorText = await response.text();
-				console.error(errorText);
-				error({ data, form, error: new Error(errorText), response });
+				console.error(await response.text());
 			}
 		} catch (e: any) {
-			if (error) {
-				error({ data, form, error: e, response: null });
+			if (formError) {
+				formError({ data, form, error: e, response: null });
 			} else {
 				throw e;
 			}

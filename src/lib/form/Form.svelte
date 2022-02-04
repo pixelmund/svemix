@@ -2,7 +2,7 @@
 	import type { ActionData } from '$lib/server';
 	import type { Writable } from 'svelte/store';
 	import type {
-		EnhanceFormError,
+		EnhanceFormFormError,
 		EnhanceFormPending,
 		EnhanceFormResult,
 		ValidationErrors
@@ -14,12 +14,14 @@
 
 	const actionData = getContext<Writable<ActionData>>('svemix-form');
 
+	$: console.log($actionData);
+
 	export let action: string = '';
 	export let method: string = 'POST';
 
 	export let validate: (input?: { data?: FormData }) => ValidationErrors = () => ({});
 	export let pending: EnhanceFormPending = () => {};
-	export let error: EnhanceFormError = () => {};
+	export let error: EnhanceFormFormError = () => {};
 	export let result: EnhanceFormResult = () => {};
 
 	let className: string = '';
@@ -32,6 +34,8 @@
 
 	let submitting: boolean = false;
 	let errors: ValidationErrors = $actionData?.errors || {};
+
+	$: console.log(errors);
 </script>
 
 <form
@@ -47,9 +51,13 @@
 			submitting = true;
 			pending({ data, form });
 		},
-		error: ({ data, form, error: form_error, response }) => {
+		formError: ({ data, form, error: form_error, response }) => {
 			submitting = false;
 			error({ data, form, error: form_error, response });
+		},
+		errors: ({ errors: validation_errors }) => {
+			submitting = false;
+			errors = validation_errors;
 		},
 		result: ({ data, form, response }) => {
 			submitting = false;
@@ -58,7 +66,10 @@
 				// @ts-ignore
 				$session = response.session.data;
 			}
-			if (response.redirect) {
+			if (response.errors) {
+				errors = response.errors;
+			}
+			if (response.redirect && response.redirect.length > 0) {
 				goto(response.redirect);
 			}
 			result({ data, form, response });

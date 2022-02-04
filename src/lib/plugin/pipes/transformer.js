@@ -9,10 +9,14 @@ const Instance_Transformer = (args) => {
 
 	const instanceContent = `
     <script ${doc.scripts.instance?.attrs?.lang === 'ts' ? 'lang="ts"' : ''}>
-	    ${doc.functions.action ? `
+	    ${
+				doc.functions.action
+					? `
 		import { setContext as _set_context } from "svelte";
 		import { writable as _writable_store } from "svelte/store";
-		` : ''}
+		`
+					: ''
+			}
         import { Meta as SvemixMeta } from "${SVEMIX_LIB_DIR}"; 
         ${doc.scripts.instance?.content || ''}
         export let metadata = {};

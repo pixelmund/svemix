@@ -16,7 +16,7 @@ export const action: Action<any> = async ({ request, locals }) => {
       const val2 = body.get('val');
 
       return {
-        data: {
+        values: {
           val: val2,
         },
         errors: {
@@ -28,7 +28,7 @@ export const action: Action<any> = async ({ request, locals }) => {
       const year_of_birth = body.get('year_of_birth');
 
       return {
-        data: {
+        values: {
           name,
           year_of_birth,
         },

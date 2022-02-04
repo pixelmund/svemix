@@ -1,4 +1,4 @@
-import type { ActionData } from "$lib";
+import type { ActionData } from '$lib';
 
 export type ValidationErrors = Record<string, string | string[]>;
 
@@ -10,7 +10,7 @@ export type EnhanceFormPending = ({
 	data: FormData;
 	form: HTMLFormElement;
 }) => void;
-export type EnhanceFormError = ({
+export type EnhanceFormFormError = ({
 	data,
 	form,
 	response,
@@ -20,6 +20,15 @@ export type EnhanceFormError = ({
 	form: HTMLFormElement;
 	response: Response | null;
 	error: Error | null;
+}) => void;
+export type EnhanceFormErrors = ({
+	data,
+	form,
+	errors
+}: {
+	data: FormData;
+	form: HTMLFormElement;
+	errors: ValidationErrors;
 }) => void;
 export type EnhanceFormResult = ({
 	data,
