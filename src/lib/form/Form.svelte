@@ -14,8 +14,6 @@
 
 	const actionData = getContext<Writable<ActionData>>('svemix-form');
 
-	$: console.log($actionData);
-
 	export let action: string = '';
 	export let method: string = 'POST';
 
