@@ -82,8 +82,7 @@ export function post(action: SvemixAction): RequestHandler<any> {
 			headers: actionResult?.headers || {},
 			body: {
 				actionData: {
-					formError: actionResult?.formError,
-					data: actionResult?.data,
+					values: actionResult?.values,
 					errors: actionResult?.errors,
 					redirect: actionResult?.headers?.location,
 					// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,

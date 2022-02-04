@@ -50,17 +50,14 @@
 
 <script lang="ts">
 	import { Form } from '$lib';
-	import type { ActionData } from '$lib/server';
-
-	export let actionData: ActionData;
 </script>
 
-<Form {actionData}>
+<Form>
 	<input type="hidden" name="val" value="submitter-1" />
 	<input type="hidden" name="_action" value="1" />
 	<button type="submit" id="submit-1">Submit</button>
 </Form>
-<Form {actionData} let:errors>
+<Form let:errors>
 	<input type="hidden" name="val" value="submitter-2" />
 	{#if errors.val && errors.val.length > 0}
 		<p id="error-val-2">{errors.val}</p>
@@ -68,15 +65,15 @@
 	<input type="hidden" name="_action" value="2" />
 	<button type="submit" id="submit-2">Submit</button>
 </Form>
-<Form {actionData} let:data>
-	<input type="text" id="input-name" name="name" value={data?.name || ''} />
-	<input type="text" id="input-birth" name="year_of_birth" value={data?.year_of_birth || ''} />
+<Form let:values>
+	<input type="text" id="input-name" name="name" value={values?.name || ''} />
+	<input type="text" id="input-birth" name="year_of_birth" value={values?.year_of_birth || ''} />
 	<input type="hidden" name="_action" value="3" />
 	<button type="submit" id="submit-3">Submit</button>
 </Form>
-<Form {actionData} let:loading>
+<Form let:submitting>
 	<input type="hidden" name="_action" value="4" />
-	{#if loading}
+	{#if submitting}
 		<span id="loader">LOADING...</span>
 	{/if}
 	<button type="submit" id="submit-4">Submit</button>

@@ -25,9 +25,8 @@ export interface ActionData<
 	Err extends Record<string, string> = Record<string, string>
 > {
 	headers?: Record<string, string | string[]>;
-	data?: Data;
+	values?: Data;
 	errors?: Err;
 	redirect?: string;
-	formError?: string;
 	status?: number;
 }
