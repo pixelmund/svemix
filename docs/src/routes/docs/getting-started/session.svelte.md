@@ -35,17 +35,11 @@ The secret is a private key or list of private keys you must pass at runtime, it
 import type { GetSession } from '@sveltejs/kit';
 import { handleSession } from 'svemix/session';
 
-// Locals is defined inside global.d.ts
-//  interface Locals {
-//	 session: import('svemix').Session<{ views: number }>;
-//  }
-//
-
-export const getSession: GetSession<Locals> = ({ locals }) => {
+export const getSession: GetSession = ({ locals }) => {
 	return locals.session.data;
 };
 
-export const handle = handleSession<Locals['session'], Locals>(
+export const handle = handleSession(
 	// This should come from an secret environment variable and never be exposed on github.
 	{ secret: process.env['COOKIE_SECRET'] },
 	// Optional own handle function can be passed here
@@ -129,6 +123,7 @@ The only way to set the session is setting the locals.session.data to an object
 ```svelte
 <!--src/routes/auth/login.svelte-->
 <script context="module" lang="ts" ssr>
+	import { redirect } from 'svemix/server';
 	import { authenticateUser } from '$lib/auth';
 	import type { Action } from 'svemix';
 	import type { User } from '@prisma/client';
@@ -138,7 +133,10 @@ The only way to set the session is setting the locals.session.data to an object
 		password?: string;
 	}
 
-	export const action: Action<ActionData> = async function ({ body, locals }) {
+	export const action: Action<ActionData> = async function ({ request }) {
+		// @ts-ignore
+		const body = await request.formData();
+
 		const email = body.get('email');
 		const password = body.get('password');
 
@@ -147,7 +145,7 @@ The only way to set the session is setting the locals.session.data to an object
 
 			if (errors.email || errors.password) {
 				return {
-					data: {
+					values: {
 						email,
 						password
 					},
@@ -157,13 +155,10 @@ The only way to set the session is setting the locals.session.data to an object
 
 			locals.session.data = { isLoggedIn: true, user };
 
-			return {
-				status: 302,
-				redirect: '/'
-			};
+			return redirect('/', 302);
 		} catch (error) {
 			return {
-				data: {
+				values: {
 					email,
 					password
 				},
@@ -183,19 +178,17 @@ The only way to set the session is setting the locals.session.data to an object
 After initializing the session, your locals will be filled with a session JS Proxy, this Proxy automatically sets the cookie if you set the locals.session.data to something and receive the current data via locals.session.data only. To see this in action add a console.log(locals.session) it will be empty. Only if you add an console.log(locals.session.data) and access the data it will output the current data. So if you wonder why is my session not filled, this is why.
 
 ```svelte
-<!--src/routes/auth/__layout.svelte-->
+<!--src/routes/auth/login.svelte-->
 <script context="module" lang="ts" ssr>
 	import type { Loader } from 'svemix';
+	import { redirect } from 'svemix/server';
 
-	export const loader: Loader<any, Locals> = function ({ locals }) {
+	export const loader: Loader<any> = function ({ locals }) {
 		// Redirect the user to an different page
 		// The loader runs everytime the session stores updates with one of your actions
 		// This results in no need to full page reloads.
 		if (locals.session.data?.isLoggedIn) {
-			return {
-				status: 302,
-				redirect: '/'
-			};
+			return redirect('/', 302);
 		}
 
 		return {};
@@ -214,7 +207,10 @@ After initializing the session, your locals will be filled with a session JS Pro
 <script context="module" lang="ts" ssr>
 	import type { Action } from 'svemix';
 
-	export const action: Action<any, any, Locals> = async function ({ locals, body }) {
+	export const action: Action<any, any, Locals> = async function ({ locals, request }) {
+		// @ts-ignore
+		const body = await request.formData();
+
 		const _action = body.get('_action');
 
 		if (_action === 'logout') {

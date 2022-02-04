@@ -16,7 +16,7 @@ title: Writing data
 <br>
 
 Mutations are hard, that's why we decided to include some nice helpers and features in SVEMIX which helps you dealing with them in a simple and clean way.
-Each Route can define an action function inside the `ssr` context. This action get called by the SVEMIX `Form` Component automatically. The nice thing is they even work with Javascript disabled.
+Each Route can define an action function inside the `ssr` context. This action gets called by the SVEMIX `Form` Component which uses a version of the enhance action of **SvelteKit**. The nice thing is they even work with Javascript disabled, and keep all the error states, values etc.
 
 <br>
 
@@ -24,11 +24,12 @@ Each Route can define an action function inside the `ssr` context. This action g
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `action` function, this `action` can return data, errors, formError, additional headers, status, redirect and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
+Each `.svelte` file inside your `routes` folder can export a `action` function, this `action` can return data, errors, headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
 
 ```svelte
 <script context="module" lang="ts" ssr>
 	import type { Action } from 'svemix';
+	import { redirect } from 'svemix/server';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
@@ -42,15 +43,16 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 		content?: string;
 	}
 
-	export const action: Action<ActionData, Locals> = async function ({ request }) {
-		const body = (await request.formData()) as ActionData;
+	export const action: Action<ActionData> = async function ({ request }) {
+		// @ts-ignore FormData is a little bit weird to type, if someone has an idea how to type it correctly feel free to let me now.
+		const body = await request.formData();
 
 		const title = body.get('title');
 		const content = body.get('content');
 
 		if (!title || title.length === 0) {
 			return {
-				data: {
+				values: {
 					title,
 					content
 				},
@@ -62,10 +64,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 
 		const newPost = await db.post.create({ data: { title, content } });
 
-		return {
-			status: 302,
-			redirect: `/posts/${newPost.id}`
-		};
+		return redirect(`/posts/${newPost.id}`, 302);
 	};
 </script>
 
@@ -73,11 +72,11 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 	import { Form } from 'svemix';
 </script>
 
-<Form let:data let:errors let:formError let:loading>
-	<input type="text" name="title" />
+<Form let:values let:errors let:submitting>
+	<input type="text" name="title" value={values?.title || ''} />
 	<textarea name="content" />
 
-	{#if !loading}
+	{#if !submitting}
 		<button type="submit">Create Post</button>
 	{:else}
 		Loading...
@@ -96,11 +95,12 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 The action receives the following input:
 
 ```ts
-interface SvemixActionInput<Locals = Record<string, any>> {
+interface SvemixActionInput {
 	request: Request;
 	url: URL;
 	params: Record<string, string>;
-	locals: Locals; // populated by hooks handle
+	locals: App.Locals;
+	platform: App.Platform;
 }
 ```
 
@@ -114,12 +114,12 @@ The action can return the following output:
 
 ```ts
 interface SvemixActionOutput {
-	headers?: Record<string, string | string[]>; // Additional Headers
-	status?: number;
-	redirect?: string;
-	errors?: Record<string, string>;
+	// You can return anything in here but the properties below are special handled.
+	values?: Data;
 	formError?: string;
-	data?: Record<string, any>;
+	errors?: Err;
+	headers?: Record<string, string | string[]>;
+	status?: number;
 }
 ```
 

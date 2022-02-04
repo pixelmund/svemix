@@ -17,8 +17,8 @@ title: Loading data
 
 One of the primary features of SVEMIX is simplifying interactions with the server to get data into your Svelte Routes/Components:
 
-- Loading Data always happens on the Server, typically the **SvelteKit** `load` function runs on both the client and the server, this is the equivalent to `getServerSideProps` in Next.
-- SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** load function and endpoint under routes/$\_\_svemix\_\_ for you.
+- Loading Data always happens on the Server
+- SVEMIX Vite Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding **SvelteKit** endpoint next to the file for you, this means for `src/routes/todos.svelte` it will generate `src/routes/todos.{js|ts}`. **SvelteKit** will then make sure to run your loader on the server and for client side navigations it fetches the data required by the page.
 - This enables us to import a database or any other stuff that should never reach the client directly inside your Svelte Routes.
 
 <br>
@@ -27,7 +27,7 @@ One of the primary features of SVEMIX is simplifying interactions with the serve
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return props, redirect, handle errors, additional headers, status and it receives the [SvelteKit RequestEvent](https://kit.svelte.dev/docs#routing-endpoints):
+Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return data, headers, metadata, status and it receives the [SvelteKit RequestEvent](https://kit.svelte.dev/docs#routing-endpoints):
 
 ```svelte
 <script context="module" lang="ts" ssr>
@@ -35,13 +35,14 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
-	interface Props {
+	interface LoaderData {
 		posts: Post[];
 	}
-	export const loader: Loader<Props, Locals> = async function ({ request, locals }) {
+
+	export const loader: Loader<LoaderData> = async function ({ request, locals }) {
 		const posts = await db.post.findMany({ take: 9, orderBy: { createdAt: 'desc' } });
 		return {
-			props: {
+			data: {
 				posts
 			}
 		};
@@ -49,11 +50,11 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 </script>
 
 <script lang="ts">
-	export let posts: Props['posts'] = [];
+	export let data: LoaderData;
 </script>
 
 <div>
-	{JSON.stringify(posts)}
+	{JSON.stringify(data)}
 </div>
 ```
 
@@ -74,7 +75,8 @@ interface SvemixLoaderInput {
 	request: Request;
 	url: URL;
 	params: Record<string, string>;
-	locals: Locals; // populated by hooks handle
+	locals: App.Locals;
+	platform: App.Platform;
 }
 ```
 
@@ -88,12 +90,10 @@ The loader can return the following output:
 
 ```ts
 interface SvemixLoaderOutput {
-	headers?: Record<string, string | string[]>; // Additional Headers
+	headers?: Record<string, string | string[]>;
+	data?: Data;
+	metadata?: MetaData;
 	status?: number;
-	redirect?: string;
-	error?: string | Error;
-	maxage?: number;
-	props?: Record<string, any>; // Props are getting passed to the component
 }
 ```
 

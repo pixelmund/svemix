@@ -63,6 +63,10 @@ export function enhance(
 					throw new Error('Could not load action data');
 				}
 
+				if (actionData.formError && actionData.formError.length > 0) {
+					throw new Error(actionData.formError);
+				}
+
 				if (
 					actionData.errors &&
 					Object.values(actionData.errors).some((err) => err.length > 0) &&
@@ -80,7 +84,7 @@ export function enhance(
 				url.search = url.hash = '';
 				invalidate(url.href);
 			} else if (formError) {
-				formError({ data, form, error: new Error(await response.text()), response });
+				formError({ data, form, error: null, response });
 			} else {
 				console.error(await response.text());
 			}

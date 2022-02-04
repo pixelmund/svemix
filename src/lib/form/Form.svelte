@@ -32,8 +32,6 @@
 
 	let submitting: boolean = false;
 	let errors: ValidationErrors = $actionData?.errors || {};
-
-	$: console.log(errors);
 </script>
 
 <form
@@ -67,7 +65,9 @@
 			if (response.errors) {
 				errors = response.errors;
 			}
+			// @ts-ignore
 			if (response.redirect && response.redirect.length > 0) {
+				// @ts-ignore
 				goto(response.redirect);
 			}
 			result({ data, form, response });

@@ -4,48 +4,48 @@ import type { Action } from '$lib';
 import { redirect } from '$lib/server';
 
 export const action: Action<any> = async ({ request, locals }) => {
-  const body = await request.formData();
+	const body = await request.formData();
 
-  const _action = body.get('_action');
+	const _action = body.get('_action');
 
-  switch (_action) {
-    case '1':
-      const val = body.get('val');
-      return redirect('/action/success?val=' + val, 302);
-    case '2':
-      const val2 = body.get('val');
+	switch (_action) {
+		case '1':
+			const val = body.get('val');
+			return redirect('/action/success?val=' + val, 302);
+		case '2':
+			const val2 = body.get('val');
 
-      return {
-        values: {
-          val: val2,
-        },
-        errors: {
-          val: 'ERROR',
-        },
-      };
-    case '3':
-      const name = body.get('name');
-      const year_of_birth = body.get('year_of_birth');
+			return {
+				values: {
+					val: val2
+				},
+				errors: {
+					val: 'ERROR'
+				}
+			};
+		case '3':
+			const name = body.get('name');
+			const year_of_birth = body.get('year_of_birth');
 
-      return {
-        values: {
-          name,
-          year_of_birth,
-        },
-      };
-    case '4':
-      await new Promise((resolve) => setTimeout(resolve, 2500));
+			return {
+				values: {
+					name,
+					year_of_birth
+				}
+			};
+		case '4':
+			await new Promise((resolve) => setTimeout(resolve, 2500));
 
-      return {};
+			return {};
 
-    case '5':
-      locals.session.data = { isLoggedIn: true };
+		case '5':
+			locals.session.data = { isLoggedIn: true };
 
-      return {};
+			return {};
 
-    default:
-      return {};
-  }
+		default:
+			return {};
+	}
 };
 
 export const get = __get(() => ({}));
