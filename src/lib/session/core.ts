@@ -1,11 +1,12 @@
 import { decrypt, encrypt } from './crypto.js';
-import { parse, serialize } from './cookie.js';
+import { parseCookies, makeCookie as _makeCookie } from '../cookie/index.js';
 import type { Session, SessionOptions } from './types';
 import { daysToMaxage, maxAgeToDateOfExpiry } from './utils.js';
 import { dev } from '$app/env';
+import type { RequestEvent } from '@sveltejs/kit';
 
 export default function CookieSession<T = App.Session>(
-	headers: Headers,
+	event: RequestEvent,
 	userOptions: SessionOptions
 ): Session<T> {
 	if (userOptions.secret == null) {
@@ -32,7 +33,11 @@ export default function CookieSession<T = App.Session>(
 	let encoder = encrypt(core.secrets[0].secret);
 	let decoder = decrypt(core.secrets[0].secret);
 
-	const cookies = parse(headers.get('cookie') || '', {});
+	const cookies = parseCookies(event.request.headers.get('cookie') || '', {});
+
+	// @ts-ignore We set the cookies on to locals, to save users from parsing all the cookies again which
+	// might cause some overhead
+	event.locals.cookies = cookies;
 
 	let sessionCookie: string = cookies[core.key] || '';
 	const sessionStatus = {
@@ -93,7 +98,7 @@ export default function CookieSession<T = App.Session>(
 	}
 
 	function makeCookie(maxAge: number, destroy: boolean = false) {
-		return serialize(
+		return _makeCookie(
 			core.key,
 			destroy
 				? '0'

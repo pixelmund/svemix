@@ -34,6 +34,10 @@
 				href: '/docs/getting-started/http-helpers'
 			},
 			{
+				title: 'Cookies',
+				href: '/docs/getting-started/cookies'
+			},
+			{
 				title: 'Drawbacks',
 				href: '/docs/getting-started/drawbacks'
 			}

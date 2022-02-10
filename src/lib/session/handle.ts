@@ -7,7 +7,7 @@ export function handleSession(
 	passedHandle: Handle = async ({ event, resolve }) => resolve(event)
 ) {
 	return async function handle({ event, resolve }) {
-		const session = CookieSession(event.request.headers, options);
+		const session = CookieSession(event, options);
 		event.locals.session = session;
 
 		const getSession = options?.getSession || (() => session.data);

@@ -239,6 +239,37 @@ After initializing the session, your locals will be filled with a session JS Pro
 {/if}
 ```
 
+<br>
+<br>
+
+<h2 id="typescript">Typescript</h2>
+
+To define global types for your session you can edit your app.d.ts and add something like this:
+
+```ts
+// app.d.ts
+interface SessionData {
+	views: number;
+}
+
+// See https://kit.svelte.dev/docs#typescript
+// for information about these interfaces
+declare namespace App {
+	interface Locals {
+		session: import('svemix/session').Session<SessionData>;
+		cookies: Record<string, string>;
+	}
+
+	interface Platform {}
+
+	interface Session extends SessionData {}
+
+	interface Stuff {}
+}
+```
+
+<br>
+
 <PostBottomNavigation
 previous={{ title: 'Meta / Seo', href: '/docs/getting-started/meta' }}
 next={{ title: 'Configuration', href: '/docs/getting-started/configuration'  }}

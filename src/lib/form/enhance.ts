@@ -43,7 +43,7 @@ export function enhance(
 		const data = new FormData(form);
 
 		if (validate) {
-			const validation_result = validate({ data });
+			const validation_result = validate(data);
 			if (Object.values(validation_result).some((err) => err.length > 0)) {
 				return;
 			}

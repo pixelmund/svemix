@@ -57,5 +57,5 @@ This is a shortcut for sending 30x responses.
 
 <PostBottomNavigation
 previous={{ title: 'Configuration', href: '/docs/getting-started/configuration' }}
-next={{ title: 'Drawbacks', href: '/docs/getting-started/drawbacks' }}
+next={{ title: 'Cookies', href: '/docs/getting-started/cookies' }}
 />

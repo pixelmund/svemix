@@ -1,4 +1,4 @@
-import type { CookieSerializeOptions } from './cookie';
+import type { CookieSerializeOptions } from '../cookie';
 import type { BinaryLike as CBinaryLike } from 'crypto';
 import type { GetSession } from '@sveltejs/kit';
 
