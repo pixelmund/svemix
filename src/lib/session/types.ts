@@ -1,5 +1,6 @@
-import type { CookieSerializeOptions } from './cookie';
+import type { CookieSerializeOptions } from '../cookie';
 import type { BinaryLike as CBinaryLike } from 'crypto';
+import type { GetSession } from '@sveltejs/kit';
 
 export interface SessionOptions {
 	key?: string;
@@ -7,6 +8,7 @@ export interface SessionOptions {
 	expires?: number;
 	rolling?: boolean;
 	cookie?: Omit<CookieSerializeOptions, 'expires' | 'maxAge' | 'encode'>;
+	getSession?: GetSession;
 }
 
 export interface Session<SessionType = Record<string, any>> {

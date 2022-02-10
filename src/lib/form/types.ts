@@ -1,8 +1,6 @@
-import type { ActionData } from '../';
-
 export type ValidationErrors = Record<string, string | string[]>;
 
-export type EnhanceFormValidate = ({ data }: { data: FormData }) => ValidationErrors;
+export type EnhanceFormValidate = (data: FormData) => ValidationErrors;
 export type EnhanceFormPending = ({
 	data,
 	form
@@ -10,32 +8,24 @@ export type EnhanceFormPending = ({
 	data: FormData;
 	form: HTMLFormElement;
 }) => void;
-export type EnhanceFormFormError = ({
-	data,
+export type EnhanceFormError = ({
+	formData,
 	form,
 	response,
 	error
 }: {
-	data: FormData;
+	formData: FormData;
 	form: HTMLFormElement;
 	response: Response | null;
 	error: Error | null;
 }) => void;
-export type EnhanceFormErrors = ({
-	data,
-	form,
-	errors
-}: {
-	data: FormData;
-	form: HTMLFormElement;
-	errors: ValidationErrors;
-}) => void;
 export type EnhanceFormResult = ({
-	data,
+	formData,
 	form,
 	response
 }: {
-	data: FormData;
-	response: ActionData;
+	data: Record<string, any> | null | undefined;
+	formData: FormData;
+	response: Response;
 	form: HTMLFormElement;
-}) => void;
+}) => void | Promise<void>;

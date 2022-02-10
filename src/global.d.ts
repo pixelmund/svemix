@@ -1,10 +1,15 @@
 /// <reference types="@sveltejs/kit" />
 
+interface SessionData {
+	views: number;
+}
+
 // See https://kit.svelte.dev/docs#typescript
 // for information about these interfaces
 declare namespace App {
 	interface Locals {
 		session: import('../dist/session').Session<SessionData>;
+		cookies: Record<string, string>;
 	}
 
 	interface Platform {}

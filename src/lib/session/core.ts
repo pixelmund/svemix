@@ -1,12 +1,14 @@
 import { decrypt, encrypt } from './crypto.js';
-import { parse, serialize } from './cookie.js';
+import { parseCookies, makeCookie as _makeCookie } from '../cookie/index.js';
 import type { Session, SessionOptions } from './types';
 import { daysToMaxage, maxAgeToDateOfExpiry } from './utils.js';
+import { dev } from '$app/env';
+import type { RequestEvent } from '@sveltejs/kit';
 
-export default function CookieSession<SessionType = Record<string, any>>(
-	headers: Headers,
+export default function CookieSession<T = App.Session>(
+	event: RequestEvent,
 	userOptions: SessionOptions
-): Session<SessionType> {
+): Session<T> {
 	if (userOptions.secret == null) {
 		throw new Error('Please provide at least one secret');
 	}
@@ -18,7 +20,9 @@ export default function CookieSession<SessionType = Record<string, any>>(
 			maxAge: daysToMaxage(userOptions.expires ?? 7),
 			httpOnly: userOptions?.cookie?.httpOnly ?? true,
 			sameSite: userOptions?.cookie?.sameSite ?? true,
-			path: userOptions?.cookie?.path ?? '/'
+			path: userOptions?.cookie?.path ?? '/',
+			secure: userOptions?.cookie?.secure ?? !dev,
+			domain: userOptions?.cookie?.domain ?? undefined
 		},
 		rolling: userOptions?.rolling ?? false,
 		secrets: Array.isArray(userOptions.secret)
@@ -29,7 +33,11 @@ export default function CookieSession<SessionType = Record<string, any>>(
 	let encoder = encrypt(core.secrets[0].secret);
 	let decoder = decrypt(core.secrets[0].secret);
 
-	const cookies = parse(headers.get('cookie') || '', {});
+	const cookies = parseCookies(event.request.headers.get('cookie') || '', {});
+
+	// @ts-ignore We set the cookies on to locals, to save users from parsing all the cookies again which
+	// might cause some overhead
+	event.locals.cookies = cookies;
 
 	let sessionCookie: string = cookies[core.key] || '';
 	const sessionStatus = {
@@ -39,7 +47,7 @@ export default function CookieSession<SessionType = Record<string, any>>(
 		shouldSendToClient: false
 	};
 
-	let sessionData: (SessionType & { expires?: Date }) | undefined;
+	let sessionData: (T & { expires?: Date }) | undefined;
 
 	// If we have a session cookie we try to get the id from the cookie value and use it to decode the cookie.
 	// If the decodeID is not the first secret in the secrets array we should re encrypt to the newest secret.
@@ -90,15 +98,13 @@ export default function CookieSession<SessionType = Record<string, any>>(
 	}
 
 	function makeCookie(maxAge: number, destroy: boolean = false) {
-		return serialize(
+		return _makeCookie(
 			core.key,
 			destroy
 				? '0'
 				: JSON.stringify(encoder(JSON.stringify(sessionData) || '')) + '&id=' + core.secrets[0].id,
 			{
-				httpOnly: core.cookie.httpOnly,
-				sameSite: core.cookie.sameSite,
-				path: core.cookie.path,
+				...core.cookie,
 				maxAge: destroy ? undefined : maxAge,
 				expires: destroy ? new Date(Date.now() - 360000000) : undefined
 			}

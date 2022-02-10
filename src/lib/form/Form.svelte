@@ -1,87 +1,96 @@
 <script lang="ts">
-	import type { ActionData } from '$lib/server';
-	import type { Writable } from 'svelte/store';
 	import type {
-		EnhanceFormFormError,
+		EnhanceFormError,
 		EnhanceFormPending,
 		EnhanceFormResult,
 		ValidationErrors
 	} from './types';
 	import { goto } from '$app/navigation';
 	import { page, session } from '$app/stores';
-	import { getContext } from 'svelte';
 	import { enhance } from './enhance';
+	import { getActionData } from './context';
+	import { mergeObjects } from './utils';
 
-	const actionData = getContext<Writable<ActionData>>('svemix-form');
+	const actionData = getActionData();
 
 	export let action: string = '';
 	export let method: string = 'POST';
 
-	export let validate: (input?: { data?: FormData }) => ValidationErrors = () => ({});
+	export let validate: (data?: FormData) => ValidationErrors = () => ({});
 	export let pending: EnhanceFormPending = () => {};
-	export let error: EnhanceFormFormError = () => {};
+	export let error: EnhanceFormError = () => {};
 	export let result: EnhanceFormResult = () => {};
 
 	let className: string = '';
-
 	let magicUrl = '';
 
 	$: magicUrl = action.length > 0 ? action : $page.url.pathname;
 	$: method = method !== 'POST' && method !== 'GET' ? 'POST' : method;
+
+	// @ts-ignore svelte-ignore we subscribe to session to get and set updates
 	$: __session = $session;
 
 	let submitting: boolean = false;
-	let errors: ValidationErrors = $actionData?.errors || {};
+	let validationErrors: ValidationErrors = $actionData?.errors || {};
+
+	export { className as class };
 </script>
 
 <form
 	action={magicUrl}
 	{method}
 	use:enhance={{
-		validate: ({ data }) => {
-			const validationErrors = validate({ data });
-			errors = validationErrors;
+		validate: (data) => {
+			const vErrors = validate(data);
+			validationErrors = vErrors;
 			return validationErrors;
 		},
 		pending: ({ data, form }) => {
 			submitting = true;
 			pending({ data, form });
 		},
-		formError: ({ data, form, error: form_error, response }) => {
+		formError: ({ formData, form, error: form_error, response }) => {
 			submitting = false;
-			error({ data, form, error: form_error, response });
+			error({ formData, form, error: form_error, response });
 		},
-		errors: ({ errors: validation_errors }) => {
+		result: async ({ formData, data, form, response, redirectTo, refreshSession }) => {
 			submitting = false;
-			errors = validation_errors;
-		},
-		result: ({ data, form, response }) => {
-			submitting = false;
-			// @ts-ignore We ignore it here becuause it exists
-			if (response?.session && response.session.status === 'should-update') {
-				// @ts-ignore
-				$session = response.session.data;
+
+			if (redirectTo && redirectTo.length > 0) {
+				goto(redirectTo);
 			}
-			if (response.errors) {
-				errors = response.errors;
+
+			if (refreshSession) {
+				const sessionResponse = await fetch('/__session.json');
+
+				if (sessionResponse.ok) {
+					const sessionData = await sessionResponse.json();
+					$session = sessionData.data;
+				}
 			}
-			// @ts-ignore
-			if (response.redirect && response.redirect.length > 0) {
-				// @ts-ignore
-				goto(response.redirect);
-			}
-			result({ data, form, response });
+
+			// This updates the actionData stores and deep merges values
+			// I don't exactly know if this is the right behaviour
+			actionData.update((state) => {
+				return mergeObjects(state || {}, data);
+			});
+
+			await result({ formData, data, form, response });
 		}
 	}}
-	class={className}
 	{...$$restProps}
 >
 	<fieldset class={className} disabled={submitting} aria-disabled={submitting}>
-		<slot {submitting} {errors} values={$actionData?.values || {}} />
+		<slot data={$actionData} {validationErrors} {submitting} />
 	</fieldset>
 </form>
 
 <style>
+	form {
+		display: block;
+		width: 100%;
+	}
+
 	fieldset {
 		margin: 0;
 		padding: 0;

@@ -1,9 +1,5 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import type { RequestEvent } from '@sveltejs/kit/types/hooks';
-import type { ActionData, LoaderResult } from '.';
-
-type SvemixAction = (event: RequestEvent) => Promise<ActionData> | ActionData;
-type SvemixLoader = (event: RequestEvent) => Promise<LoaderResult> | LoaderResult;
+import type { Action, Loader } from '.';
 
 interface RedirectOptions {
 	status: number;
@@ -20,52 +16,57 @@ export function redirect(path: string, optsOrStatus: number | RedirectOptions): 
 	const status = isOptions ? optsOrStatus.status : optsOrStatus;
 	const optionHeaders = isOptions ? optsOrStatus?.headers || {} : {};
 
-	const headers = { ...optionHeaders, location: path };
+	const headers = { ...optionHeaders, 'x-svemix-location': path, location: path };
 
-	return {
-		status,
-		headers
-	};
+	return { status: status || 302, headers };
 }
 
-export function get(loader: SvemixLoader): RequestHandler<any> {
+export function get(loader: Loader): RequestHandler<any> {
 	return async (event) => {
 		const loaded = await loader(event);
-		const status = loaded?.status || 200;
 
-		if (status > 300 && status < 400) {
-			return {
-				status,
-				headers: loaded.headers
-			};
-		}
-
-		const loaderData = loaded?.data || {};
-		const loaderMetadata = loaded?.metadata || {};
+		const { headers, status, metadata, ...data } = loaded;
 
 		return {
-			status: loaded?.status,
-			headers: loaded?.headers || {},
+			status: status || 200,
+			headers: headers || {},
 			body: {
-				data: { ...loaderData },
-				metadata: loaderMetadata
+				data,
+				metadata
 			}
 		};
 	};
 }
 
-export function post(action: SvemixAction): RequestHandler<any> {
+export function post(action: Action): RequestHandler<any> {
 	return async (event) => {
 		const actionResult = await action(event);
+		const status = actionResult?.status || 200;
+		const shouldRedirect = status >= 300 && status < 400;
 
-		if (!event.request.headers.get('accept').includes('application/json')) {
-			const status = actionResult?.status || 200;
-			if (status > 300 && status < 400) {
+		// If we have a redirect
+		if (shouldRedirect) {
+			const location =
+				actionResult.headers['x-svemix-location'] || actionResult.headers['location'];
+
+			// If the user has javascript disabled
+			if (!event.request.headers.get('accept').includes('application/json')) {
 				return {
 					status,
-					headers: actionResult.headers
+					headers: {
+						...actionResult.headers,
+						location
+					}
 				};
 			}
+
+			return {
+				status: 204,
+				headers: {
+					...actionResult.headers,
+					'x-svemix-location': location
+				}
+			};
 		}
 
 		const hasSession = 'session' in event.locals;
@@ -73,29 +74,20 @@ export function post(action: SvemixAction): RequestHandler<any> {
 		let shouldSendSession = false;
 
 		if (hasSession) {
-			// @ts-ignore I promise this exists
-			shouldSendSession = event.locals.session.shouldSendToClient;
+			shouldSendSession = event.locals.session?.shouldSendToClient;
 		}
 
-		const { values, errors, headers, status, formError, ...rest } = actionResult;
+		const { headers: _headers, status: _status, ...actionData } = actionResult;
 
 		return {
-			status: 200,
-			headers: actionResult?.headers || {},
+			status,
+			headers: {
+				...actionResult.headers,
+				'content-type': 'application/json; charset=utf-8',
+				'x-svemix-refresh-session': shouldSendSession ? 'true' : 'false'
+			},
 			body: {
-				actionData: {
-					...rest,
-					values,
-					errors,
-					formError,
-					redirect: headers?.location || headers?.Location,
-					// TODO: this should somehow execute the users hooks getSession, or the user has to define it inside the svelte.config.js?,
-					session: {
-						status: shouldSendSession ? 'should-update' : 'no-changes',
-						// @ts-ignore I promise this exists
-						data: shouldSendSession ? event.locals.session?.data : {}
-					}
-				}
+				actionData
 			}
 		};
 	};

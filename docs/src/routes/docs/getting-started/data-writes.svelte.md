@@ -24,31 +24,22 @@ Each Route can define an action function inside the `ssr` context. This action g
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `action` function, this `action` can return data, errors, headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
+Each `.svelte` file inside your `routes` folder can export a `action` function, this `action` can return any data, headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
 
 ```svelte
+<!-- src/routes/posts/new.svelte -->
 <script context="module" lang="ts" ssr>
 	import type { Action } from 'svemix';
 	import { redirect } from 'svemix/server';
 	import type { Post } from '@prisma/client';
 	import db from '$lib/db';
 
-	interface ActionData {
-		title?: string;
-		content?: string;
-	}
-
-	interface ActionErrors {
-		title?: string;
-		content?: string;
-	}
-
-	export const action: Action<ActionData> = async function ({ request }) {
+	export const action: Action = async function ({ request }) {
 		// @ts-ignore FormData is a little bit weird to type, if someone has an idea how to type it correctly feel free to let me now.
 		const body = await request.formData();
 
-		const title = body.get('title');
-		const content = body.get('content');
+		const title = body.get('title') as string;
+		const content = body.get('content') as string;
 
 		if (!title || title.length === 0) {
 			return {
@@ -57,7 +48,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 					content
 				},
 				errors: {
-					title: 'Title must be greater than 1'
+					title: 'A post title is required'
 				}
 			};
 		}
@@ -68,12 +59,27 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 	};
 </script>
 
-<script>
+<script lang="ts">
 	import { Form } from 'svemix';
+
+	// You can also get the actionData by defining
+	// export let actionData;
+
+	function validateOnClient(formData: FormData) {
+		const title = formData.get('title') as string;
+
+		const errors: any = {};
+
+		if (title && title.length === 0) {
+			errors.title = 'A post title is required';
+		}
+
+		return errors;
+	}
 </script>
 
-<Form let:values let:errors let:submitting>
-	<input type="text" name="title" value={values?.title || ''} />
+<Form let:data let:submitting validate={validateOnClient}>
+	<input type="text" name="title" value={data?.values?.title || ''} />
 	<textarea name="content" />
 
 	{#if !submitting}
@@ -82,6 +88,41 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 		Loading...
 	{/if}
 </Form>
+```
+
+<br>
+
+<h2 id="getActionData">getActionData</h2>
+
+<br>
+
+You can also get the actionData via the `getActionData` function which has to be called within component initialization and cannot be used inside route/page components because the context is set there from the vite plugin. It returns an `svelte store`.
+
+This can be really useful if you have some kind of input component:
+
+<!-- src/lib/Input.svelte -->
+
+```svelte
+<script>
+	import { getActionData } from 'svemix';
+
+	export let name;
+	export let id = name;
+	export let label = '';
+	export let type = 'text';
+
+	const actionData = getActionData();
+	$: value = $actionData?.values?.[name] || '';
+	$: error = $actionData?.errors?.[name] || '';
+</script>
+
+<label>
+	{label}
+	<input {name} {id} {value} {type} />
+	{#if error && error.length > 0}
+		<span class="error" aria-describedby={id} aria-invalid="true" />
+	{/if}
+</label>
 ```
 
 <br>
@@ -113,14 +154,11 @@ interface SvemixActionInput {
 The action can return the following output:
 
 ```ts
-interface SvemixActionOutput {
-	// You can return anything in here but the properties below are special handled.
-	values?: Data;
-	formError?: string;
-	errors?: Err;
-	headers?: Record<string, string | string[]>;
+type ActionOutput = {
+	headers?: Headers | Record<string, string | string[]>;
 	status?: number;
-}
+	[key: string]: any;
+};
 ```
 
 <PostBottomNavigation

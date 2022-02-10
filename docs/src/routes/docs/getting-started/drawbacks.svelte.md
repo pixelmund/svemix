@@ -27,11 +27,9 @@ Svemix has some limitations, the current approach uses a vite plugin which is re
 <script context="module" ssr>
     export const loader = () => (
         {
-            data: {
-                book: {
-                    getYearsSincePublication(){ return new Date() } }
-                }
-            }
+           book: {
+               getYearsSincePublication(){ return new Date() } }
+           }
         )
 </script>
 <script>
@@ -45,6 +43,6 @@ Svemix has some limitations, the current approach uses a vite plugin which is re
 <br>
 
 <PostBottomNavigation
-previous={{ title: 'Sessions', href: '/docs/getting-started/configuration' }}
+previous={{ title: 'Cookies', href: '/docs/getting-started/cookies' }}
 next={{ title: '', href: '' }}
 />

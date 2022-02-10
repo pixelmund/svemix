@@ -8,7 +8,9 @@
 	}
 
 	export const loader: Loader<LoaderData> = () => ({
-		data: { name: 'Svemix', age: 25, country: 'Github' }
+		name: 'Svemix',
+		age: 25,
+		country: 'Github'
 	});
 </script>
 

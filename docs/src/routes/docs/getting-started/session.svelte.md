@@ -40,12 +40,15 @@ export const getSession: GetSession = ({ locals }) => {
 };
 
 export const handle = handleSession(
-	// This should come from an secret environment variable and never be exposed on github.
-	{ secret: process.env['COOKIE_SECRET'] },
+	{
+		// This should come from an secret environment variable and never be exposed on github.
+		secret: process.env['COOKIE_SECRET'],
+		// Pass the getSession function, default uses all data inside locals.session.data
+		getSession
+	},
 	// Optional own handle function can be passed here
 	function ({ event, resolve }) {
 		// event.locals is populated with the session `event.locals.session`
-
 		const response = resolve(event);
 
 		return response;
@@ -235,6 +238,37 @@ After initializing the session, your locals will be filled with a session JS Pro
 	<a href="/auth/login"> Sign in </a>
 {/if}
 ```
+
+<br>
+<br>
+
+<h2 id="typescript">Typescript</h2>
+
+To define global types for your session you can edit your app.d.ts and add something like this:
+
+```ts
+// app.d.ts
+interface SessionData {
+	views: number;
+}
+
+// See https://kit.svelte.dev/docs#typescript
+// for information about these interfaces
+declare namespace App {
+	interface Locals {
+		session: import('svemix/session').Session<SessionData>;
+		cookies: Record<string, string>;
+	}
+
+	interface Platform {}
+
+	interface Session extends SessionData {}
+
+	interface Stuff {}
+}
+```
+
+<br>
 
 <PostBottomNavigation
 previous={{ title: 'Meta / Seo', href: '/docs/getting-started/meta' }}
