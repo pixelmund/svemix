@@ -24,7 +24,7 @@ export type EnhanceFormResult = ({
 	form,
 	response
 }: {
-	data: Record<string, any>;
+	data: Record<string, any> | null | undefined;
 	formData: FormData;
 	response: Response;
 	form: HTMLFormElement;
