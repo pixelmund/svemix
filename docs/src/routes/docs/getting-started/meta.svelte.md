@@ -50,9 +50,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 			}
 
 			return {
-				data: {
-					post
-				},
+				post,
 				metadata: {
 					title: post.title,
 					description: post.content

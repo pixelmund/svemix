@@ -27,7 +27,7 @@ One of the primary features of SVEMIX is simplifying interactions with the serve
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return data, headers, metadata, status and it receives the [SvelteKit RequestEvent](https://kit.svelte.dev/docs#routing-endpoints):
+Each `.svelte` file inside your `routes` folder can export a `loader` function, this `loader` can return any data, headers, metadata, status and it receives the [SvelteKit RequestEvent](https://kit.svelte.dev/docs#routing-endpoints):
 
 ```svelte
 <script context="module" lang="ts" ssr>
@@ -41,10 +41,9 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 
 	export const loader: Loader<LoaderData> = async function ({ request, locals }) {
 		const posts = await db.post.findMany({ take: 9, orderBy: { createdAt: 'desc' } });
+
 		return {
-			data: {
-				posts
-			},
+			posts,
 			metadata: {
 				title: 'All Posts'
 			}
@@ -92,12 +91,11 @@ interface SvemixLoaderInput {
 The loader can return the following output:
 
 ```ts
-interface SvemixLoaderResult<Data extends Record<any, any> = Record<any, any>> {
-	status?: number;
+type SvemixLoaderResult<Data extends Record<string, any> = Record<string, any>> = Data & {
 	headers?: Record<string, string | string[]>;
-	data?: Data;
 	metadata?: MetaData;
-}
+	status?: number;
+};
 type SvemixLoaderOutput<Data extends Record<any, any> = Record<any, any>> = LoaderResult<Data>;
 ```
 

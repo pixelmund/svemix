@@ -14,12 +14,11 @@ export type Action<Output extends ActionOutput = ActionOutput> = (
 	request: RequestEvent
 ) => MaybePromise<Output>;
 
-export interface LoaderResult<Data extends Record<any, any> = Record<any, any>> {
+export type LoaderResult<Data extends Record<string, any> = Record<string, any>> = Data & {
 	headers?: Record<string, string | string[]>;
-	data?: Data;
 	metadata?: MetaData;
 	status?: number;
-}
+};
 
 export type Loader<Pr extends Record<any, any> = Record<any, any>> = (
 	request: RequestEvent
