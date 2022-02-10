@@ -78,6 +78,8 @@ export function post(action: Action): RequestHandler<any> {
 			shouldSendSession = event.locals.session?.shouldSendToClient;
 		}
 
+		const { headers: _headers, status: _status, ...actionData } = actionResult;
+
 		return {
 			status,
 			headers: {
@@ -86,7 +88,7 @@ export function post(action: Action): RequestHandler<any> {
 				'x-svemix-refresh-session': shouldSendSession ? 'true' : 'false'
 			},
 			body: {
-				actionData: actionResult
+				actionData
 			}
 		};
 	};

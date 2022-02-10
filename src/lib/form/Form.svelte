@@ -16,7 +16,7 @@
 	export let action: string = '';
 	export let method: string = 'POST';
 
-	export let validate: (input?: { data?: FormData }) => ValidationErrors = () => ({});
+	export let validate: (data?: FormData) => ValidationErrors = () => ({});
 	export let pending: EnhanceFormPending = () => {};
 	export let error: EnhanceFormError = () => {};
 	export let result: EnhanceFormResult = () => {};
@@ -38,8 +38,8 @@
 	action={magicUrl}
 	{method}
 	use:enhance={{
-		validate: ({ data }) => {
-			const vErrors = validate({ data });
+		validate: (data) => {
+			const vErrors = validate(data);
 			validationErrors = vErrors;
 			return validationErrors;
 		},

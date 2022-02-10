@@ -35,7 +35,11 @@
 			case '4':
 				await new Promise((resolve) => setTimeout(resolve, 2500));
 
-				return {};
+				return {
+					headers: {
+						'x-update-me': 'true'
+					}
+				};
 
 			case '5':
 				//@ts-expect-error

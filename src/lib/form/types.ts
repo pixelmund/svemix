@@ -1,6 +1,6 @@
 export type ValidationErrors = Record<string, string | string[]>;
 
-export type EnhanceFormValidate = ({ data }: { data: FormData }) => ValidationErrors;
+export type EnhanceFormValidate = (data: FormData) => ValidationErrors;
 export type EnhanceFormPending = ({
 	data,
 	form

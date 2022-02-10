@@ -3,7 +3,7 @@ import { get as __get, post as __post } from '$lib/server';
 import type { Action } from '$lib';
 import { redirect } from '$lib/server';
 
-export const action: Action<any> = async ({ request, locals }) => {
+export const action: Action = async ({ request, locals }) => {
 	const body = await request.formData();
 
 	const _action = body.get('_action');
@@ -36,7 +36,11 @@ export const action: Action<any> = async ({ request, locals }) => {
 		case '4':
 			await new Promise((resolve) => setTimeout(resolve, 2500));
 
-			return {};
+			return {
+				headers: {
+					'x-update-me': 'true'
+				}
+			};
 
 		case '5':
 			//@ts-expect-error

@@ -38,8 +38,8 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 		// @ts-ignore FormData is a little bit weird to type, if someone has an idea how to type it correctly feel free to let me now.
 		const body = await request.formData();
 
-		const title = body.get('title');
-		const content = body.get('content');
+		const title = body.get('title') as string;
+		const content = body.get('content') as string;
 
 		if (!title || title.length === 0) {
 			return {
@@ -48,7 +48,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 					content
 				},
 				errors: {
-					title: 'Title must be greater than 1'
+					title: 'A post title is required'
 				}
 			};
 		}
@@ -59,12 +59,26 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 	};
 </script>
 
-<script>
+<script lang="ts">
 	import { Form } from 'svemix';
-	// You can also get the data by export let actionData;
+
+	// You can also get the actionData by defining
+	// export let actionData;
+
+	function validateOnClient(formData: FormData) {
+		const title = formData.get('title') as string;
+
+		const errors: any = {};
+
+		if (title && title.length === 0) {
+			errors.title = 'A post title is required';
+		}
+
+		return errors;
+	}
 </script>
 
-<Form let:data let:submitting>
+<Form let:data let:submitting validate={validateOnClient}>
 	<input type="text" name="title" value={data?.values?.title || ''} />
 	<textarea name="content" />
 
