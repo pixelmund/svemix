@@ -43,7 +43,7 @@ export const action: Action = async ({ request, locals }) => {
 			};
 
 		case '5':
-			//@ts-expect-error
+			// @ts-ignore
 			locals.session.data = { isLoggedIn: true };
 
 			return {};

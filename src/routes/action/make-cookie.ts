@@ -3,7 +3,7 @@ import { get as __get, post as __post } from '$lib/server';
 import type { Action } from '$lib';
 import { makeCookie } from '$lib/cookie';
 
-export const action: Action = ({ locals }) => {
+export const action: Action = () => {
 	const trackingEnabledCookie = makeCookie('tracking_enabled', '1', {
 		path: '/'
 	});

@@ -26,6 +26,8 @@
 
 	$: magicUrl = action.length > 0 ? action : $page.url.pathname;
 	$: method = method !== 'POST' && method !== 'GET' ? 'POST' : method;
+
+	// @ts-ignore svelte-ignore we subscribe to session to get and set updates
 	$: __session = $session;
 
 	let submitting: boolean = false;
