@@ -9,7 +9,7 @@ interface SessionData {
 declare namespace App {
 	interface Locals {
 		session: import('../dist/session').Session<SessionData>;
-		cookies: Record<string, string>
+		cookies: Record<string, string>;
 	}
 
 	interface Platform {}
