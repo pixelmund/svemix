@@ -4,7 +4,11 @@ import type { RequestEvent } from '@sveltejs/kit';
 
 export type MaybePromise<T> = T | Promise<T>;
 
-type ActionOutput = Record<string, any>;
+type ActionOutput = {
+	headers?: Headers | Record<string, string | string[]>;
+	status?: number;
+	[key: string]: any;
+};
 
 export type Action<Output extends ActionOutput = ActionOutput> = (
 	request: RequestEvent

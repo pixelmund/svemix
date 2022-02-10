@@ -30,6 +30,10 @@
 				href: '/docs/getting-started/configuration'
 			},
 			{
+				title: 'HTTP Helpers',
+				href: '/docs/getting-started/http-helpers'
+			},
+			{
 				title: 'Drawbacks',
 				href: '/docs/getting-started/drawbacks'
 			}

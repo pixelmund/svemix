@@ -45,6 +45,6 @@ Svemix has some limitations, the current approach uses a vite plugin which is re
 <br>
 
 <PostBottomNavigation
-previous={{ title: 'Sessions', href: '/docs/getting-started/configuration' }}
+previous={{ title: 'HTTP Helpers', href: '/docs/getting-started/http-helpers' }}
 next={{ title: '', href: '' }}
 />

@@ -24,7 +24,7 @@ Each Route can define an action function inside the `ssr` context. This action g
 
 <br>
 
-Each `.svelte` file inside your `routes` folder can export a `action` function, this `action` can return data, errors, headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
+Each `.svelte` file inside your `routes` folder can export a `action` function, this `action` can return any data, headers, status and it receives the [SvelteKit Request](https://kit.svelte.dev/docs#routing-endpoints):
 
 ```svelte
 <!-- src/routes/posts/new.svelte -->
@@ -140,7 +140,11 @@ interface SvemixActionInput {
 The action can return the following output:
 
 ```ts
-type SvemixActionOutput = Record<string, any>;
+type ActionOutput = {
+	headers?: Headers | Record<string, string | string[]>;
+	status?: number;
+	[key: string]: any;
+};
 ```
 
 <PostBottomNavigation

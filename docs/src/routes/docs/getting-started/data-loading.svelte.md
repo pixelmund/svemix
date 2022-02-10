@@ -44,6 +44,9 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 		return {
 			data: {
 				posts
+			},
+			metadata: {
+				title: 'All Posts'
 			}
 		};
 	};

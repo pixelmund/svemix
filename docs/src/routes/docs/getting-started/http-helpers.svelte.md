@@ -1,5 +1,5 @@
 ---
-title: Configuration
+title: HTTP Helpers
 ---
 
 <script context="module">
@@ -9,7 +9,7 @@ title: Configuration
 	import PostBottomNavigation from "../../../components/PostBottomNavigation.svelte";
 </script>
 
-<p class="mb-4 leading-6 font-semibold text-sky-300">HTTP Helpers</p>
+<p class="mb-4 leading-6 font-semibold text-sky-300">Utilities</p>
 
 # {title}
 

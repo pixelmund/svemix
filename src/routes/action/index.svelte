@@ -2,7 +2,7 @@
 	import type { Action } from '$lib';
 	import { redirect } from '$lib/server';
 
-	export const action: Action<any> = async ({ request, locals }) => {
+	export const action: Action = async ({ request, locals }) => {
 		const body = await request.formData();
 
 		const _action = body.get('_action');
