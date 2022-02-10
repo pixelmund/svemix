@@ -11,6 +11,8 @@
 	"scripts": {
 		"dev": "cross-env TEST=true svelte-kit dev --port=3001",
 		"build": "svelte-kit package && npm run format",
+		"build:kit": "cross-env TEST=true svelte-kit build",
+		"preview": "cross-env TEST=true svelte-kit preview --port=3001",
 		"check": "svelte-check --tsconfig ./tsconfig.json --ignore \"dist,build\"",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. .",

@@ -89,12 +89,13 @@ interface SvemixLoaderInput {
 The loader can return the following output:
 
 ```ts
-interface SvemixLoaderOutput {
+interface SvemixLoaderResult<Data extends Record<any, any> = Record<any, any>> {
+	status?: number;
 	headers?: Record<string, string | string[]>;
 	data?: Data;
 	metadata?: MetaData;
-	status?: number;
 }
+type SvemixLoaderOutput<Data extends Record<any, any> = Record<any, any>> = LoaderResult<Data>;
 ```
 
 <PostBottomNavigation

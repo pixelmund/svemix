@@ -7,9 +7,19 @@ export function handleSession(
 	passedHandle: Handle = async ({ event, resolve }) => resolve(event)
 ) {
 	return async function handle({ event, resolve }) {
-		// We type it as any here to avoid typescript complaining about set-cookie;
-		const session: any = CookieSession(event.request.headers, options);
+		const session = CookieSession(event.request.headers, options);
 		event.locals.session = session;
+
+		const getSession = options?.getSession || (() => session.data);
+
+		if (event.url.pathname === '/__session.json' && event.request.method === 'GET') {
+			return new Response(JSON.stringify({ data: await getSession(event) }), {
+				headers: {
+					'set-cookie': session['set-cookie'] ? session['set-cookie'] : undefined,
+					'content-type': 'application/json'
+				}
+			});
+		}
 
 		const response = await passedHandle({ event, resolve });
 

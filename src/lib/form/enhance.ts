@@ -1,12 +1,21 @@
 import { invalidate } from '$app/navigation';
-import type { ActionData } from '$lib';
-import type {
-	EnhanceFormErrors,
-	EnhanceFormFormError,
-	EnhanceFormPending,
-	EnhanceFormResult,
-	EnhanceFormValidate
-} from './types';
+import type { EnhanceFormError, EnhanceFormPending, EnhanceFormValidate } from './types';
+
+export type InternalEnhanceFormResult = ({
+	data,
+	redirectTo,
+	refreshSession,
+	formData,
+	form,
+	response
+}: {
+	data: Record<string, any>;
+	formData: FormData;
+	response: Response;
+	form: HTMLFormElement;
+	redirectTo: string;
+	refreshSession: boolean;
+}) => void | Promise<void>;
 
 // this action (https://svelte.dev/tutorial/actions) allows us to
 // progressively enhance a <form> that already works without JS
@@ -16,14 +25,12 @@ export function enhance(
 		validate,
 		pending,
 		formError,
-		errors,
 		result
 	}: {
 		validate?: EnhanceFormValidate;
 		pending?: EnhanceFormPending;
-		errors?: EnhanceFormErrors;
-		formError?: EnhanceFormFormError;
-		result?: EnhanceFormResult;
+		formError?: EnhanceFormError;
+		result?: InternalEnhanceFormResult;
 	} = {}
 ): { destroy: () => void } {
 	let current_token: unknown;
@@ -46,6 +53,7 @@ export function enhance(
 
 		try {
 			const response = await fetch(form.action, {
+				credentials: 'include',
 				method: form.method,
 				headers: {
 					accept: 'application/json'
@@ -56,41 +64,70 @@ export function enhance(
 			if (token !== current_token) return;
 
 			if (response.ok) {
-				const json = await response.json();
-				const actionData = json?.actionData as ActionData;
+				const redirectTo = response.headers.get('x-svemix-location') || '';
 
-				if (!actionData) {
-					throw new Error('Could not load action data');
-				}
-
-				if (actionData.formError && actionData.formError.length > 0) {
-					throw new Error(actionData.formError);
-				}
-
-				if (
-					actionData.errors &&
-					Object.values(actionData.errors).some((err) => err.length > 0) &&
-					errors
-				) {
-					errors({ data, form, errors: actionData.errors });
+				if (redirectTo.length > 0) {
+					await result({
+						formData: data,
+						form,
+						data: undefined,
+						response: response,
+						refreshSession: false,
+						redirectTo
+					});
 					return;
 				}
 
+				const json = await response.json();
+				const actionData = json?.actionData;
+
+				const refreshSessionHeader = response.headers.get('x-svemix-refresh-session') || 'false';
+				const refreshSession = refreshSessionHeader === 'true';
+
 				if (result) {
-					result({ data, form, response: actionData });
+					await result({
+						formData: data,
+						form,
+						data: actionData,
+						response: response,
+						refreshSession,
+						redirectTo
+					});
 				}
 
 				const url = new URL(form.action);
 				url.search = url.hash = '';
-				invalidate(url.href);
+
+				let shouldInvalidate = true;
+
+				if (redirectTo.length > 0) {
+					shouldInvalidate = false;
+				}
+
+				if (actionData && actionData.errors) {
+					if (Object.values<string>(actionData.errors).some((err) => err.length > 0)) {
+						shouldInvalidate = false;
+					}
+				}
+
+				// TODO: Is this behaviour right? If i uncomment this, SvelteKit invalidates 2 times which seems like to much...
+				if (refreshSession) {
+					shouldInvalidate = false;
+				}
+
+				if (shouldInvalidate) {
+					invalidate(url.href);
+				}
 			} else if (formError) {
-				formError({ data, form, error: null, response });
+				formError({ formData: data, form, error: null, response });
 			} else {
 				console.error(await response.text());
 			}
 		} catch (e: any) {
+			console.log(e);
+
 			if (formError) {
-				formError({ data, form, error: e, response: null });
+				formError({ formData: data, form, error: e, response: null });
 			} else {
 				throw e;
 			}

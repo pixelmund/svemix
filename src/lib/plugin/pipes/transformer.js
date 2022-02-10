@@ -25,7 +25,7 @@ ${
 		? `
 			${(doc.scripts.instance?.content || '').includes('actionData') ? '' : 'export let actionData;'}
 			const _svemix_form_state = _writable_store(actionData);
-			_set_context('svemix-form', _svemix_form_state);`
+			_set_context('svemix-action-data', _svemix_form_state);`
 		: ''
 }
     </script>

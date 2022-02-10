@@ -38,6 +38,7 @@
 				return {};
 
 			case '5':
+				//@ts-expect-error
 				locals.session.data = { isLoggedIn: true };
 
 				return {};
@@ -57,17 +58,22 @@
 	<input type="hidden" name="_action" value="1" />
 	<button type="submit" id="submit-1">Submit</button>
 </Form>
-<Form let:errors>
+<Form let:data>
 	<input type="hidden" name="val" value="submitter-2" />
-	{#if errors.val && errors.val.length > 0}
-		<p id="error-val-2">{errors.val}</p>
+	{#if data?.errors?.val && data.errors.val.length > 0}
+		<p id="error-val-2">{data.errors.val}</p>
 	{/if}
 	<input type="hidden" name="_action" value="2" />
 	<button type="submit" id="submit-2">Submit</button>
 </Form>
-<Form let:values>
-	<input type="text" id="input-name" name="name" value={values?.name || ''} />
-	<input type="text" id="input-birth" name="year_of_birth" value={values?.year_of_birth || ''} />
+<Form let:data>
+	<input type="text" id="input-name" name="name" value={data?.values?.name || ''} />
+	<input
+		type="text"
+		id="input-birth"
+		name="year_of_birth"
+		value={data?.values?.year_of_birth || ''}
+	/>
 	<input type="hidden" name="_action" value="3" />
 	<button type="submit" id="submit-3">Submit</button>
 </Form>
