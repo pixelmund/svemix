@@ -1,4 +1,6 @@
 <script lang="ts">
+	//@ts-nocheck
+	
 	import { metaDefaults } from '$svemix';
 	import { getMetaData } from '../context';
 
