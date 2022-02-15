@@ -8,8 +8,8 @@
 	import { goto } from '$app/navigation';
 	import { page, session } from '$app/stores';
 	import { enhance } from './enhance';
-	import { getActionData } from './context';
-	import { mergeObjects } from './utils';
+	import { getActionData } from '../context';
+	import { mergeObjects } from '../utils';
 
 	const actionData = getActionData();
 

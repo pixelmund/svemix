@@ -9,27 +9,10 @@ const Instance_Transformer = (args) => {
 
 	const instanceContent = `
     <script ${doc.scripts.instance?.attrs?.lang === 'ts' ? 'lang="ts"' : ''}>
-	    ${
-				doc.functions.action
-					? `
-		import { setContext as _set_context } from "svelte";
-		import { writable as _writable_store } from "svelte/store";
-		`
-					: ''
-			}
         import { Meta as SvemixMeta } from "${SVEMIX_LIB_DIR}"; 
         ${doc.scripts.instance?.content || ''}
-        export let metadata = {};
-${
-	doc.functions.action
-		? `
-			${(doc.scripts.instance?.content || '').includes('actionData') ? '' : 'export let actionData;'}
-			const _svemix_form_state = _writable_store(actionData);
-			_set_context('svemix-action-data', _svemix_form_state);`
-		: ''
-}
     </script>
-    <SvemixMeta _metadata={metadata} />
+    <SvemixMeta />
   `;
 
 	return instanceContent;

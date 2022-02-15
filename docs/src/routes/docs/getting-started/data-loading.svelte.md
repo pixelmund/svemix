@@ -52,7 +52,14 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 </script>
 
 <script lang="ts">
-	export let data: LoaderData;
+	import { getLoaderData } from 'svemix';
+	const data = getLoaderData();
+
+	/**
+	 *
+	 * Or export let data;
+	 *
+	 */
 </script>
 
 <div>
