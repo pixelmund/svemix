@@ -1,14 +1,9 @@
 <script lang="ts">
-	// @ts-nocheck
-
-	import type { MetaData } from '.';
-
 	import { metaDefaults } from '$svemix';
+	import { getMetaData } from '../context';
 
-	export let _metadata: MetaData = {};
-
-	let metadata: MetaData;
-	$: metadata = { ...metaDefaults, ..._metadata };
+	const _metadata = getMetaData();
+	$: metadata = { ...metaDefaults, ...$_metadata };
 </script>
 
 <svelte:head>

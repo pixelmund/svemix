@@ -63,7 +63,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 	import { Form } from 'svemix';
 
 	// You can also get the actionData by defining
-	// export let actionData;
+	// export let actionData or using the getActionData function, which you can import from svemix;
 
 	function validateOnClient(formData: FormData) {
 		const title = formData.get('title') as string;
@@ -96,7 +96,7 @@ Each `.svelte` file inside your `routes` folder can export a `action` function, 
 
 <br>
 
-You can also get the actionData via the `getActionData` function which has to be called within component initialization and cannot be used inside route/page components because the context is set there from the vite plugin. It returns an `svelte store`.
+You can also get the actionData via the `getActionData` function which has to be called within component initialization. It returns an `svelte store` which you can type with generics.
 
 This can be really useful if you have some kind of input component:
 

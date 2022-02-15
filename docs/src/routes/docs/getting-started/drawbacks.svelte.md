@@ -33,10 +33,12 @@ Svemix has some limitations, the current approach uses a vite plugin which is re
         )
 </script>
 <script>
-    export let data;
+    import { getActionData } from "svemix";
+
+    const data = getActionData();
 
     // this doesn't exist
-    data.book.getYearsSincePublication()
+    $data.book.getYearsSincePublication()
 <script>
 ```
 
