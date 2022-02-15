@@ -16,7 +16,7 @@
 
 <script lang="ts">
 	import { getLoaderData } from '$lib';
-	const data = getLoaderData();
+	const data = getLoaderData<LoaderData>();
 
 	/**
 	 *

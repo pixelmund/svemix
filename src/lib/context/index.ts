@@ -1,5 +1,5 @@
 import type { MetaData } from '$lib';
-import { mergeObjects } from '$lib/utils';
+import { mergeObjects } from '$lib/utils.js';
 import { setContext, getContext } from 'svelte';
 import { Writable, writable } from 'svelte/store';
 
