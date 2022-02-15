@@ -53,7 +53,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 
 <script lang="ts">
 	import { getLoaderData } from 'svemix';
-	const data = getLoaderData();
+	const data = getLoaderData<LoaderData>();
 
 	/**
 	 *
@@ -63,7 +63,7 @@ Each `.svelte` file inside your `routes` folder can export a `loader` function, 
 </script>
 
 <div>
-	{JSON.stringify(data)}
+	{JSON.stringify($data)}
 </div>
 ```
 
