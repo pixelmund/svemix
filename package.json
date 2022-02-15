@@ -1,6 +1,6 @@
 {
 	"name": "svemix",
-	"version": "0.8.1",
+	"version": "0.8.2",
 	"description": "The Full-Stack addition to SvelteKit. Write your server code inside svelte files, handle sessions, forms and SEO easily.",
 	"repository": {
 		"type": "git",
@@ -10,7 +10,7 @@
 	"license": "MIT",
 	"scripts": {
 		"dev": "cross-env TEST=true svelte-kit dev --port=3001",
-		"build": "svelte-kit package && npm run format",
+		"build": "node pre-build-fix.js && svelte-kit package && npm run format",
 		"build:kit": "cross-env TEST=true svelte-kit build",
 		"preview": "cross-env TEST=true svelte-kit preview --port=3001",
 		"check": "svelte-check --tsconfig ./tsconfig.json --ignore \"dist,build\"",
