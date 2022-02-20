@@ -1,0 +1,26 @@
+.language-id {
+	display: none;
+}
+
+pre.twoslash {
+	--shiki-color-text: theme('colors.gray.300');
+	--shiki-color-background: theme('colors.zinc.800');
+	--shiki-token-constant: #b5cea8;
+	--shiki-token-string: #ce9178;
+	--shiki-token-comment: #6a9955;
+	--shiki-token-keyword: #569cd6;
+	--shiki-token-parameter: #9cdcfe;
+	--shiki-token-function: #dcdcaa;
+	--shiki-token-string-expression: var(--code-string);
+	--shiki-token-punctuation: #d4d4d4;
+	--shiki-token-link: #569cd6;
+}
+
+pre.twoslash .error,
+pre.twoslash .error-behind {
+	display: none;
+}
+
+pre.twoslash data-lsp {
+	border-bottom: 1px dotted rgba(0, 0, 0, 0.2);
+}
