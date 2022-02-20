@@ -55,7 +55,7 @@ This can be really useful if you have some kind of nested component wich needs a
 <script context="module" ssr>
 	import { loadUserSomeHow } from "$lib";
 
-	export const loader = ({ params }) => {
+	export const loader = async ({ params }) => {
 		const user = await loadUserSomeHow(params.username);
 
 		return {
