@@ -43,7 +43,7 @@
 
 	<a
 		class="flex items-center font-semibold mt-4"
-		href="https://github.com/svemix/svemix/edit/master/documentation/{section.file}"
+		href="https://github.com/svemix/svemix/edit/main/documentation/{section.file}"
 	>
 		<svg
 			class="mr-2 w-4 h-4"
