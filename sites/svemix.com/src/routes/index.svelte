@@ -1,3 +1,7 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <svelte:head>
 	<title>The Full-Stack addition to SvelteKit • Svemix</title>
 	<meta name="twitter:title" content="The Full-Stack addition to SvelteKit • Svemix" />
