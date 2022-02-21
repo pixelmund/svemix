@@ -48,7 +48,7 @@
 		<div class="py-4 border-b border-gray-900/10 lg:px-8 lg:border-0 mx-4 lg:mx-0">
 			<div class="relative flex items-center">
 				<a class="mr-3 flex-none overflow-hidden md:w-auto" href="/">
-					<img class="h-6 md:h-8 w-auto" src="/svemix_logo.png" alt="Svemix" />
+					<img class="h-6 md:h-8 w-auto" src="/svemix_logo.png" width="168" height="32" alt="Svemix" />
 				</a>
 				<nav class="hidden lg:block ml-auto">
 					<ul class="flex space-x-8 text-sm leading-6 font-semibold text-gray-200">

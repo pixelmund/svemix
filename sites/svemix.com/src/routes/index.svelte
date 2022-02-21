@@ -12,7 +12,7 @@
 <div class="h-screen w-full flex flex-col flex-1">
 	<header class="max-w-6xl mx-auto w-full px-6 py-9 flex justify-between items-center text-white ">
 		<a aria-label="Svemix" aria-current="page" class="active" href="/">
-			<img class="h-8 w-auto" src="/svemix_logo.png" alt="Svemix" />
+			<img class="h-8 w-auto" src="/svemix_logo.png" width="168" height="32" alt="Svemix" />
 		</a>
 		<nav class="flex" aria-label="Main">
 			<a
