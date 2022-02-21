@@ -1,7 +1,15 @@
 import { read_headings } from '$lib/server';
 
 export function get() {
-	return {
-		body: read_headings('docs').map(({ slug, title, sections }) => ({ slug, title, sections }))
-	};
+	try {
+		const headings = read_headings('docs').map(({ slug, title, sections }) => ({ slug, title, sections }));
+		return {
+			body: headings
+		};
+	} catch (error) {
+		return {
+			status: 404,
+			body: 'Not found'
+		}
+	}
 }
