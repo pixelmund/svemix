@@ -5,6 +5,14 @@
 	/** @type {import('@sveltejs/kit').Load} */
 	export async function load({ fetch, params }) {
 		const res = await fetch(`/docs/${params.slug}.json`);
+
+		if (!res.ok) {
+			return {
+				status: res.status,
+				error: await res.text()
+			};
+		}
+
 		const { prev, next, section } = await res.json();
 
 		return {

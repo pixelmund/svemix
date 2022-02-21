@@ -14,7 +14,7 @@ const config = {
 	kit: {
 		adapter: adapter(),
 		prerender: {
-			entries: ['*', '/content.json']
+			entries: ['*']
 		},
 		vite: {
 			fs: {
