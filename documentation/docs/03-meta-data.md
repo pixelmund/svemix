@@ -9,7 +9,7 @@ Svemix includes some default meta data / SEO handling, the cool thing is. All yo
 > Each .svelte file inside your routes folder can export a loader function, this loader can return an object with the metadata property, which svemix makes automatically use of.
 
 ```svelte
-/// file: src/about.svelte 
+/// file: src/routes/about.svelte 
 <script context="module" lang="ts" ssr>
 	import type { Loader } from 'svemix';
 
