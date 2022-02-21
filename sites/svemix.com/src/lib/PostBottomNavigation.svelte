@@ -5,9 +5,9 @@
 
 <div class="flex my-12 items-center justify-between">
 	{#if prev && prev.slug.length > 0}
-		<a class="!text-gray-200 text-xl font-semibold" href={prev.slug} sveltekit:prefetch>
+		<a class="!text-gray-200 !no-underline hover:!text-white flex items-center text-base sm:text-xl font-semibold" href={prev.slug} sveltekit:prefetch>
 			<svg
-				class="w-5 h-5 inline-block mr-2"
+				class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 sm:mr-2"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
@@ -27,13 +27,13 @@
 
 	{#if next && next.slug.length > 0}
 		<a
-			class="!text-gray-200 !no-underline hover:!text-white flex items-center text-xl font-semibold"
+			class="!text-gray-200 !no-underline hover:!text-white flex items-center text-base sm:text-xl font-semibold"
 			href={next.slug}
 			sveltekit:prefetch
 		>
 			{next.title}
 			<svg
-				class="w-5 h-5 inline-block ml-2"
+				class="w-4 h-4 inline-block ml-1 sm:ml-2"
 				fill="none"
 				stroke="currentColor"
 				viewBox="0 0 24 24"
