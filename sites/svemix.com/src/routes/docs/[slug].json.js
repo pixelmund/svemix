@@ -20,6 +20,6 @@ export async function get({ params }) {
 		return {
 			status: 404,
 			body: 'Not found'
-		}
+		};
 	}
 }

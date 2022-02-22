@@ -22,6 +22,7 @@ export function redirect(path: string, optsOrStatus: number | RedirectOptions): 
 }
 
 export function get(loader: Loader): RequestHandler<any> {
+	// @ts-ignore What's up with this??
 	return async (event) => {
 		const loaded = await loader(event);
 

@@ -5,8 +5,14 @@
 <svelte:head>
 	<title>The Full-Stack addition to SvelteKit • Svemix</title>
 	<meta name="twitter:title" content="The Full-Stack addition to SvelteKit • Svemix" />
-	<meta name="twitter:description" content="The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily." />
-	<meta name="description" content="The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily." />
+	<meta
+		name="twitter:description"
+		content="The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily."
+	/>
+	<meta
+		name="description"
+		content="The Full-Stack addition to SvelteKit. Write your server code inside .svelte files, handle sessions, forms and SEO easily."
+	/>
 </svelte:head>
 
 <div class="h-screen w-full flex flex-col flex-1">

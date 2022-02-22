@@ -5,7 +5,11 @@
 
 <div class="flex my-12 items-center justify-between">
 	{#if prev && prev.slug.length > 0}
-		<a class="!text-gray-200 !no-underline hover:!text-white flex items-center text-base sm:text-xl font-semibold" href={prev.slug} sveltekit:prefetch>
+		<a
+			class="!text-gray-200 !no-underline hover:!text-white flex items-center text-base sm:text-xl font-semibold"
+			href={prev.slug}
+			sveltekit:prefetch
+		>
 			<svg
 				class="w-4 h-4 sm:w-5 sm:h-5 inline-block mr-1 sm:mr-2"
 				fill="none"
