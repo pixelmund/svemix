@@ -9,7 +9,6 @@
 	import { page, session } from '$app/stores';
 	import { enhance } from './enhance';
 	import { getActionData } from '../context';
-	import { mergeObjects } from '../utils';
 
 	const actionData = getActionData();
 
@@ -69,11 +68,7 @@
 				}
 			}
 
-			// This updates the actionData stores and deep merges values
-			// I don't exactly know if this is the right behaviour
-			actionData.update((state) => {
-				return mergeObjects(state || {}, data);
-			});
+			actionData.set(data);
 
 			await result({ formData, data, form, response });
 		}

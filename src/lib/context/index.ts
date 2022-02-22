@@ -1,5 +1,4 @@
 import type { MetaData } from '$lib';
-import { mergeObjects } from '$lib/utils.js';
 import { setContext, getContext } from 'svelte';
 import { Writable, writable } from 'svelte/store';
 
@@ -23,24 +22,25 @@ export function getActionData<T extends Record<string, any> = Record<string, any
 	return getContext<SvemixContext>(SVEMIX_CONTEXT_KEY).actionDataStore as Writable<T>;
 }
 
-const updateSvemixStore = (store: Writable<any>, data: any) => {
-	store.update((state) => {
-		return mergeObjects(state || {}, data);
-	});
-};
-
 export function updateSvemixContext(
 	{ loaderDataStore, actionDataStore, metaDataStore }: SvemixContext,
 	props: any[]
 ) {
-	const { loaderData, actionData, metaData } = updateSvemixFromProps(props);
-	updateSvemixStore(loaderDataStore, loaderData);
-	updateSvemixStore(actionDataStore, actionData);
-	updateSvemixStore(metaDataStore, metaData);
+	const { loaderData, actionData, metaData } = getSvemixProps(props);
+
+	const stores: [Writable<Record<string, any>>, Record<string, any>][] = [
+		[loaderDataStore, loaderData],
+		[actionDataStore, actionData],
+		[metaDataStore, metaData]
+	];
+
+	for (const [store, value] of stores) {
+		store.set(value);
+	}
 }
 
 export function createSvemixContext(props: any[]) {
-	const { loaderData, actionData, metaData } = updateSvemixFromProps(props);
+	const { loaderData, actionData, metaData } = getSvemixProps(props);
 
 	const loaderDataStore = writable(loaderData);
 	const actionDataStore = writable(actionData);
@@ -55,7 +55,7 @@ export function createSvemixContext(props: any[]) {
 	return { loaderDataStore, actionDataStore, metaDataStore };
 }
 
-function updateSvemixFromProps(props: any[]) {
+function getSvemixProps(props: any[]) {
 	let loaderData: Record<string, any> = {};
 	let actionData: Record<string, any> = {};
 	let metaData: MetaData = {};
