@@ -1,6 +1,6 @@
 export { get, post, redirect } from './endpoint.js';
 import type { MetaData } from '$lib/index.js';
-import type { RequestEvent } from '@sveltejs/kit';
+import type { RequestEvent } from '@sveltejs/kit/types/private';
 
 export type MaybePromise<T> = T | Promise<T>;
 
