@@ -9,6 +9,11 @@ test.describe('Loader', () => {
 		expect(await page.innerHTML('h3')).toBe('Github');
 	});
 
+	test('can return error', async ({ page }) => {
+		await page.goto('/loader/can-error');
+		expect(await page.innerHTML('h1')).toBe('My Custom Error');
+	});
+
 	test('can redirect', async ({ page }) => {
 		await page.goto('/loader/can-redirect');
 		expect(await page.innerHTML('h1')).toBe('REDIRECT WORKED');
@@ -22,6 +27,7 @@ test.describe('Metadata', () => {
 	});
 	test('respects defaults', async ({ page }) => {
 		await page.goto('/metadata');
+		await page.waitForTimeout(1000);
 		const metaDescriptionValue = await page.$eval('meta[name="description"]', (el) => el.content);
 		expect(metaDescriptionValue).toBe('Default description');
 	});

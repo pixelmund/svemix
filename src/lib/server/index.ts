@@ -18,6 +18,7 @@ export type LoaderResult<Data extends Record<string, any> = Record<string, any>>
 	headers?: Record<string, string | string[]>;
 	metadata?: MetaData;
 	status?: number;
+	error?: Error
 };
 
 export type Loader<Pr extends Record<any, any> = Record<any, any>> = (

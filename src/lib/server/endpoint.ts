@@ -26,15 +26,12 @@ export function get(loader: Loader): RequestHandler<any> {
 	return async (event) => {
 		const loaded = await loader(event);
 
-		const { headers, status, metadata, ...data } = loaded;
+		const { headers, status, metadata, error, ...data } = loaded;
 
 		return {
 			status: status || 200,
 			headers: headers || {},
-			body: {
-				data,
-				metadata
-			}
+			body: error ?? { data, metadata }
 		};
 	};
 }

@@ -1,5 +1,4 @@
 import preprocess from 'svelte-preprocess';
-import svemix from './src/lib/plugin/index.js';
 
 /** @type {import('./dist').SvemixConfig} */
 const config = {
@@ -20,9 +19,6 @@ const config = {
 				if (filepath.includes('index')) return true;
 				return false;
 			}
-		},
-		vite: {
-			plugins: [svemix()]
 		}
 	}
 };
