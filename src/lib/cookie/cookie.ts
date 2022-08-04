@@ -14,8 +14,7 @@ import type { CookieParseOptions, CookieSerializeOptions } from './types';
  * @private
  */
 
-const decode = decodeURIComponent;
-const encode = encodeURIComponent;
+const __toString = Object.prototype.toString;
 
 /**
  * RegExp to match field-content in RFC 7230 sec 3.2
@@ -34,38 +33,49 @@ const fieldContentRegExp = /^[\u0009\u0020-\u007e\u0080-\u00ff]+$/;
  * The object has the various cookies as keys(names) => values
  *
  */
-export function parse(str: string, options: CookieParseOptions): { [key: string]: string } {
+export function parse(str: string, options: CookieParseOptions): Record<string, string> {
 	if (typeof str !== 'string') {
 		throw new TypeError('argument str must be a string');
 	}
 
-	const obj = {};
+	const obj: any = {};
 	const opt = options || {};
-	const pairs = str.split(';');
 	const dec = opt.decode || decode;
 
-	for (let i = 0; i < pairs.length; i++) {
-		const pair = pairs[i];
-		const index = pair.indexOf('=');
+	let index = 0;
+	while (index < str.length) {
+		let eqIdx = str.indexOf('=', index);
 
-		// skip things that don't look like key=value
-		if (index < 0) {
+		// no more cookie pairs
+		if (eqIdx === -1) {
+			break;
+		}
+
+		let endIdx = str.indexOf(';', index);
+
+		if (endIdx === -1) {
+			endIdx = str.length;
+		} else if (endIdx < eqIdx) {
+			// backtrack on prior semicolon
+			index = str.lastIndexOf(';', eqIdx - 1) + 1;
 			continue;
 		}
 
-		const key = pair.substring(0, index).trim();
+		const key = str.slice(index, eqIdx).trim();
 
 		// only assign once
-		if (undefined == obj[key]) {
-			let val = pair.substring(index + 1, pair.length).trim();
+		if (undefined === obj[key]) {
+			let val = str.slice(eqIdx + 1, endIdx).trim();
 
 			// quoted values
-			if (val[0] === '"') {
+			if (val.charCodeAt(0) === 0x22) {
 				val = val.slice(1, -1);
 			}
 
 			obj[key] = tryDecode(val, dec);
 		}
+
+		index = endIdx + 1;
 	}
 
 	return obj;
@@ -81,7 +91,7 @@ export function parse(str: string, options: CookieParseOptions): { [key: string]
  *   => "foo=bar; httpOnly"
  *
  */
-export function serialize(name: string, val: string, options: CookieSerializeOptions): string {
+export function serialize(name: string, val: string, options: CookieSerializeOptions) {
 	const opt = options || {};
 	const enc = opt.encode || encode;
 
@@ -128,11 +138,13 @@ export function serialize(name: string, val: string, options: CookieSerializeOpt
 	}
 
 	if (opt.expires) {
-		if (typeof opt.expires.toUTCString !== 'function') {
+		const expires = opt.expires;
+
+		if (!isDate(expires) || isNaN(expires.valueOf())) {
 			throw new TypeError('option expires is invalid');
 		}
 
-		str += '; Expires=' + opt.expires.toUTCString();
+		str += '; Expires=' + expires.toUTCString();
 	}
 
 	if (opt.httpOnly) {
@@ -141,6 +153,24 @@ export function serialize(name: string, val: string, options: CookieSerializeOpt
 
 	if (opt.secure) {
 		str += '; Secure';
+	}
+
+	if (opt.priority) {
+		const priority = typeof opt.priority === 'string' ? opt.priority.toLowerCase() : opt.priority;
+
+		switch (priority) {
+			case 'low':
+				str += '; Priority=Low';
+				break;
+			case 'medium':
+				str += '; Priority=Medium';
+				break;
+			case 'high':
+				str += '; Priority=High';
+				break;
+			default:
+				throw new TypeError('option priority is invalid');
+		}
 	}
 
 	if (opt.sameSite) {
@@ -168,13 +198,29 @@ export function serialize(name: string, val: string, options: CookieSerializeOpt
 }
 
 /**
- * Try decoding a string using a decoding function.
- *
- * @param {string} str
- * @param {function} decode
- * @private
+ * URL-decode string value. Optimized to skip native call when no %.
  */
+function decode(str: string) {
+	return str.indexOf('%') !== -1 ? decodeURIComponent(str) : str;
+}
 
+/**
+ * URL-encode value.
+ */
+function encode(val: string) {
+	return encodeURIComponent(val);
+}
+
+/**
+ * Determine if value is a Date.
+ */
+function isDate(val: any) {
+	return __toString.call(val) === '[object Date]' || val instanceof Date;
+}
+
+/**
+ * Try decoding a string using a decoding function.
+ */
 function tryDecode(str: string, decode: any) {
 	try {
 		return decode(str);

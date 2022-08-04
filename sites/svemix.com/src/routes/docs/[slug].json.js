@@ -1,7 +1,7 @@
 import { read } from '$lib/server';
 
 /** @type {import('@sveltejs/kit').RequestHandler} */
-export async function get({ params }) {
+export async function GET({ params }) {
 	try {
 		const { prev, next, section } = await read('docs', params.slug);
 
@@ -17,6 +17,7 @@ export async function get({ params }) {
 			}
 		};
 	} catch (error) {
+		console.log(error);
 		return {
 			status: 404,
 			body: 'Not found'

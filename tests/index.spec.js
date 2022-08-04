@@ -9,6 +9,11 @@ test.describe('Loader', () => {
 		expect(await page.innerHTML('h3')).toBe('Github');
 	});
 
+	test('can return error', async ({ page }) => {
+		await page.goto('/loader/can-error');
+		expect(await page.innerHTML('h1')).toBe('My Custom Error');
+	});
+
 	test('can redirect', async ({ page }) => {
 		await page.goto('/loader/can-redirect');
 		expect(await page.innerHTML('h1')).toBe('REDIRECT WORKED');
@@ -22,6 +27,7 @@ test.describe('Metadata', () => {
 	});
 	test('respects defaults', async ({ page }) => {
 		await page.goto('/metadata');
+		await page.waitForTimeout(1000);
 		const metaDescriptionValue = await page.$eval('meta[name="description"]', (el) => el.content);
 		expect(metaDescriptionValue).toBe('Default description');
 	});
@@ -95,7 +101,7 @@ const getCookieValue = (cookie) => cookie.split(';')[0].trim();
 
 test.describe('Session', () => {
 	test('should be set correctly', async ({ request }) => {
-		const response = await request.get('/session');
+		const response = await request.get('/session.json');
 		const set_cookie = response.headers()['set-cookie'];
 		expect(set_cookie).toBeDefined();
 		expect(set_cookie).toContain('svemix.testing');
@@ -104,7 +110,7 @@ test.describe('Session', () => {
 		const views = data.session.views;
 		expect(views).toBe(1);
 
-		const response1 = await request.get('/session', {
+		const response1 = await request.get('/session.json', {
 			headers: { Cookie: getCookieValue(set_cookie) }
 		});
 		const set_cookie_1 = response1.headers()['set-cookie'];
@@ -117,7 +123,7 @@ test.describe('Session', () => {
 	});
 
 	test('should be destroyed correctly', async ({ request }) => {
-		const response = await request.get('/session');
+		const response = await request.get('/session.json');
 		const set_cookie = response.headers()['set-cookie'];
 		expect(set_cookie).toBeDefined();
 		expect(set_cookie).toContain('svemix.testing');
@@ -126,7 +132,7 @@ test.describe('Session', () => {
 		const views = data.session.views;
 		expect(views).toBe(1);
 
-		const response1 = await request.delete('/session', {
+		const response1 = await request.delete('/session.json', {
 			headers: { Cookie: getCookieValue(set_cookie) }
 		});
 		const set_cookie_1 = response1.headers()['set-cookie'];
@@ -141,14 +147,14 @@ test.describe('Session', () => {
 	});
 
 	test('should keep the expiration date if already exists', async ({ request, page }) => {
-		const response = await request.get('/session');
+		const response = await request.get('/session.json');
 		const initial_set_cookie = response.headers()['set-cookie'];
 
 		const initial_data = await response.json();
 
 		await page.waitForTimeout(750);
 
-		const after_response = await request.get('/session', {
+		const after_response = await request.get('/session.json', {
 			headers: { Cookie: getCookieValue(initial_set_cookie) }
 		});
 		const after_data = await after_response.json();

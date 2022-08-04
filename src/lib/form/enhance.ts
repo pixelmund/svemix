@@ -67,14 +67,17 @@ export function enhance(
 				const redirectTo = response.headers.get('x-svemix-location') || '';
 
 				if (redirectTo.length > 0) {
-					await result({
-						formData: data,
-						form,
-						data: undefined,
-						response: response,
-						refreshSession: false,
-						redirectTo
-					});
+					if (result) {
+						await result({
+							formData: data,
+							form,
+							// @ts-ignore
+							data: undefined,
+							response: response,
+							refreshSession: false,
+							redirectTo
+						});
+					}
 					return;
 				}
 

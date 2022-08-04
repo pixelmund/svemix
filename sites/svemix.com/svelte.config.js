@@ -16,11 +16,6 @@ const config = {
 		prerender: {
 			entries: ['*']
 		},
-		vite: {
-			fs: {
-				strict: false
-			}
-		}
 	}
 };
 

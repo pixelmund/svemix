@@ -15,16 +15,9 @@
 </script>
 
 <script lang="ts">
-	import { getLoaderData } from '$lib';
-	const data = getLoaderData<LoaderData>();
-
-	/**
-	 *
-	 * Or export let data;
-	 *
-	 */
+	export let data: LoaderData;
 </script>
 
-<h1>{$data.name}</h1>
-<h2>{$data.age}</h2>
-<h3>{$data.country}</h3>
+<h1>{data.name}</h1>
+<h2>{data.age}</h2>
+<h3>{data.country}</h3>

@@ -1,6 +1,6 @@
 import type { MetaData } from '$lib';
 import { setContext, getContext } from 'svelte';
-import { Writable, writable } from 'svelte/store';
+import { type Writable, writable } from 'svelte/store';
 
 const SVEMIX_CONTEXT_KEY = '__svemix__';
 

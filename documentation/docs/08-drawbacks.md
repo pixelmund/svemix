@@ -4,11 +4,7 @@ title: Drawbacks
 
 ### Limitations
 
-Svemix has some limitations, the current approach uses a vite plugin which is responsible for generating the corresponding endpoint for you. This files are still public and can be queried by anyone. So you have to make sure to secure your loaders/actions accordingly. For example you should check if the user is logged-in/admin to avoid unwanted people hitting your generated api endpoints.
-
-### Too many files
-
-Since svemix generates endpoints next to your `.svelte` files, this can quickly sum up to a lot of files. There is an open Discussion on the SvelteKit Respository which i'm following for any ways to avoid this. I would really like to have some hidden folder somewhere while enjoying the functionality of shadow-endpoints.
+Svemix has some limitations, the current approach uses a vite plugin which is responsible for simulating the corresponding endpoint for you. This files are still public and can be queried by anyone. So you have to make sure to secure your loaders/actions accordingly. For example you should check if the user is logged-in/admin to avoid unwanted people hitting your endpoints.
 
 ### Other drawbacks
 

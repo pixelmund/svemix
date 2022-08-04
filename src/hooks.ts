@@ -1,6 +1,7 @@
 import { handleSession } from '$lib/session';
+import type { GetSession } from '@sveltejs/kit';
 
-export const getSession = ({ locals }) => {
+export const getSession : GetSession = ({ locals }) => {
 	return locals.session.data;
 };
 

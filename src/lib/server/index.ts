@@ -1,6 +1,6 @@
 export { get, post, redirect } from './endpoint.js';
 import type { MetaData } from '$lib/index.js';
-import type { RequestEvent } from '@sveltejs/kit/types/private';
+import type { RequestEvent } from '@sveltejs/kit/types';
 
 export type MaybePromise<T> = T | Promise<T>;
 
@@ -18,6 +18,7 @@ export type LoaderResult<Data extends Record<string, any> = Record<string, any>>
 	headers?: Record<string, string | string[]>;
 	metadata?: MetaData;
 	status?: number;
+	error?: Error
 };
 
 export type Loader<Pr extends Record<any, any> = Record<any, any>> = (
