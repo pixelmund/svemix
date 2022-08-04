@@ -2,7 +2,7 @@
 	import type { Action } from '$lib';
 	import { makeCookie } from '$lib/cookie';
 
-	export const action: Action = () => {
+	export const action: Action = ({locals}) => {
 		const trackingEnabledCookie = makeCookie('tracking_enabled', '1', {
 			path: '/'
 		});

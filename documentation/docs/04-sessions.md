@@ -29,10 +29,9 @@ export const handle = handleSession(
 		getSession
 	},
 	// Optional own handle function can be passed here
-	function ({ event, resolve }) {
+	async function ({ event, resolve }) {
 		// event.locals is populated with the session `event.locals.session` and `event.locals.cookies`;
-		const response = resolve(event);
-
+		const response = await resolve(event);
 		return response;
 	}
 );
@@ -93,7 +92,7 @@ If you're updating or destroying the session inside one of your `actions`, the `
 
 If the session already exists, the data get's updated but the expiration time stays the same
 
-The only way to set the session is setting the locals.session.data to an object
+There are two ways to update the session via: `session.update` and via `session.set`;
 
 ```svelte
 /// file: src/routes/auth/login.svelte
@@ -108,7 +107,7 @@ The only way to set the session is setting the locals.session.data to an object
 		password?: string;
 	}
 
-	export const action: Action<ActionData> = async function ({ request }) {
+	export const action: Action<ActionData> = async function ({ request, locals }) {
 		// @ts-ignore
 		const body = await request.formData();
 
@@ -128,7 +127,7 @@ The only way to set the session is setting the locals.session.data to an object
 				};
 			}
 
-			locals.session.data = { isLoggedIn: true, user };
+			await locals.session.set({ isLoggedIn: true, user })
 
 			return redirect('/', 302);
 		} catch (error) {
@@ -148,7 +147,7 @@ The only way to set the session is setting the locals.session.data to an object
 ### Accessing The Session
 
 
-After initializing the session, your locals will be filled with a session JS Proxy, this Proxy automatically sets the cookie if you set the locals.session.data to something and receive the current data via locals.session.data only. To see this in action add a console.log(locals.session) it will be empty. Only if you add an console.log(locals.session.data) and access the data it will output the current data. So if you wonder why is my session not filled, this is why.
+After initializing the session, your locals will be filled with a session JS Proxy, this Proxy automatically sets the cookie if you use `locals.session.set` or `locals.session.update` and receive the current data via locals.session.data only.
 
 ```svelte
 /// file: src/routes/auth/login.svelte
@@ -185,7 +184,7 @@ After initializing the session, your locals will be filled with a session JS Pro
 		const _action = body.get('_action');
 
 		if (_action === 'logout') {
-			locals.session.destroy();
+			await locals.session.destroy();
 		}
 
 		return {};
