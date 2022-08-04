@@ -77,12 +77,11 @@ This can be really useful if you have some kind of nested component wich needs a
 ```svelte
 /// file: src/lib/User.svelte
 <script>
-	import { getLoaderData } from 'svemix';
-	const data = getLoaderData();
+	export let data;
 </script>
 
 <div>
-	<p>Username: {$data?.user.username}</p>
+	<p>Username: {data?.user.username}</p>
 </div>
 ```
 

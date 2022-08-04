@@ -1,7 +1,7 @@
 // @ts-nocheck
 import type { RequestHandler } from '@sveltejs/kit';
 
-export const get: RequestHandler = ({ locals }) => {
+export const GET: RequestHandler = ({ locals }) => {
 	let views = locals.session.data?.views || 0;
 	views = views + 1;
 
@@ -14,7 +14,7 @@ export const get: RequestHandler = ({ locals }) => {
 	};
 };
 
-export const del: RequestHandler = ({ locals }) => {
+export const DELETE: RequestHandler = ({ locals }) => {
 	locals.session.destroy();
 
 	return {

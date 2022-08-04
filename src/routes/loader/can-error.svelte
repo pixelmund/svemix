@@ -8,6 +8,5 @@
 </script>
 
 <script lang="ts">
-	import { getLoaderData } from '$lib';
-	const data = getLoaderData();
+	export let data;
 </script>

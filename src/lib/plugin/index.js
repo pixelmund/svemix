@@ -1,59 +1,25 @@
-import { SVEMIX_GENERATED_DIR, SVEMIX_GENERATED_INDEX } from './constants.js';
-import load_config from './load_config.js';
-import Pipeline from './pipeline.js';
-import { stringifyObject, writeFile } from './utils.js';
+import { loadConfig, viteConfig } from './utils/index.js';
+import { initializeSvemix, resolveRoute, loadRoute, transformRoute } from './core/index.js';
 
 /**
  * @returns {import('vite').Plugin}
  */
 export default function SvemixVitePlugin() {
-	let config = null;
+	/**
+	 * @type {import('./types').InternalConfig | null}
+	 */
+	let svemixConfig = null;
 
 	return {
 		name: 'vite-plugin-svemix',
 		enforce: 'pre',
-		config(config) {
-			return {
-				...config,
-				resolve: {
-					alias: {
-						...(config.resolve?.alias || {}),
-						$svemix: SVEMIX_GENERATED_DIR
-					}
-				}
-			};
+		async config(config) {
+			svemixConfig = await loadConfig();
+			await initializeSvemix(svemixConfig);
+			return viteConfig(config);
 		},
-		async transform(src, id) {
-			if (!config) {
-				config = await load_config();
-				await initialize(config);
-			}
-
-			const { code } = await Pipeline({
-				config,
-				doc: {
-					filename: id,
-					content: src,
-					scripts: { arr: [] },
-					functions: { action: false, loader: false }
-				}
-			});
-
-			return {
-				code,
-				map: null
-			};
-		}
+		resolveId: resolveRoute(),
+		load: loadRoute(),
+		transform: transformRoute(svemixConfig)
 	};
-}
-
-/**
- *
- * @param {import('./config').InternalConfig} config
- */
-async function initialize(config) {
-	await writeFile(
-		SVEMIX_GENERATED_INDEX,
-		`export const metaDefaults = ${stringifyObject(config.seo || {})}`
-	);
 }
