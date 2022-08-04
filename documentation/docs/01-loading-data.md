@@ -4,7 +4,7 @@ title: Loading data
 
 One of the primary features of svemix is simplifying interactions with the server to get data into your svelte pages/routes, this happens by making use of `SvelteKit's` endpoints.
 
-> Svemix allows you to write your server-side code directly inside your .svelte files which lay under the routes folder. It will then generate the corresponding [endpoint](https://kit.svelte.dev/docs/routing#endpoints) for you.
+> Svemix allows you to write your server-side code directly inside your .svelte files which lay under the routes folder. It will then simulate the corresponding [page-endpoint](https://kit.svelte.dev/docs/routing#endpoints) for you.
 
 ### Basics
 
@@ -77,11 +77,13 @@ This can be really useful if you have some kind of nested component wich needs a
 ```svelte
 /// file: src/lib/User.svelte
 <script>
-	export let data;
+	import { getLoaderData } from "svemix";
+
+	const data = getLoaderData();
 </script>
 
 <div>
-	<p>Username: {data?.user.username}</p>
+	<p>Username: {$data?.user.username}</p>
 </div>
 ```
 
