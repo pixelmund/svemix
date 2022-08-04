@@ -22,7 +22,6 @@ export function redirect(path: string, optsOrStatus: number | RedirectOptions): 
 }
 
 export function get(loader: Loader): RequestHandler<any> {
-	// @ts-ignore What's up with this??
 	return async (event) => {
 		const loaded = await loader(event);
 
@@ -31,7 +30,7 @@ export function get(loader: Loader): RequestHandler<any> {
 		return {
 			status: status || 200,
 			headers: headers || {},
-			body: error ?? { data, metadata }
+			body: error ?? { data, metadata } as {}
 		};
 	};
 }
@@ -44,11 +43,11 @@ export function post(action: Action): RequestHandler<any> {
 
 		// If we have a redirect
 		if (shouldRedirect) {
-			const location =
-				actionResult.headers['x-svemix-location'] || actionResult.headers['location'];
+			// @ts-ignore
+			const location = actionResult.headers['x-svemix-location'] || actionResult.headers['location'];
 
 			// If the user has javascript disabled
-			if (!event.request.headers.get('accept').includes('application/json')) {
+			if (!(event.request.headers.get('accept') ?? '').includes('application/json')) {
 				return {
 					status,
 					headers: {
@@ -72,7 +71,7 @@ export function post(action: Action): RequestHandler<any> {
 		let shouldSendSession = false;
 
 		if (hasSession) {
-			shouldSendSession = event.locals.session?.shouldSendToClient;
+			shouldSendSession = event.locals.session?.shouldSync;
 		}
 
 		const { headers: _headers, status: _status, ...actionData } = actionResult;

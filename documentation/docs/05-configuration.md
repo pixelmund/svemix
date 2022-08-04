@@ -8,7 +8,6 @@ title: Configuration
 
 ```js
 /// file: svelte.config.js
-import svemix from 'svemix/plugin';
 
 /** @type {import('svemix').SvemixConfig} */
 const config = {

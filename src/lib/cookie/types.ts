@@ -8,14 +8,14 @@
 /**
  * Additional serialization options
  */
-export interface CookieSerializeOptions {
+ export interface CookieSerializeOptions {
 	/**
 	 * Specifies the value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.3|Domain Set-Cookie attribute}. By default, no
 	 * domain is set, and most clients will consider the cookie to apply to only
 	 * the current domain.
 	 */
 	domain?: string;
-
+  
 	/**
 	 * Specifies a function that will be used to encode a cookie's value. Since
 	 * value of a cookie has a limited character set (and must be a simple
@@ -27,7 +27,7 @@ export interface CookieSerializeOptions {
 	 * any that fall outside of the cookie range.
 	 */
 	encode?(value: string): string;
-
+  
 	/**
 	 * Specifies the `Date` object to be the value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.1|`Expires` `Set-Cookie` attribute}. By default,
 	 * no expiration is set, and most clients will consider this a "non-persistent cookie" and will delete
@@ -81,7 +81,7 @@ export interface CookieSerializeOptions {
 	 *
 	 * *note* This is an attribute that has not yet been fully standardized, and may change in the future. This also means many clients may ignore this attribute until they understand it.
 	 */
-	sameSite?: true | false | 'lax' | 'strict' | 'none';
+	sameSite?: true | false | "lax" | "strict" | "none";
 	/**
 	 * Specifies the boolean value for the {@link https://tools.ietf.org/html/rfc6265#section-5.2.5|`Secure` `Set-Cookie` attribute}. When truthy, the
 	 * `Secure` attribute is set, otherwise it is not. By default, the `Secure` attribute is not set.
@@ -91,12 +91,14 @@ export interface CookieSerializeOptions {
 	 * not have an HTTPS connection.
 	 */
 	secure?: boolean;
-}
 
-/**
- * Additional parsing options
- */
-export interface CookieParseOptions {
+	priority?: 'low' | 'medium' | 'high';
+  }
+  
+  /**
+   * Additional parsing options
+   */
+  export interface CookieParseOptions {
 	/**
 	 * Specifies a function that will be used to decode a cookie's value. Since
 	 * the value of a cookie has a limited character set (and must be a simple
@@ -110,4 +112,4 @@ export interface CookieParseOptions {
 	 * cookie value will be returned as the cookie's value.
 	 */
 	decode?(value: string): string;
-}
+  }

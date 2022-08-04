@@ -12,7 +12,7 @@ Svemix is a somewhat different framework than you're probably used to. It can be
 
 ### How does it work?
 
-Svemix Vite-Plugin replaces all code inside `<script context="module" ssr>` and generates the corresponding [SvelteKit-Endpoint](https://kit.svelte.dev/docs/routing#endpoints) next to the file for you, this means for `src/routes/todos.svelte` it will generate `src/routes/todos.{js|ts}`. SvelteKit will then make sure to run your loader on the server and for client side navigations it fetches the data required by the page.
+Svemix Vite-Plugin replaces all code inside `<script context="module" ssr>` and simulates the corresponding [SvelteKit-Endpoint](https://kit.svelte.dev/docs/routing#endpoints). SvelteKit will then make sure to run your loader on the server and for client side navigations it fetches the data required by the page.
 - This enables us to import a database or any other stuff that should never reach the client directly inside your Svelte Routes.
 
 ### Getting started
@@ -29,25 +29,18 @@ npm run dev
 
 If you already have an existing SvelteKit project setup, that's fine you can just use `npm install svemix`.
 
-Once you have the required dependency installed, you should add `svemix/plugin` inside your `svelte.config.js` file under `vite.plugins`
+Once you have the required dependency installed, you should add `svemix/plugin` inside your `vite.config.js` file under `plugins`, before `sveltekit`
 
 ```js
 /// file: svelte.config.js
 import svemix from 'svemix/plugin';
+// @errors: 2307
+import { sveltekit } from '@sveltejs/kit/vite';
 
-/** @type {import('svemix').SvemixConfig} */
+/** @type {import('vite').UserConfig} */
 const config = {
-	// ...
-	kit: {
-		// ...
-		vite: {
-			plugins: [svemix()]
-			/// ...
-		}
-	},
-	svemix: {
-		// ...
-	}
+	// @errors: 2307
+	plugins: [svemix(), sveltekit()]
 };
 
 export default config;
