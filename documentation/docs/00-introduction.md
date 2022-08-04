@@ -39,7 +39,6 @@ import { sveltekit } from '@sveltejs/kit/vite';
 
 /** @type {import('vite').UserConfig} */
 const config = {
-	// @errors: 2307
 	plugins: [svemix(), sveltekit()]
 };
 
