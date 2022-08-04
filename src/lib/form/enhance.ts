@@ -1,4 +1,4 @@
-import { invalidate } from '$app/navigation';
+import { goto, invalidate } from '$app/navigation';
 import type { EnhanceFormError, EnhanceFormPending, EnhanceFormValidate } from './types';
 
 export type InternalEnhanceFormResult = ({
@@ -78,6 +78,7 @@ export function enhance(
 							redirectTo
 						});
 					}
+					goto(redirectTo);
 					return;
 				}
 
@@ -111,11 +112,6 @@ export function enhance(
 					if (Object.values<string>(actionData.errors).some((err) => err.length > 0)) {
 						shouldInvalidate = false;
 					}
-				}
-
-				// TODO: Is this behaviour right? If i uncomment this, SvelteKit invalidates 2 times which seems like to much...
-				if (refreshSession) {
-					shouldInvalidate = false;
 				}
 
 				if (shouldInvalidate) {
