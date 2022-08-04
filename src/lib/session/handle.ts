@@ -17,14 +17,15 @@ export function handleSession(
 
 		if (event.url.pathname === '/__session.json') {
 			const getSession = options.getSession ?? (() => session.data);
-			const sessionData = await getSession(event);
-			return new Response(JSON.stringify(sessionData), {
+
+			const headers = new Headers({ 'Content-Type': 'application/json' });
+			if (session['set-cookie'] && session['set-cookie'].length > 0) {
+				headers.set('set-cookie', session['set-cookie']);
+			}
+			
+			return new Response(JSON.stringify(await getSession(event)), {
 				status: 200,
-				// @ts-ignore
-				headers: {
-					'Content-Type': 'application/json',
-					'Set-Cookie': session['set-cookie'] ? session['set-cookie'] : undefined
-				}
+				headers
 			});
 		}
 
