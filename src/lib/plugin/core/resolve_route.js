@@ -1,4 +1,4 @@
-import path from 'path';
+import { posixify } from '../utils/misc.js';
 
 /**
  *
@@ -6,19 +6,17 @@ import path from 'path';
  */
 export function resolveRoute() {
 	return (sourcePath, _importer, { ssr }) => {
-		if (!ssr) return null;
+		if (!sourcePath.includes('routes')) return null;
+		const posixified = posixify(sourcePath);
 
 		if (
-			sourcePath.includes('routes') &&
-			(sourcePath.endsWith('.ts') || sourcePath.endsWith('.js')) &&
-			!sourcePath.includes('.json.')
+			(sourcePath.endsWith('+page.server.ts') || sourcePath.endsWith('+page.server.js') || sourcePath.endsWith('+page.svelte'))
 		) {
 			return {
-				id: path.relative(process.cwd(), sourcePath)
+				id: posixified,
 			};
 		}
 
 		return null;
 	};
 }
-

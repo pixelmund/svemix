@@ -1,8 +1,8 @@
 <script context="module" ssr lang="ts">
 	import type { Action } from '$lib';
-	import { redirect } from '$lib/server';
+	import { redirect } from '@sveltejs/kit';
 
-	export const action: Action = async ({ request, locals }) => {
+	export const action: Action = async ({ request, locals, setHeaders }) => {
 		const body = await request.formData();
 
 		const _action = body.get('_action');
@@ -10,14 +10,11 @@
 		switch (_action) {
 			case '1':
 				const val = body.get('val');
-				return redirect('/action/success?val=' + val, 302);
+				throw redirect(307, '/action/success?val=' + val);
 			case '2':
 				const val2 = body.get('val');
 
 				return {
-					values: {
-						val: val2
-					},
 					errors: {
 						val: 'ERROR'
 					}
@@ -26,20 +23,12 @@
 				const name = body.get('name');
 				const year_of_birth = body.get('year_of_birth');
 
-				return {
-					values: {
-						name,
-						year_of_birth
-					}
-				};
+				return {};
 			case '4':
 				await new Promise((resolve) => setTimeout(resolve, 2500));
 
-				return {
-					headers: {
-						'x-update-me': 'true'
-					}
-				};
+				setHeaders({ 'x-update-me': 'true' });
+				return {};
 
 			case '5':
 				// @ts-ignore

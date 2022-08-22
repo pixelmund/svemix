@@ -1,5 +1,6 @@
 import fs from 'fs';
 import { getScripts, SVEMIX_LIB_DIR } from '../utils/index.js';
+import { routeManager } from '../utils/route_manager.js';
 
 /**
  *
@@ -8,33 +9,44 @@ import { getScripts, SVEMIX_LIB_DIR } from '../utils/index.js';
 export function loadRoute() {
 	return (id) => {
 		if (!id.includes('routes')) return null;
-		if (id.includes('.svelte')) return null;
-		if (id.includes('.json')) return null;
 
-		const source = id;
-		const svelteSourceFile = source.replace('.ts', '.svelte').replace('.js', '.svelte');
-		const svelteSource = fs.readFileSync(svelteSourceFile, { encoding: 'utf-8' });
+		const routeId = id.split('src/routes/').pop();
+		if (!routeId) return null;
 
-		const scripts = getScripts(svelteSource);
-		const ssrScript = scripts.find(
-			(script) => script.attrs?.context === 'module' && script.attrs?.ssr
-		);
+		const route = routeManager.get(routeId);
 
-		if (!ssrScript) return { code: '' };
+		if (id.endsWith('+page.svelte') && route) {
+			return {
+				code: route.content
+			}
+		}
+		if (id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) {
+			const scripts = getScripts(route?.content || '');
+			const ssrScript = scripts.find(
+				(script) => script.attrs?.context === 'module' && script.attrs?.ssr
+			);
 
-		const ssrContent = ssrScript.content;
+			if (!ssrScript) return { code: '' };
 
-		const hasLoader = checkForSvemixKeyword('loader', ssrContent);
-		const hasAction = checkForSvemixKeyword('action', ssrContent);
+			const ssrContent = ssrScript.content;
 
-		return {
-			code: `
-			import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
-			${ssrScript.content}
-			${hasLoader ? 'export const GET = __get(loader);' : ''}
-			${hasAction ? 'export const POST = __post(action);' : ''}
-			`
-		};
+			const hasLoader = checkForSvemixKeyword('loader', ssrContent);
+			const hasAction = checkForSvemixKeyword('action', ssrContent);
+			const hasMetaFn = checkForSvemixKeyword('metadata', ssrContent);
+
+			return {
+				code: `
+				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
+				${ssrScript.content}
+				${hasLoader && !hasMetaFn ? 'export const load = __get(loader, () => ({}));' : ''}
+				${hasLoader && hasMetaFn ? 'export const load = __get(loader, metadata);' : ''}
+				${!hasLoader && hasMetaFn ? 'export const load = __get(() => ({}), metadata);' : ''}
+				${hasAction ? 'export const POST = __post(action);' : ''}
+				`
+			};
+		}
+
+		return null;
 	};
 }
 

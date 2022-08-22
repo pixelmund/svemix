@@ -6,11 +6,13 @@
 		ValidationErrors
 	} from './types';
 	import { goto } from '$app/navigation';
-	import { page, session } from '$app/stores';
+	import { page } from '$app/stores';
 	import { enhance } from './enhance';
-	import { getActionData } from '../context';
 
-	const actionData = getActionData();
+	let validationErrors: ValidationErrors = {};
+
+	$: actionData = $page.data?._actionData ?? {};
+	$: validationErrors = actionData?.errors || {};
 
 	export let action: string = '';
 	export let method: string = 'POST';
@@ -26,11 +28,7 @@
 	$: magicUrl = action.length > 0 ? action : $page.url.pathname;
 	$: method = method !== 'POST' && method !== 'GET' ? 'POST' : method;
 
-	// @ts-ignore svelte-ignore we subscribe to session to get and set updates
-	$: __session = $session;
-
 	let submitting: boolean = false;
-	let validationErrors: ValidationErrors = $actionData?.errors || {};
 
 	export { className as class };
 </script>
@@ -64,11 +62,12 @@
 
 				if (sessionResponse.ok) {
 					const sessionData = await sessionResponse.json();
-					$session = sessionData.data;
+					// TODO: Figure out what to do with sessions
+					// $session = sessionData.data;
 				}
 			}
 
-			actionData.set(data);
+			actionData = data;
 
 			await result({ formData, data, form, response });
 		}
@@ -76,7 +75,7 @@
 	{...$$restProps}
 >
 	<fieldset class={className} disabled={submitting} aria-disabled={submitting}>
-		<slot data={$actionData} {validationErrors} {submitting} />
+		<slot data={actionData} {validationErrors} {submitting} />
 	</fieldset>
 </form>
 

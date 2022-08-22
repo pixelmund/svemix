@@ -37,7 +37,6 @@ export async function writeFile(filePath, data) {
 
 		await writeToFile(filePath, data, 'utf8');
 	} catch (err) {
-		console.log(err);
 		throw err;
 	}
 }
@@ -58,4 +57,10 @@ export function stringifyObject(obj_from_json) {
 		.map((key) => `${key}:${stringifyObject(obj_from_json[key])}`)
 		.join(',');
 	return `{${props}}`;
+}
+
+
+/** @param {string} str */
+export function posixify(str) {
+	return str.replace(/\\/g, '/');
 }

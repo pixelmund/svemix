@@ -1,26 +1,8 @@
-export { get, post, redirect } from './endpoint.js';
-import type { MetaData } from '$lib/index.js';
-import type { RequestEvent } from '@sveltejs/kit/types';
+export { get, post } from './endpoint.js';
+import type { MetaData } from '$lib/meta/index.js';
+import type { Action as KitAction, ServerLoad, ServerLoadEvent } from '@sveltejs/kit';
 
 export type MaybePromise<T> = T | Promise<T>;
-
-type ActionOutput = {
-	headers?: Headers | Record<string, string | string[]>;
-	status?: number;
-	[key: string]: any;
-};
-
-export type Action<Output extends ActionOutput = ActionOutput> = (
-	request: RequestEvent
-) => MaybePromise<Output>;
-
-export type LoaderResult<Data extends Record<string, any> = Record<string, any>> = Data & {
-	headers?: Record<string, string | string[]>;
-	metadata?: MetaData;
-	status?: number;
-	error?: Error
-};
-
-export type Loader<Pr extends Record<any, any> = Record<any, any>> = (
-	request: RequestEvent
-) => MaybePromise<LoaderResult<Pr>>;
+export type Loader = ServerLoad;
+export type Action = KitAction
+export type MetaFn = (event: ServerLoadEvent, result: Record<string, any>) => MaybePromise<MetaData>

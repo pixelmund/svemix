@@ -10,10 +10,9 @@
 	"license": "MIT",
 	"scripts": {
 		"dev": "cross-env TEST=true vite dev",
-		"build": "cross-env PROD=true node pre-build-fix.js && svelte-kit package",
+		"build": "cross-env PROD=true node pre-build-fix.js && svelte-package",
 		"build:kit": "cross-env TEST=true vite build",
 		"preview": "cross-env TEST=true vite preview",
-		"postinstall": "svelte-kit sync",
 		"check": "svelte-check --tsconfig ./tsconfig.json --ignore \"dist,build,sites\"",
 		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --ignore-path .gitignore --check --plugin-search-dir=. .",
@@ -26,7 +25,8 @@
 	},
 	"devDependencies": {
 		"@playwright/test": "^1.17.1",
-		"@sveltejs/kit": "^1.0.0-next.402",
+		"@sveltejs/kit": "^1.0.0-next.428",
+		"@sveltejs/package": "^1.0.0-next.1",
 		"@types/node": "^17.0.0",
 		"@types/prettier": "^2.4.3",
 		"cross-env": "^7.0.3",

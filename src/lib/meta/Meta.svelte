@@ -1,10 +1,10 @@
 <script lang="ts">
 	//@ts-nocheck
 	import { metaDefaults } from '$svemix';
-	import { getMetaData } from '../context';
+	import { page } from "$app/stores";
 
-	const _metadata = getMetaData();
-	$: metadata = { ...metaDefaults, ...$_metadata };
+	$: _metadata = $page.data?.metadata ?? {};
+	$: metadata = { ...metaDefaults, ..._metadata };
 </script>
 
 <svelte:head>

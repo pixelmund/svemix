@@ -1,5 +1,4 @@
 import { getScripts, SCRIPTS_REGEX, SVEMIX_LIB_DIR } from '../utils/index.js';
-import { transformRootFile } from './transform_root.js';
 
 /**
  *  @param {import('../types').InternalConfig | null} config
@@ -7,10 +6,6 @@ import { transformRootFile } from './transform_root.js';
  */
 export function transformRoute(config) {
 	return (src, id) => {
-		if (id.endsWith('/generated/root.svelte')) {
-			return { code: transformRootFile(src), map: null };
-		}
-
 		if (!id.includes(config?.routes || 'routes') || !id.includes('.svelte')) {
 			return {
 				code: src
