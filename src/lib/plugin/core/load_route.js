@@ -17,12 +17,39 @@ export function loadRoute() {
 
 		let content = route.content();
 
-		if (id.endsWith('+page.svelte') && typeof content === 'string') {
+		if (route.isLayout && !id.endsWith('.svelte')) {
+			const scripts = getScripts(content);
+			const ssrScript = scripts.find(
+				(script) => script.attrs?.context === 'module' && script.attrs?.ssr
+			);
+
+			if (!ssrScript) return { code: '' };
+
+			const ssrContent = ssrScript.content;
+
+			const hasLoader = checkForSvemixKeyword('loader', ssrContent);
+			const hasAction = checkForSvemixKeyword('action', ssrContent);
+			const hasMetaFn = checkForSvemixKeyword('metadata', ssrContent);
+
+			return {
+				code: `
+				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
+				${ssrScript.content}
+				${hasLoader && !hasMetaFn ? 'export const load = __get(loader, () => ({}));' : ''}
+				${hasLoader && hasMetaFn ? 'export const load = __get(loader, metadata);' : ''}
+				${!hasLoader && hasMetaFn ? 'export const load = __get(() => ({}), metadata);' : ''}
+				${hasAction ? 'export const POST = __post(action);' : ''}
+				`
+			};
+		} else if (route.isLayout && id.endsWith('.svelte')) {
+			return {
+				code: content,
+			}
+		} else if (id.endsWith('+page.svelte') && typeof content === 'string') {
 			return {
 				code: content
 			}
-		}
-		if ((id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) && typeof content === 'string') {
+		} else if ((id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) && typeof content === 'string') {
 			const scripts = getScripts(content);
 			const ssrScript = scripts.find(
 				(script) => script.attrs?.context === 'module' && script.attrs?.ssr

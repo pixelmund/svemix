@@ -11,7 +11,7 @@ const _readFileSync = filesystem.readFileSync;
 
 filesystem.statSync = function (path, options) {
 	if (!path.includes('routes')) return _statSync(path, options);
-	if (!path.endsWith('.svelte') && !path.includes('+page.server')) {
+	if (!path.endsWith('.svelte') && !path.includes('+page.server') && !path.includes('+layout.server')) {
 		return {
 			isDirectory: () => true
 		}
@@ -40,6 +40,7 @@ filesystem.readFileSync = function (path, options) {
 
 filesystem.readdirSync = function (path, options) {
 	if (!path.includes('routes')) return _readDirSync(path, options);
+
 	/**
 	 * @type {string[]}
 	 */
@@ -52,6 +53,7 @@ filesystem.readdirSync = function (path, options) {
 		const route = {
 			path: routePath + '/+page.svelte',
 			isIndex: false,
+			isLayout: false,
 			content: () => _readFileSync(pathJoin(path + '.svelte'), 'utf8')
 		};
 
@@ -75,7 +77,7 @@ filesystem.readdirSync = function (path, options) {
 		return [`+page.svelte`, `+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`]
 	}
 
-	const ignuredEntries = ['+layout.svelte', '+error.svelte', '+page.svelte', '+page.server.ts', '+page.server.js',]
+	const ignuredEntries = ['+error.svelte', '+page.svelte', '+page.server.ts', '+page.server.js', '+layout.js', '+layout.ts'];
 
 	const newResult = [
 		...new Set(
@@ -86,6 +88,31 @@ filesystem.readdirSync = function (path, options) {
 
 					let routePath = posixify(joinedPath).split('src/routes/').pop().replace('index.svelte', '+page.svelte');
 
+					/// Layouts
+					if (entry.includes('+layout')) {
+						const layout = {
+							path: routePath,
+							isIndex: false,
+							isLayout: true,
+							content: () => _readFileSync(joinedPath, 'utf8')
+						};
+
+						let layoutContent = layout.content();
+
+						routeManager.set(layout);
+
+						if (typeof layoutContent === 'string') {
+							const scripts = getScripts(layoutContent);
+							const ssrScript = scripts.find((s) => s.attrs?.context === 'module' && s.attrs?.ssr)
+							if (ssrScript) {
+								routeManager.set({ ...layout, path: routePath.replace(entry, `+layout.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`) });
+								return [entry, `+layout.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`]
+							};
+						}
+
+						return [entry]
+					}
+
 					if (!routePath.endsWith('+page.svelte')) {
 						return [entry.replace('.svelte', '')]
 					}
@@ -93,6 +120,7 @@ filesystem.readdirSync = function (path, options) {
 					const route = {
 						path: routePath,
 						isIndex: entry.endsWith('index.svelte'),
+						isLayout: false,
 						content: () => _readFileSync(joinedPath, 'utf8')
 					};
 
@@ -117,7 +145,6 @@ filesystem.readdirSync = function (path, options) {
 	];
 
 	return newResult;
-
 };
 
 Object.defineProperty(globalThis, 'fs', {

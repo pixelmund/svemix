@@ -9,7 +9,7 @@ export function resolveRoute() {
 		const posixified = posixify(sourcePath);
 
 		if (
-			(sourcePath.endsWith('+page.server.ts') || sourcePath.endsWith('+page.server.js') || sourcePath.endsWith('+page.svelte'))
+			(sourcePath.endsWith('+page.server.ts') || sourcePath.endsWith('+page.server.js') || sourcePath.endsWith('+page.svelte') || sourcePath.includes('+layout'))
 		) {
 			return {
 				id: posixified,

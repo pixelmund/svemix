@@ -1,16 +1,16 @@
 class RouteManager {
     /**
-     * @type {Map<string, { path: string, isIndex: boolean, content: () => string }>}
+     * @type {Map<string, { path: string, isIndex: boolean, isLayout: boolean; content: () => string }>}
      */
     #routes = new Map();
 
     constructor() { }
 
     /***
-     * @param {{path: string, isIndex: boolean, content: () => string}} options
+     * @param {{path: string, isIndex: boolean, isLayout: boolean; content: () => string}} options
      */
-    set({ path, isIndex, content }) {
-        this.#routes.set(path, { path, isIndex, content })
+    set({ path, isIndex, content, isLayout }) {
+        this.#routes.set(path, { path, isIndex, content, isLayout })
     }
 
     /**
