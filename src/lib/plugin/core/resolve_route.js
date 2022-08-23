@@ -1,11 +1,10 @@
 import { posixify } from '../utils/misc.js';
 
 /**
- *
  * @returns {(sourcePath: string, importer: string | undefined, options: { ssr?: boolean | undefined }) => {id: string} | null}
  */
 export function resolveRoute() {
-	return (sourcePath, _importer, { ssr }) => {
+	return (sourcePath, _importer, { }) => {
 		if (!sourcePath.includes('routes')) return null;
 		const posixified = posixify(sourcePath);
 

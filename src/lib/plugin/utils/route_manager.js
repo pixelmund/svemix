@@ -1,37 +1,16 @@
 class RouteManager {
     /**
-     * @type {Map<string, { path: string, isIndex: boolean, content: string }>}
+     * @type {Map<string, { path: string, isIndex: boolean, content: () => string }>}
      */
     #routes = new Map();
-    #directories = new Set();
 
     constructor() { }
 
     /***
-     * @param {{path: string, isIndex: boolean, content: string}} options
+     * @param {{path: string, isIndex: boolean, content: () => string}} options
      */
     set({ path, isIndex, content }) {
         this.#routes.set(path, { path, isIndex, content })
-    }
-
-    virtualDirectories() {
-        return Array.from(this.#directories.values())
-    }
-
-    /**
-     * 
-     * @param {string} path 
-     */
-    isVirtualDirectory(path) {
-        this.#directories.has(path);
-    }
-
-    /**
-     * 
-     * @param {string} path 
-     */
-    addVirtualDirectory(path) {
-        this.#directories.add(path);
     }
 
     /**

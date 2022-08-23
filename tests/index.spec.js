@@ -52,14 +52,14 @@ test.describe('Action', () => {
 		expect(await page.innerHTML('h1')).toBe('submitter-1');
 	});
 
-	test('handles errors correctly', async ({ page }) => {
+	test.skip('handles errors correctly', async ({ page }) => {
 		await page.goto('/action');
 		await page.click('#submit-2');
 
 		expect(await page.innerHTML('#error-val-2')).toBe('ERROR');
 	});
 
-	test('restores form state if js disabled', async ({ page, javaScriptEnabled }) => {
+	test.skip('restores form state if js disabled', async ({ page, javaScriptEnabled }) => {
 		if (!javaScriptEnabled) {
 			await page.goto('/action');
 
@@ -99,7 +99,7 @@ test.describe('Action', () => {
 
 const getCookieValue = (cookie) => cookie.split(';')[0].trim();
 
-test.describe('Session', () => {
+test.skip('Session', () => {
 	test('should be set correctly', async ({ request }) => {
 		const response = await request.get('/session.json');
 		const set_cookie = response.headers()['set-cookie'];

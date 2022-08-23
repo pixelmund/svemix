@@ -9,10 +9,8 @@
 	import { page } from '$app/stores';
 	import { enhance } from './enhance';
 
-	let validationErrors: ValidationErrors = {};
-
-	$: actionData = $page.data?._actionData ?? {};
-	$: validationErrors = actionData?.errors || {};
+	$: actionData = $page.data?.actionData ?? {};
+	$: errors = $page.data?.errors || {};
 
 	export let action: string = '';
 	export let method: string = 'POST';
@@ -39,8 +37,8 @@
 	use:enhance={{
 		validate: (data) => {
 			const vErrors = validate(data);
-			validationErrors = vErrors;
-			return validationErrors;
+			errors = vErrors;
+			return errors;
 		},
 		pending: ({ data, form }) => {
 			submitting = true;
@@ -75,7 +73,7 @@
 	{...$$restProps}
 >
 	<fieldset class={className} disabled={submitting} aria-disabled={submitting}>
-		<slot data={actionData} {validationErrors} {submitting} />
+		<slot data={actionData} {errors} {submitting} />
 	</fieldset>
 </form>
 
@@ -88,5 +86,6 @@
 	fieldset {
 		margin: 0;
 		padding: 0;
+		border: none;
 	}
 </style>

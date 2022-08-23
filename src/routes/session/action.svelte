@@ -7,22 +7,18 @@
 
 		locals.session.data = { views };
 
-		return {
-			values: {
-				views
-			}
-		};
+		return;
 	};
 </script>
 
 <script lang="ts">
-	import { session } from '$app/stores';
+	import { page } from '$app/stores';
 	import { Form } from '$lib';
 </script>
 
 <Form>
 	<span>
-		{$session.views || 0}
+		{$page.data.session.views || 0}
 	</span>
 	<button type="submit">+</button>
 </Form>

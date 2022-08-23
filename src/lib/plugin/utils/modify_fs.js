@@ -52,14 +52,16 @@ filesystem.readdirSync = function (path, options) {
 		const route = {
 			path: routePath + '/+page.svelte',
 			isIndex: false,
-			content: _readFileSync(pathJoin(path + '.svelte'), 'utf8')
+			content: () => _readFileSync(pathJoin(path + '.svelte'), 'utf8')
 		};
 
-		if (!route.content) {
+		let content = route.content();
+
+		if (typeof content !== 'string') {
 			throw error;
 		}
 
-		const scripts = getScripts(route.content);
+		const scripts = getScripts(content);
 		const ssrScript = scripts.find((s) => s.attrs?.context === 'module' && s.attrs?.ssr)
 
 		routeManager.set(route);
@@ -72,12 +74,15 @@ filesystem.readdirSync = function (path, options) {
 
 		return [`+page.svelte`, `+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`]
 	}
+
+	const ignuredEntries = ['+layout.svelte', '+error.svelte', '+page.svelte', '+page.server.ts', '+page.server.js',]
+
 	const newResult = [
 		...new Set(
 			result
 				.map((entry) => {
 					const joinedPath = pathJoin(path, entry);
-					if (!entry.endsWith('.svelte') || entry.endsWith('+layout.svelte') || entry.endsWith('+error.svelte')) return [entry];
+					if (ignuredEntries.includes(entry) || !entry.endsWith('.svelte')) return [entry];
 
 					let routePath = posixify(joinedPath).split('src/routes/').pop().replace('index.svelte', '+page.svelte');
 
@@ -88,13 +93,15 @@ filesystem.readdirSync = function (path, options) {
 					const route = {
 						path: routePath,
 						isIndex: entry.endsWith('index.svelte'),
-						content: _readFileSync(joinedPath, 'utf8')
+						content: () => _readFileSync(joinedPath, 'utf8')
 					};
 
 					routeManager.set(route)
 
-					if (route.content) {
-						const scripts = getScripts(route.content);
+					let content = route.content();
+
+					if (typeof content === 'string') {
+						const scripts = getScripts(content);
 						const ssrScript = scripts.find((s) => s.attrs?.context === 'module' && s.attrs?.ssr)
 						if (ssrScript) {
 							routeManager.set({ ...route, path: routePath.replace('+page.svelte', `+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`) });

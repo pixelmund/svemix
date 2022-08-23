@@ -1,4 +1,3 @@
-import fs from 'fs';
 import { getScripts, SVEMIX_LIB_DIR } from '../utils/index.js';
 import { routeManager } from '../utils/route_manager.js';
 
@@ -14,14 +13,17 @@ export function loadRoute() {
 		if (!routeId) return null;
 
 		const route = routeManager.get(routeId);
+		if (!route) return null;
 
-		if (id.endsWith('+page.svelte') && route) {
+		let content = route.content();
+
+		if (id.endsWith('+page.svelte') && typeof content === 'string') {
 			return {
-				code: route.content
+				code: content
 			}
 		}
-		if (id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) {
-			const scripts = getScripts(route?.content || '');
+		if ((id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) && typeof content === 'string') {
+			const scripts = getScripts(content);
 			const ssrScript = scripts.find(
 				(script) => script.attrs?.context === 'module' && script.attrs?.ssr
 			);
