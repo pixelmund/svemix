@@ -18,7 +18,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: npm install
+      - run: npm install --ignore-scripts
       - run: npm run check
   Tests:
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: npm ci && npx playwright install
+        run: npm ci --ignore-scripts && npx playwright install
 
       - name: Run tests
         run: npm run test
