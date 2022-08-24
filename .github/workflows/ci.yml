@@ -41,4 +41,4 @@ jobs:
         run: npm ci --ignore-scripts && npx playwright install
 
       - name: Run tests
-        run: npm run build:kit && npm run test
+        run: npm run test
