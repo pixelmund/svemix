@@ -28,6 +28,7 @@ test.describe('Metadata', () => {
 	test('respects defaults', async ({ page }) => {
 		await page.goto('/metadata');
 		await page.waitForTimeout(1000);
+		// @ts-ignore
 		const metaDescriptionValue = await page.$eval('meta[name="description"]', (el) => el.content);
 		expect(metaDescriptionValue).toBe('Default description');
 	});
@@ -97,6 +98,10 @@ test.describe('Action', () => {
 	// });
 });
 
+/**
+ * 
+ * @param {string} cookie 
+ */
 const getCookieValue = (cookie) => cookie.split(';')[0].trim();
 
 test.skip('Session', () => {
