@@ -1,7 +1,6 @@
 // @ts-nocheck
 import filesystem from 'fs';
-import { join as pathJoin } from "path";
-import { posixify } from './misc.js';
+import { join as pathJoin } from 'path';
 import { routeManager } from './route_manager.js';
 import { getScripts } from './scripts.js';
 
@@ -11,10 +10,14 @@ const _readFileSync = filesystem.readFileSync;
 
 filesystem.statSync = function (path, options) {
 	if (!path.includes('routes')) return _statSync(path, options);
-	if (!path.endsWith('.svelte') && !path.includes('+page.server') && !path.includes('+layout.server')) {
+	if (
+		!path.endsWith('.svelte') &&
+		!path.includes('+page.server') &&
+		!path.includes('+layout.server')
+	) {
 		return {
 			isDirectory: () => true
-		}
+		};
 	}
 
 	try {
@@ -36,7 +39,37 @@ filesystem.readFileSync = function (path, options) {
 		}
 		throw error;
 	}
-}
+};
+
+/**
+ * @param {{ routeId: string; filePath: string; isIndex: boolean; isLayout: boolean }} options
+ * @returns {import('../types').SvemixRoute}
+ */
+const createRoute = (options) => {
+	return {
+		routeId: options.routeId,
+		isIndex: options.isIndex,
+		isLayout: options.isLayout,
+		content: () => _readFileSync(options.filePath, 'utf8'),
+		serverScript: () => {
+			const content = _readFileSync(options.filePath, 'utf8');
+			if (!content) return { available: false, lang: 'js', content: '' };
+
+			const scripts = getScripts(content);
+			const ssrScript = scripts.find(
+				(script) => script.attrs?.context === 'module' && script.attrs?.ssr
+			);
+
+			if (!ssrScript) return { available: false, lang: 'js', content: '' };
+
+			return {
+				available: true,
+				content: ssrScript.content,
+				lang: ssrScript?.attrs?.lang ?? 'js'
+			};
+		}
+	};
+};
 
 filesystem.readdirSync = function (path, options) {
 	if (!path.includes('routes')) return _readDirSync(path, options);
@@ -48,14 +81,17 @@ filesystem.readdirSync = function (path, options) {
 	try {
 		result = _readDirSync(path, options);
 	} catch (error) {
-		let routePath = posixify(path).split('src/routes/').pop();
+		let routeId = routeManager.parseRouteId(path);
 
-		const route = {
-			path: routePath + '/+page.svelte',
+		/**
+		 * @type {import('../types').SvemixRoute}
+		 */
+		const route = createRoute({
+			filePath: pathJoin(path + '.svelte'),
+			routeId: routeId + '/+page.svelte',
 			isIndex: false,
-			isLayout: false,
-			content: () => _readFileSync(pathJoin(path + '.svelte'), 'utf8')
-		};
+			isLayout: false
+		});
 
 		let content = route.content();
 
@@ -63,21 +99,30 @@ filesystem.readdirSync = function (path, options) {
 			throw error;
 		}
 
-		const scripts = getScripts(content);
-		const ssrScript = scripts.find((s) => s.attrs?.context === 'module' && s.attrs?.ssr)
-
 		routeManager.set(route);
 
-		if (!ssrScript) {
-			return ["+page.svelte"];
+		const { available, lang } = route.serverScript();
+
+		if (!available) {
+			return ['+page.svelte'];
 		}
 
-		routeManager.set({ ...route, path: `${routePath}/+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}` });
+		routeManager.set({
+			...route,
+			routeId: `${routeId}/+page.server.${lang}`
+		});
 
-		return [`+page.svelte`, `+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`]
+		return [`+page.svelte`, `+page.server.${lang}`];
 	}
 
-	const ignuredEntries = ['+error.svelte', '+page.svelte', '+page.server.ts', '+page.server.js', '+layout.js', '+layout.ts'];
+	const ignuredEntries = [
+		'+error.svelte',
+		'+page.svelte',
+		'+page.server.ts',
+		'+page.server.js',
+		'+layout.js',
+		'+layout.ts'
+	];
 
 	const newResult = [
 		...new Set(
@@ -86,59 +131,55 @@ filesystem.readdirSync = function (path, options) {
 					const joinedPath = pathJoin(path, entry);
 					if (ignuredEntries.includes(entry) || !entry.endsWith('.svelte')) return [entry];
 
-					let routePath = posixify(joinedPath).split('src/routes/').pop().replace('index.svelte', '+page.svelte');
+					const routeId = routeManager.parseRouteId(joinedPath);
 
 					/// Layouts
 					if (entry.includes('+layout')) {
-						const layout = {
-							path: routePath,
+						const layoutRoute = createRoute({
+							filePath: joinedPath,
+							routeId,
 							isIndex: false,
-							isLayout: true,
-							content: () => _readFileSync(joinedPath, 'utf8')
-						};
+							isLayout: true
+						});
+						routeManager.set(layoutRoute);
 
-						let layoutContent = layout.content();
+						const { available, lang } = layoutRoute.serverScript();
 
-						routeManager.set(layout);
-
-						if (typeof layoutContent === 'string') {
-							const scripts = getScripts(layoutContent);
-							const ssrScript = scripts.find((s) => s.attrs?.context === 'module' && s.attrs?.ssr)
-							if (ssrScript) {
-								routeManager.set({ ...layout, path: routePath.replace(entry, `+layout.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`) });
-								return [entry, `+layout.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`]
-							};
+						if (available) {
+							routeManager.set({
+								...layoutRoute,
+								routeId: routeId.replace(entry, `+layout.server.${lang}`)
+							});
+							return [entry, `+layout.server.${lang}`];
 						}
 
-						return [entry]
+						return [entry];
 					}
 
-					if (!routePath.endsWith('+page.svelte')) {
-						return [entry.replace('.svelte', '')]
+					if (!routeId.endsWith('+page.svelte')) {
+						return [entry.replace('.svelte', '')];
 					}
 
-					const route = {
-						path: routePath,
+					const route = createRoute({
+						routeId,
 						isIndex: entry.endsWith('index.svelte'),
 						isLayout: false,
-						content: () => _readFileSync(joinedPath, 'utf8')
-					};
+						filePath: joinedPath
+					});
 
-					routeManager.set(route)
+					routeManager.set(route);
 
-					let content = route.content();
+					const { available, lang } = route.serverScript();
 
-					if (typeof content === 'string') {
-						const scripts = getScripts(content);
-						const ssrScript = scripts.find((s) => s.attrs?.context === 'module' && s.attrs?.ssr)
-						if (ssrScript) {
-							routeManager.set({ ...route, path: routePath.replace('+page.svelte', `+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`) });
-							return [`+page.svelte`, `+page.server.${ssrScript.attrs?.lang === 'ts' ? 'ts' : 'js'}`]
-						};
+					if (available) {
+						routeManager.set({
+							...route,
+							routeId: routeId.replace('+page.svelte', `+page.server.${lang}`)
+						});
+						return [`+page.svelte`, `+page.server.${lang}`];
 					}
 
-					return ['+page.svelte']
-
+					return ['+page.svelte'];
 				})
 				.flat()
 		)

@@ -18,6 +18,12 @@ const config = {
 			if (filepath.includes('index')) return true;
 			return false;
 		}
+	},
+	kit: {
+		browser: {
+			hydrate: true,
+			router: true,
+		},	
 	}
 };
 

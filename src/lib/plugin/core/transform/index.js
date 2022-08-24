@@ -1,18 +1,31 @@
-import { getScripts, SCRIPTS_REGEX } from '../utils/index.js';
-import { transformRootFile } from './transform_root.js';
+import { getScripts, SCRIPTS_REGEX } from '../../utils/index.js';
+import { patchNavigationFile } from './navigation_patch.js';
+import { transformRootFile } from './root_patch.js';
 
 /**
- *  @param {import('../types').InternalConfig | null} config
+ *  @param {import('../../types').InternalConfig | null} config
  * @returns {(src: string, id: string) => {code: string} | null}
  */
-export function transformRoute(config) {
+export function transform(config) {
 	return (src, id) => {
+		// This is necessary to avoid some race conditions, don't know exactly why:
+		if (id.endsWith('navigation.js')) {
+			return {
+				code: patchNavigationFile()
+			};
+		}
 
 		if (id.endsWith('/generated/root.svelte')) {
 			return { code: transformRootFile(src), map: null };
 		}
 
-		if (!id.includes(config?.routes || 'routes') || !id.includes('.svelte')) {
+		if (!id.includes('src/routes')) {
+			return {
+				code: src
+			};
+		}
+
+		if (!id.includes('.svelte')) {
 			return {
 				code: src
 			};

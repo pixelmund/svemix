@@ -1,4 +1,4 @@
-import { getScripts, SVEMIX_LIB_DIR } from '../utils/index.js';
+import { SVEMIX_LIB_DIR } from '../utils/index.js';
 import { routeManager } from '../utils/route_manager.js';
 
 /**
@@ -7,70 +7,54 @@ import { routeManager } from '../utils/route_manager.js';
  */
 export function loadRoute() {
 	return (id) => {
-		if (!id.includes('routes')) return null;
+		if (!id.includes('src/routes')) return null;
 
-		const routeId = id.split('src/routes/').pop();
+		const routeId = routeManager.parseRouteId(id);
 		if (!routeId) return null;
 
 		const route = routeManager.get(routeId);
 		if (!route) return null;
 
-		let content = route.content();
+		if (route.isLayout) {
+			if (id.endsWith('.svelte')) {
+				return {
+					code: route.content()
+				};
+			} else {
+				const { available, content } = route.serverScript();
+				if (!available) return { code: '' };
 
-		if (route.isLayout && !id.endsWith('.svelte')) {
-			const scripts = getScripts(content);
-			const ssrScript = scripts.find(
-				(script) => script.attrs?.context === 'module' && script.attrs?.ssr
-			);
+				const has = checkSvemixKeywords(content);
 
-			if (!ssrScript) return { code: '' };
-
-			const ssrContent = ssrScript.content;
-
-			const hasLoader = checkForSvemixKeyword('loader', ssrContent);
-			const hasAction = checkForSvemixKeyword('action', ssrContent);
-			const hasMetaFn = checkForSvemixKeyword('metadata', ssrContent);
-
+				return {
+					code: `
+					import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
+					${content}
+					${has.loader && !has.metadata ? 'export const load = __get(loader, () => ({}));' : ''}
+					${has.loader && has.metadata ? 'export const load = __get(loader, metadata);' : ''}
+					${!has.loader && has.metadata ? 'export const load = __get(() => ({}), metadata);' : ''}
+					${has.action ? 'export const POST = __post(action);' : ''}
+					`
+				};
+			}
+		} else if (id.endsWith('+page.svelte')) {
 			return {
-				code: `
-				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
-				${ssrScript.content}
-				${hasLoader && !hasMetaFn ? 'export const load = __get(loader, () => ({}));' : ''}
-				${hasLoader && hasMetaFn ? 'export const load = __get(loader, metadata);' : ''}
-				${!hasLoader && hasMetaFn ? 'export const load = __get(() => ({}), metadata);' : ''}
-				${hasAction ? 'export const POST = __post(action);' : ''}
-				`
+				code: route.content()
 			};
-		} else if (route.isLayout && id.endsWith('.svelte')) {
-			return {
-				code: content,
-			}
-		} else if (id.endsWith('+page.svelte') && typeof content === 'string') {
-			return {
-				code: content
-			}
-		} else if ((id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) && typeof content === 'string') {
-			const scripts = getScripts(content);
-			const ssrScript = scripts.find(
-				(script) => script.attrs?.context === 'module' && script.attrs?.ssr
-			);
+		} else if (id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) {
+			const { available, content } = route.serverScript();
+			if (!available) return { code: '' };
 
-			if (!ssrScript) return { code: '' };
-
-			const ssrContent = ssrScript.content;
-
-			const hasLoader = checkForSvemixKeyword('loader', ssrContent);
-			const hasAction = checkForSvemixKeyword('action', ssrContent);
-			const hasMetaFn = checkForSvemixKeyword('metadata', ssrContent);
+			const has = checkSvemixKeywords(content);
 
 			return {
 				code: `
 				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
-				${ssrScript.content}
-				${hasLoader && !hasMetaFn ? 'export const load = __get(loader, () => ({}));' : ''}
-				${hasLoader && hasMetaFn ? 'export const load = __get(loader, metadata);' : ''}
-				${!hasLoader && hasMetaFn ? 'export const load = __get(() => ({}), metadata);' : ''}
-				${hasAction ? 'export const POST = __post(action);' : ''}
+				${content}
+				${has.loader && !has.metadata ? 'export const load = __get(loader, () => ({}));' : ''}
+				${has.loader && has.metadata ? 'export const load = __get(loader, metadata);' : ''}
+				${!has.loader && has.metadata ? 'export const load = __get(() => ({}), metadata);' : ''}
+				${has.action ? 'export const POST = __post(action);' : ''}
 				`
 			};
 		}
@@ -79,28 +63,47 @@ export function loadRoute() {
 	};
 }
 
+const SVEMIX_KEYWORDS = ['loader', 'action', 'metadata'];
+
 /**
  *
- * @param {string} keyword
  * @param {string} content
- * @returns {boolean}
+ * @returns {{[key: string]: boolean}}
  */
-function checkForSvemixKeyword(keyword, content) {
-	const svemixKeywords = [
-		`export const ${keyword}`,
-		`export let ${keyword}`,
-		`export function ${keyword}`,
-		`export async function ${keyword}`
-	];
+function checkSvemixKeywords(content) {
+	/**
+	 *
+	 * @param {string} keyword
+	 * @returns {boolean}
+	 */
+	const checkKeyword = (keyword) => {
+		const svemixKeywords = [
+			`export const ${keyword}`,
+			`export let ${keyword}`,
+			`export function ${keyword}`,
+			`export async function ${keyword}`
+		];
 
-	let seen = false;
+		let seen = false;
 
-	svemixKeywords.forEach((key) => {
-		if (content.includes(key)) {
-			seen = true;
-		}
+		svemixKeywords.forEach((key) => {
+			if (content.includes(key)) {
+				seen = true;
+			}
+		});
+
+		return seen;
+	};
+
+	/**
+	 * @type {any}
+	 */
+	const has = {};
+
+	SVEMIX_KEYWORDS.forEach((keyword) => {
+		has[keyword] = checkKeyword(keyword);
 	});
 
-	return seen;
+	return has;
 }
 

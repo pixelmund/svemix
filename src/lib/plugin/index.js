@@ -1,5 +1,5 @@
 import { loadConfig, viteConfig } from './utils/index.js';
-import { initializeSvemix, resolveRoute, loadRoute, transformRoute } from './core/index.js';
+import { initializeSvemix, resolveRoute, loadRoute, transform } from './core/index.js';
 import { posixify } from './utils/misc.js';
 
 /**
@@ -22,7 +22,7 @@ export default function SvemixVitePlugin() {
 			},
 			resolveId: resolveRoute(),
 			load: loadRoute(),
-			transform: transformRoute(svemixConfig)
+			transform: transform(svemixConfig),
 		},
 		{
 			name: 'vite-plugin-svemix-hmr',
@@ -30,7 +30,6 @@ export default function SvemixVitePlugin() {
 			async handleHotUpdate({ file, server }) {
 				if (posixify(file).includes('/routes/')) {
 					await server.restart();
-					return server.ws.send({ type: 'full-reload' })
 				}
 			}
 		}

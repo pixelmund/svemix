@@ -1,30 +1,41 @@
+import { posixify } from './misc.js';
+import { getScripts } from './scripts.js';
+
 class RouteManager {
-    /**
-     * @type {Map<string, { path: string, isIndex: boolean, isLayout: boolean; content: () => string }>}
-     */
-    #routes = new Map();
+	/**
+	 * @type {Map<string, import('../types').SvemixRoute>}
+	 */
+	#routes = new Map();
 
-    constructor() { }
+	constructor() {}
 
-    /***
-     * @param {{path: string, isIndex: boolean, isLayout: boolean; content: () => string}} options
-     */
-    set({ path, isIndex, content, isLayout }) {
-        this.#routes.set(path, { path, isIndex, content, isLayout })
-    }
+	/***
+	 * @param {import('../types').SvemixRoute} options
+	 */
+	set(options) {
+		this.#routes.set(options.routeId, options);
+	}
 
-    /**
-     * 
-     * @param {string} path 
-     * @returns 
-     */
-    get(path) {
-        return this.#routes.get(path);
-    }
+	/**
+	 *
+	 * @param {string} routeId
+	 * @returns
+	 */
+	get(routeId) {
+		return this.#routes.get(routeId);
+	}
+    
+	all() {
+		return Array.from(this.#routes.values());
+	}
 
-    all() {
-        return Array.from(this.#routes.values())
-    }
+	/**
+	 * @param {string} path
+	 */
+	parseRouteId(path) {
+		return posixify(path).split('src/routes/').pop()?.replace('index.svelte', '+page.svelte');
+	}
 }
 
 export const routeManager = new RouteManager();
+

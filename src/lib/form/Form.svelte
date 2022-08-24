@@ -9,7 +9,7 @@
 	import { page } from '$app/stores';
 	import { enhance } from './enhance';
 
-	$: actionData = $page.data?.actionData ?? {};
+	let errors : ValidationErrors = {};
 	$: errors = $page.data?.errors || {};
 
 	export let action: string = '';
@@ -40,6 +40,9 @@
 			errors = vErrors;
 			return errors;
 		},
+		errors: (errs) => {
+			errors = errs;
+		},
 		pending: ({ data, form }) => {
 			submitting = true;
 			pending({ data, form });
@@ -65,15 +68,13 @@
 				}
 			}
 
-			actionData = data;
-
 			await result({ formData, data, form, response });
 		}
 	}}
 	{...$$restProps}
 >
 	<fieldset class={className} disabled={submitting} aria-disabled={submitting}>
-		<slot data={actionData} {errors} {submitting} />
+		<slot {errors} {submitting} />
 	</fieldset>
 </form>
 

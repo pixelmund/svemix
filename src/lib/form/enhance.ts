@@ -1,5 +1,10 @@
 import { goto, invalidate } from '$app/navigation';
-import type { EnhanceFormError, EnhanceFormPending, EnhanceFormValidate } from './types';
+import type {
+	EnhanceFormError,
+	EnhanceFormPending,
+	EnhanceFormValidate,
+	ValidationErrors
+} from './types';
 
 export type InternalEnhanceFormResult = ({
 	data,
@@ -25,12 +30,14 @@ export function enhance(
 		validate,
 		pending,
 		formError,
-		result
+		result,
+		errors
 	}: {
 		validate?: EnhanceFormValidate;
 		pending?: EnhanceFormPending;
 		formError?: EnhanceFormError;
 		result?: InternalEnhanceFormResult;
+		errors?: (errors: ValidationErrors) => any;
 	} = {}
 ): { destroy: () => void } {
 	let current_token: unknown;
@@ -82,7 +89,6 @@ export function enhance(
 					return;
 				}
 
-
 				let json: any = {};
 
 				if (response.status !== 204) {
@@ -116,6 +122,11 @@ export function enhance(
 
 				if (shouldInvalidate) {
 					await invalidate(url.href);
+				}
+			} else if (response.status === 400) {
+				const json: any = await response.json();
+				if (errors) {
+					errors(json?.errors ?? {});
 				}
 			} else if (formError) {
 				formError({ formData: data, form, error: null, response });

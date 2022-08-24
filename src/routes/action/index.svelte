@@ -1,6 +1,6 @@
 <script context="module" ssr lang="ts">
 	import type { Action } from '$lib';
-	import { redirect } from '@sveltejs/kit';
+	import { redirect } from '$lib';
 
 	export const action: Action = async ({ request, locals, setHeaders }) => {
 		const body = await request.formData();

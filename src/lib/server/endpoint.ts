@@ -1,4 +1,4 @@
-import { redirect, type ServerLoad } from '@sveltejs/kit';
+import { redirect, type ServerLoad, type Action as KitAction } from '@sveltejs/kit';
 import type { Action, Loader, MetaFn } from '.';
 import { Redirect } from './utils.js';
 
@@ -18,23 +18,27 @@ export function get(loader: Loader, metadata?: MetaFn): ServerLoad {
 		return {
 			metadata: _metadata,
 			session: event.locals.session?.data ?? {},
-			...result,
-		}
+			...result
+		};
 	};
 }
 
-export function post(action: Action): Action {
+export function post(action: Action): KitAction {
 	return async (event) => {
-		const result = await action(event);
-		const isNativeSubmission = !((event.request.headers.get('accept') ?? '').includes('application/json'));
-
-		if (result instanceof Redirect) {
-			event.setHeaders({ 'x-svemix-location': result.location });
-			if (isNativeSubmission) {
-				throw redirect(result.status, result.location);
+		const isNativeSubmission = !(event.request.headers.get('accept') ?? '').includes(
+			'application/json'
+		);
+		try {
+			return await action(event);
+		} catch (error) {
+			if (error instanceof Redirect) {
+				event.setHeaders({ 'x-svemix-location': error.location });
+				if (isNativeSubmission) {
+					throw redirect(error.status, error.location);
+				}
+				return;
 			}
+			throw error;
 		}
-
-		return result;
-	}
+	};
 }
