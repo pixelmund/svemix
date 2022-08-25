@@ -1,5 +1,5 @@
 // @ts-nocheck
-import filesystem from 'fs';
+import filesystem, { Dirent } from 'fs';
 import { join as pathJoin } from 'path';
 import { routeManager } from './route_manager.js';
 import { getScripts } from './scripts.js';
@@ -73,9 +73,46 @@ const createRoute = (options) => {
 
 filesystem.readdirSync = function (path, options) {
 	if (!path.includes('routes')) return _readDirSync(path, options);
+	if (path.includes('/types/')) return [];
+
+	function getFileName(file) {
+		if (file instanceof Dirent) {
+			return file.name;
+		} else if (typeof file === 'string') {
+			return file;
+		} else {
+			return '';
+		}
+	}
 
 	/**
-	 * @type {string[]}
+	 * @param {string} name
+	 * @param {string} type
+	 */
+	function getFile(name, type = 'file') {
+		if (options?.withFileTypes) {
+			/**
+			 * @type {Dirent}
+			 */
+			const dirent = {
+				name,
+				isFile: () => type === 'file',
+				isDirectory: () => type === 'directory',
+				isBlockDevice: () => false,
+				isFIFO: () => false,
+				isCharacterDevice: () => false,
+				isSocket: () => false,
+				isSymbolicLink: () => false
+			};
+
+			return dirent;
+		} else {
+			return name;
+		}
+	}
+
+	/**
+	 * @type {unknown[]}
 	 */
 	let result = [];
 	try {
@@ -104,7 +141,7 @@ filesystem.readdirSync = function (path, options) {
 		const { available, lang } = route.serverScript();
 
 		if (!available) {
-			return ['+page.svelte'];
+			return [getFile('+page.svelte')];
 		}
 
 		routeManager.set({
@@ -112,7 +149,7 @@ filesystem.readdirSync = function (path, options) {
 			routeId: `${routeId}/+page.server.${lang}`
 		});
 
-		return [`+page.svelte`, `+page.server.${lang}`];
+		return [getFile(`+page.svelte`), getFile(`+page.server.${lang}`)];
 	}
 
 	const ignuredEntries = [
@@ -127,9 +164,11 @@ filesystem.readdirSync = function (path, options) {
 	const newResult = [
 		...new Set(
 			result
-				.map((entry) => {
+				.map((_entry) => {
+					let entry = getFileName(_entry);
+
 					const joinedPath = pathJoin(path, entry);
-					if (ignuredEntries.includes(entry) || !entry.endsWith('.svelte')) return [entry];
+					if (ignuredEntries.includes(entry) || !entry.endsWith('.svelte')) return [_entry];
 
 					const routeId = routeManager.parseRouteId(joinedPath);
 
@@ -150,14 +189,14 @@ filesystem.readdirSync = function (path, options) {
 								...layoutRoute,
 								routeId: routeId.replace(entry, `+layout.server.${lang}`)
 							});
-							return [entry, `+layout.server.${lang}`];
+							return [_entry, getFile(`+layout.server.${lang}`)];
 						}
 
-						return [entry];
+						return [_entry];
 					}
 
 					if (!routeId.endsWith('+page.svelte')) {
-						return [entry.replace('.svelte', '')];
+						return [getFile(entry.replace('.svelte', ''), 'directory')];
 					}
 
 					const route = createRoute({
@@ -176,10 +215,10 @@ filesystem.readdirSync = function (path, options) {
 							...route,
 							routeId: routeId.replace('+page.svelte', `+page.server.${lang}`)
 						});
-						return [`+page.svelte`, `+page.server.${lang}`];
+						return [getFile(`+page.svelte`), getFile(`+page.server.${lang}`)];
 					}
 
-					return ['+page.svelte'];
+					return [getFile('+page.svelte')];
 				})
 				.flat()
 		)
