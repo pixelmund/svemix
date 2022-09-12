@@ -14,7 +14,7 @@ export function transformRootFile(source) {
 	source = source.replace(
 		`</script>`,
 		`</script>
-        <SvemixRoot>
+        <SvemixRoot {form}>
         `
 	);
 

@@ -28,12 +28,12 @@ export function loadRoute() {
 
 				return {
 					code: `
-					import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
+					import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/core';
 					${content}
 					${has.loader && !has.metadata ? 'export const load = __get(loader, () => ({}));' : ''}
 					${has.loader && has.metadata ? 'export const load = __get(loader, metadata);' : ''}
 					${!has.loader && has.metadata ? 'export const load = __get(() => ({}), metadata);' : ''}
-					${has.action ? 'export const POST = __post(action);' : ''}
+					${has.action ? 'export const actions = { default: __post(action) };' : ''}
 					`
 				};
 			}
@@ -49,12 +49,12 @@ export function loadRoute() {
 
 			return {
 				code: `
-				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
+				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/core';
 				${content}
 				${has.loader && !has.metadata ? 'export const load = __get(loader, () => ({}));' : ''}
 				${has.loader && has.metadata ? 'export const load = __get(loader, metadata);' : ''}
 				${!has.loader && has.metadata ? 'export const load = __get(() => ({}), metadata);' : ''}
-				${has.action ? 'export const POST = __post(action);' : ''}
+				${has.action ? 'export const actions = { default: __post(action) };' : ''}
 				`
 			};
 		}

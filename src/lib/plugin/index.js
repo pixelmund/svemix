@@ -1,3 +1,4 @@
+import "./utils/modify_fs.js";
 import { loadConfig, viteConfig } from './utils/index.js';
 import { initializeSvemix, resolveRoute, loadRoute, transform } from './core/index.js';
 import { posixify } from './utils/misc.js';

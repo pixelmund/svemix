@@ -34,10 +34,13 @@ filesystem.readFileSync = function (path, options) {
 	try {
 		return _readFileSync(path, options);
 	} catch (error) {
-		if (error.message.includes('src/routes')) {
+		const route = routeManager.get(routeManager.parseRouteId(path));
+
+		if (!route) {
 			return '';
 		}
-		throw error;
+
+		return route.serverScript().content;
 	}
 };
 
@@ -73,6 +76,7 @@ const createRoute = (options) => {
 
 filesystem.readdirSync = function (path, options) {
 	if (!path.includes('routes')) return _readDirSync(path, options);
+	if (path.endsWith('.d.ts')) return [];
 	if (path.includes('/types/')) return [];
 
 	function getFileName(file) {
@@ -232,4 +236,3 @@ Object.defineProperty(globalThis, 'fs', {
 	enumerable: true,
 	value: filesystem
 });
-

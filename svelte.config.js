@@ -20,10 +20,7 @@ const config = {
 		}
 	},
 	kit: {
-		browser: {
-			hydrate: true,
-			router: true,
-		},	
+		browser: {},	
 	}
 };
 
