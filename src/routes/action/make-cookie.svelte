@@ -1,28 +1,16 @@
 <script context="module" lang="ts" ssr>
-	import type { Action } from '$lib';
+	import type { Loader } from '$lib';
 	import { makeCookie } from '$lib/cookie';
 
-	export const action: Action = ({locals}) => {
+	export const loader: Loader = ({ setHeaders }) => {
 		const trackingEnabledCookie = makeCookie('tracking_enabled', '1', {
 			path: '/'
 		});
 
-		return {
-			headers: {
-				'set-cookie': [trackingEnabledCookie]
-			}
-		};
+		setHeaders({ 'set-cookie': [trackingEnabledCookie] });
+		return {};
 	};
 </script>
 
 <script lang="ts">
-	import { session } from '$app/stores';
-	import { Form } from '$lib';
 </script>
-
-<Form>
-	<span>
-		{$session.views || 0}
-	</span>
-	<button type="submit">+</button>
-</Form>

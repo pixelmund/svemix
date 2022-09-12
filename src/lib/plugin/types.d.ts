@@ -18,3 +18,13 @@ interface Svemix_Config_Object {
 export interface InternalConfig extends Svemix_Config_Object {
 	routes: string;
 }
+
+export interface SvemixRoute {
+	routeId: string;
+	isIndex: boolean;
+	isLayout: boolean;
+	content: () => string;
+	serverScript: () => { available: boolean; lang: 'ts' | 'js', content: string }
+}
+
+export type UnionOfArrayElements<ARR_T extends Readonly<unknown[]>> = ARR_T[number];

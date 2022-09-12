@@ -1,5 +1,5 @@
-import fs from 'fs';
-import { getScripts, SVEMIX_LIB_DIR } from '../utils/index.js';
+import { SVEMIX_LIB_DIR } from '../utils/index.js';
+import { routeManager } from '../utils/route_manager.js';
 
 /**
  *
@@ -7,59 +7,103 @@ import { getScripts, SVEMIX_LIB_DIR } from '../utils/index.js';
  */
 export function loadRoute() {
 	return (id) => {
-		if (!id.includes('routes')) return null;
-		if (id.includes('.svelte')) return null;
-		if (id.includes('.json')) return null;
+		if (!id.includes('src/routes')) return null;
 
-		const source = id;
-		const svelteSourceFile = source.replace('.ts', '.svelte').replace('.js', '.svelte');
-		const svelteSource = fs.readFileSync(svelteSourceFile, { encoding: 'utf-8' });
+		const routeId = routeManager.parseRouteId(id);
+		if (!routeId) return null;
 
-		const scripts = getScripts(svelteSource);
-		const ssrScript = scripts.find(
-			(script) => script.attrs?.context === 'module' && script.attrs?.ssr
-		);
+		const route = routeManager.get(routeId);
+		if (!route) return null;
 
-		if (!ssrScript) return { code: '' };
+		if (route.isLayout) {
+			if (id.endsWith('.svelte')) {
+				return {
+					code: route.content()
+				};
+			} else {
+				const { available, content } = route.serverScript();
+				if (!available) return { code: '' };
 
-		const ssrContent = ssrScript.content;
+				const has = checkSvemixKeywords(content);
 
-		const hasLoader = checkForSvemixKeyword('loader', ssrContent);
-		const hasAction = checkForSvemixKeyword('action', ssrContent);
+				return {
+					code: `
+					import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/core';
+					${content}
+					${has.loader && !has.metadata ? 'export const load = __get(loader, () => ({}));' : ''}
+					${has.loader && has.metadata ? 'export const load = __get(loader, metadata);' : ''}
+					${!has.loader && has.metadata ? 'export const load = __get(() => ({}), metadata);' : ''}
+					${has.action ? 'export const actions = { default: __post(action) };' : ''}
+					`
+				};
+			}
+		} else if (id.endsWith('+page.svelte')) {
+			return {
+				code: route.content()
+			};
+		} else if (id.endsWith('+page.server.ts') || id.endsWith('page.server.js')) {
+			const { available, content } = route.serverScript();
+			if (!available) return { code: '' };
 
-		return {
-			code: `
-			import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/server';
-			${ssrScript.content}
-			${hasLoader ? 'export const GET = __get(loader);' : ''}
-			${hasAction ? 'export const POST = __post(action);' : ''}
-			`
-		};
+			const has = checkSvemixKeywords(content);
+
+			return {
+				code: `
+				import { get as __get, post as __post } from '${SVEMIX_LIB_DIR}/core';
+				${content}
+				${has.loader && !has.metadata ? 'export const load = __get(loader, () => ({}));' : ''}
+				${has.loader && has.metadata ? 'export const load = __get(loader, metadata);' : ''}
+				${!has.loader && has.metadata ? 'export const load = __get(() => ({}), metadata);' : ''}
+				${has.action ? 'export const actions = { default: __post(action) };' : ''}
+				`
+			};
+		}
+
+		return null;
 	};
 }
 
+const SVEMIX_KEYWORDS = ['loader', 'action', 'metadata'];
+
 /**
  *
- * @param {string} keyword
  * @param {string} content
- * @returns {boolean}
+ * @returns {{[key: string]: boolean}}
  */
-function checkForSvemixKeyword(keyword, content) {
-	const svemixKeywords = [
-		`export const ${keyword}`,
-		`export let ${keyword}`,
-		`export function ${keyword}`,
-		`export async function ${keyword}`
-	];
+function checkSvemixKeywords(content) {
+	/**
+	 *
+	 * @param {string} keyword
+	 * @returns {boolean}
+	 */
+	const checkKeyword = (keyword) => {
+		const svemixKeywords = [
+			`export const ${keyword}`,
+			`export let ${keyword}`,
+			`export function ${keyword}`,
+			`export async function ${keyword}`
+		];
 
-	let seen = false;
+		let seen = false;
 
-	svemixKeywords.forEach((key) => {
-		if (content.includes(key)) {
-			seen = true;
-		}
+		svemixKeywords.forEach((key) => {
+			if (content.includes(key)) {
+				seen = true;
+			}
+		});
+
+		return seen;
+	};
+
+	/**
+	 * @type {any}
+	 */
+	const has = {};
+
+	SVEMIX_KEYWORDS.forEach((keyword) => {
+		has[keyword] = checkKeyword(keyword);
 	});
 
-	return seen;
+	return has;
 }
 

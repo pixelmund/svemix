@@ -1,5 +1,10 @@
 import { goto, invalidate } from '$app/navigation';
-import type { EnhanceFormError, EnhanceFormPending, EnhanceFormValidate } from './types';
+import type {
+	EnhanceFormError,
+	EnhanceFormPending,
+	EnhanceFormValidate,
+	ValidationErrors
+} from './types';
 
 export type InternalEnhanceFormResult = ({
 	data,
@@ -25,12 +30,14 @@ export function enhance(
 		validate,
 		pending,
 		formError,
-		result
+		result,
+		errors
 	}: {
 		validate?: EnhanceFormValidate;
 		pending?: EnhanceFormPending;
 		formError?: EnhanceFormError;
 		result?: InternalEnhanceFormResult;
+		errors?: (errors: ValidationErrors) => any;
 	} = {}
 ): { destroy: () => void } {
 	let current_token: unknown;
@@ -82,8 +89,11 @@ export function enhance(
 					return;
 				}
 
-				const json = await response.json();
-				const actionData = json?.actionData;
+				let json: any = {};
+
+				if (response.status !== 204) {
+					json = await response.json();
+				}
 
 				const refreshSessionHeader = response.headers.get('x-svemix-refresh-session') || 'false';
 				const refreshSession = refreshSessionHeader === 'true';
@@ -92,30 +102,31 @@ export function enhance(
 					await result({
 						formData: data,
 						form,
-						data: actionData,
+						data: {},
 						response: response,
 						refreshSession,
 						redirectTo
 					});
 				}
 
+				let shouldInvalidate = true;
+
 				const url = new URL(form.action);
 				url.search = url.hash = '';
 
-				let shouldInvalidate = true;
-
-				if (redirectTo.length > 0) {
-					shouldInvalidate = false;
-				}
-
-				if (actionData && actionData.errors) {
-					if (Object.values<string>(actionData.errors).some((err) => err.length > 0)) {
+				if (json && json.errors) {
+					if (Object.values<string>(json.errors).some((err) => err.length > 0)) {
 						shouldInvalidate = false;
 					}
 				}
 
 				if (shouldInvalidate) {
-					invalidate(url.href);
+					await invalidate(url.href);
+				}
+			} else if (response.status === 400) {
+				const json: any = await response.json();
+				if (errors) {
+					errors(json?.errors ?? {});
 				}
 			} else if (formError) {
 				formError({ formData: data, form, error: null, response });

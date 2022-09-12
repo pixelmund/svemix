@@ -7,7 +7,7 @@
 		country: string;
 	}
 
-	export const loader: Loader<LoaderData> = () => ({
+	export const loader: Loader = () => ({
 		name: 'Svemix',
 		age: 25,
 		country: 'Github'
