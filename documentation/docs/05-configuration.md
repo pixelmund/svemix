@@ -2,7 +2,7 @@
 title: Configuration
 ---
 
-> Svemix let's you configure some things like the default SEO / Meta Data. There will probably me more configurable things in the future.
+> Svemix let's you configure some things like the default SEO / Meta Data. There will probably be more configurable things in the future.
 
 ### Example
 
